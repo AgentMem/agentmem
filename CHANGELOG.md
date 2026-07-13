@@ -65,5 +65,11 @@ contract we version against. Breaking it means a note here.
   repos, scoring retention, cross-repo interference, learning-curve slope, and bank
   growth. `metrics.py` and `scenario.py` self-check offline (`--selftest`); the live run
   is gated behind a key.
+- Setup diagnostics so a misconfiguration is visible instead of silent: failed
+  memory-steps and skipped consolidation/promotion/grading are now logged, not
+  swallowed; a session checks its model and key up front (a sync session raises, the
+  daemon warns and keeps serving); `agentmem serve` warns at startup on a missing key;
+  and a new `agentmem doctor` prints a checklist (model/key, hooks, daemon). The
+  litellm provider now advertises itself honestly as planned, not shipped.
 
 [Unreleased]: https://github.com/agentmem/agentmem/commits/main

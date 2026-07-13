@@ -5,6 +5,7 @@ replay  pretty-print a telemetry file, step by step
 bank    inspect stored memory banks
 init    wire AgentMem into a harness (claude-code)
 serve   run the Claude Code daemon
+doctor  check the setup: key, model, hooks, daemon
 """
 
 from __future__ import annotations
@@ -56,6 +57,11 @@ def main(argv: list[str] | None = None) -> int:
     p_serve.add_argument("--port", type=int, default=8642)
     p_serve.add_argument("--host", default="127.0.0.1")
 
+    p_doctor = sub.add_parser("doctor", help="check the setup: key, model, hooks, daemon")
+    p_doctor.add_argument("--port", type=int, default=8642, help="daemon port to probe")
+    p_doctor.add_argument("--cwd", default=".", help="project directory to check")
+    p_doctor.add_argument("--state-dir", default=".agentmem", help="state directory")
+
     args = parser.parse_args(argv)
 
     if args.command == "demo":
@@ -68,6 +74,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_init(args)
     if args.command == "serve":
         return _cmd_serve(args)
+    if args.command == "doctor":
+        return _cmd_doctor(args)
 
     parser.print_help()
     return 0
@@ -164,9 +172,11 @@ def _cmd_init(args: argparse.Namespace) -> int:
 
     settings_path, created = install_claude_code(args.cwd, port=args.port)
     verb = "Created" if created else "Updated"
+    port_flag = f" --port {args.port}" if args.port != 8642 else ""
     print(f"{verb} {settings_path}")
     print(f"Wired Claude Code hooks to the daemon on http://127.0.0.1:{args.port}.")
-    print("\nNext:  agentmem serve" + (f" --port {args.port}" if args.port != 8642 else ""))
+    print(f"\nNext:  agentmem serve{port_flag}   (needs: pip install agentmem-daemon)")
+    print("Then:  agentmem doctor   (verify the key, hooks, and daemon)")
     return 0
 
 
@@ -184,9 +194,78 @@ def _cmd_serve(args: argparse.Namespace) -> int:
         )
         return 1
 
+    from .config import AgentMemConfig
+    from .llm import preflight
+
+    for problem in preflight(AgentMemConfig()):
+        print(f"WARNING: {problem}. Memory will run but every step will fail.", file=sys.stderr)
+
     print(f"AgentMem daemon on http://{args.host}:{args.port}  (Ctrl-C to stop)")
     uvicorn.run(create_app(), host=args.host, port=args.port, log_level="warning")
     return 0
+
+
+def _cmd_doctor(args: argparse.Namespace) -> int:
+    from .config import AgentMemConfig
+    from .llm import preflight
+
+    print("AgentMem doctor\n")
+
+    config = AgentMemConfig(state_dir=args.state_dir)
+    problems = preflight(config)
+    provider_ok = not problems
+    _row(provider_ok, "model/key", f"{config.model} is reachable" if provider_ok else problems[0])
+
+    hooks_ok, hooks_detail = _hooks_status(args.cwd)
+    _row(hooks_ok, "hooks", hooks_detail)
+
+    daemon_ok, daemon_detail = _daemon_status(args.port)
+    _row(daemon_ok, "daemon", daemon_detail)
+
+    # Only the provider check is universal; hooks/daemon are Claude-Code-only, so a
+    # missing one is advice, not an error. The exit code gates on the provider.
+    print()
+    if provider_ok:
+        print("Ready. (Anything marked [!!] above is optional setup with a hint.)")
+    else:
+        print("Not ready: fix the [!!] model/key line above.")
+    return 0 if provider_ok else 1
+
+
+def _row(ok: bool, label: str, detail: str) -> None:
+    mark = "[ok]" if ok else "[!!]"
+    print(f"  {mark}  {label:<8}  {detail}")
+
+
+def _hooks_status(cwd: str) -> tuple[bool, str]:
+    import json
+    from pathlib import Path
+
+    from .integrations.claude_code import has_our_hooks
+
+    settings = Path(cwd) / ".claude" / "settings.json"
+    if not settings.exists():
+        return False, "no .claude/settings.json  (run: agentmem init claude-code)"
+    try:
+        data = json.loads(settings.read_text())
+    except (OSError, ValueError):
+        return False, f"could not read {settings}"
+    if has_our_hooks(data):
+        return True, f"installed in {settings}"
+    return False, "not installed  (run: agentmem init claude-code)"
+
+
+def _daemon_status(port: int) -> tuple[bool, str]:
+    import json
+    import urllib.request
+
+    url = f"http://127.0.0.1:{port}/health"
+    try:
+        with urllib.request.urlopen(url, timeout=1.5) as resp:  # noqa: S310 (localhost only)
+            data = json.loads(resp.read())
+        return True, f"up on http://127.0.0.1:{port}  (version {data.get('version', '?')})"
+    except Exception:
+        return False, f"not reachable on http://127.0.0.1:{port}  (run: agentmem serve)"
 
 
 if __name__ == "__main__":

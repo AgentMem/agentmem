@@ -184,6 +184,12 @@ def _is_ours(entry: dict[str, Any]) -> bool:
     )
 
 
+def has_our_hooks(settings: dict[str, Any]) -> bool:
+    """True if AgentMem's hooks are already in a .claude/settings.json dict."""
+    hooks = settings.get("hooks", {})
+    return any(_is_ours(e) for entries in hooks.values() for e in entries)
+
+
 def merge_settings(existing: dict[str, Any], hooks: dict[str, Any]) -> dict[str, Any]:
     """Merge our hooks into a settings dict, leaving everything else alone.
 
