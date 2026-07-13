@@ -15,7 +15,7 @@ CLI demo, and scripts want.
 
 from __future__ import annotations
 
-import contextlib
+import logging
 import queue
 import threading
 import uuid
@@ -38,6 +38,8 @@ from .store import SqliteStore, Store, open_store
 from .telemetry import Telemetry
 from .triggers import Trigger, TriggerState
 from .triggers import default as default_trigger
+
+logger = logging.getLogger("agentmem")
 
 # Pushed onto the work queue to tell the worker thread to stop.
 _STOP = object()
@@ -255,7 +257,7 @@ class MemorySession:
         with self._step_lock:
             with self._data_lock:
                 bank = self._bank
-            with contextlib.suppress(Exception):
+            try:
                 weights = SalienceWeights.from_config(self._config)
                 recomputed = recompute_lifecycle(bank, weights)
                 update = run_consolidation(self._provider, self._config, recomputed, self._step)
@@ -264,6 +266,8 @@ class MemorySession:
                 with self._data_lock:
                     self._bank = recomputed
                     self._store.save_bank(self.session_id, self.task, self._bank)
+            except Exception as exc:
+                logger.warning("consolidation skipped: %s", exc)
 
     def _promote_if_due(self) -> None:
         """Rewrite whatever's earned its way into the project bank and save both
@@ -274,7 +278,7 @@ class MemorySession:
         with self._step_lock:
             with self._data_lock:
                 session_bank, project_bank = self._bank, self._project_bank
-            with contextlib.suppress(Exception):
+            try:
                 new_session, new_project = run_promotion(
                     self._provider,
                     self._config,
@@ -287,6 +291,8 @@ class MemorySession:
                     self._bank, self._project_bank = new_session, new_project
                     self._store.save_bank(self.session_id, self.task, self._bank)
                     self._project_store.save_bank("project", "project memory", self._project_bank)
+            except Exception as exc:
+                logger.warning("promotion skipped: %s", exc)
 
     def _grade_session(self, decisions: list[_Decision], task_reward: float) -> None:
         """Grade the session once, then spend the result twice: the policy store gets
@@ -308,7 +314,7 @@ class MemorySession:
         trajectory = "\n".join(e.render() for e in self._history[-40:])
         # Grading is best-effort; a failed evaluator call just means no new labels.
         evals: list[StepEval] = []
-        with contextlib.suppress(Exception):
+        try:
             evals = self._advantage.finalize(
                 self._provider,
                 session_id=self.session_id,
@@ -317,6 +323,8 @@ class MemorySession:
                 summaries=summaries,
                 task_reward=task_reward,
             )
+        except Exception as exc:
+            logger.warning("session grading skipped: %s", exc)
         if evals and self._config.continual_enabled:
             self._reinforce(decisions, evals)
 
@@ -364,9 +372,10 @@ class MemorySession:
                 else:
                     self._execute(job)
             except Exception:
-                # A memory-step must never take down the worker. Swallow and keep
-                # serving; surfacing the error properly is a TODO.
-                pass
+                # A memory-step must never take down the worker. Log it and keep
+                # serving, so a bad key or provider error is diagnosable instead of
+                # silently doing nothing.
+                logger.exception("memory-step failed; the session continues without it")
             finally:
                 self._queue.task_done()
 

@@ -6,6 +6,7 @@ keeps the tests deterministic. The async worker path has its own test below.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 import pytest
@@ -460,3 +461,71 @@ def test_reinforcement_stays_zero_without_the_advantage_layer(tmp_path: Path) ->
     mem.close()
 
     assert mem.bank.knowledge["K-001"].lifecycle.reinforcement == 0.0
+
+
+class _BoomProvider:
+    """A provider that always blows up, to prove failures get logged, not swallowed."""
+
+    model = "boom"
+
+    def complete(self, **kwargs: object) -> object:
+        raise RuntimeError("provider exploded")
+
+
+def _near_duplicate_bank() -> MemoryBank:
+    return MemoryBank(
+        knowledge={
+            "K-001": MemoryEntry(
+                id="K-001",
+                kind="knowledge",
+                content="Python 3.11 venv at .venv",
+                created_step=1,
+                updated_step=1,
+            ),
+            "K-002": MemoryEntry(
+                id="K-002",
+                kind="knowledge",
+                content="venv lives at .venv, Python 3.11",
+                created_step=1,
+                updated_step=1,
+            ),
+        }
+    )
+
+
+def test_consolidation_failure_is_logged_not_swallowed(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    store = open_store("json", str(tmp_path))
+    store.save_bank("s1", "fix", _near_duplicate_bank())  # forces a merge candidate
+    store.close()
+
+    mem = MemorySession(
+        task="fix",
+        config=_cfg(tmp_path),
+        provider=_BoomProvider(),
+        session_id="s1",
+        async_worker=False,
+    )
+    with caplog.at_level(logging.WARNING, logger="agentmem"):
+        mem.end_session()  # runs consolidation, which calls the exploding provider
+    mem.close()
+
+    assert any("consolidation skipped" in r.getMessage() for r in caplog.records)
+
+
+def test_async_worker_logs_a_failed_step(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    mem = MemorySession(
+        task="fix",
+        config=_cfg(tmp_path),
+        provider=_BoomProvider(),
+        session_id="s1",
+        trigger=triggers.every_n(1),
+        async_worker=True,
+    )
+    with caplog.at_level(logging.ERROR, logger="agentmem"):
+        mem.observe([Event(role="assistant", text="do a thing")])  # fires a step on the worker
+        mem.flush()
+    mem.close()
+
+    assert any("memory-step failed" in r.getMessage() for r in caplog.records)
