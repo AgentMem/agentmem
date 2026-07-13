@@ -529,3 +529,22 @@ def test_async_worker_logs_a_failed_step(tmp_path: Path, caplog: pytest.LogCaptu
     mem.close()
 
     assert any("memory-step failed" in r.getMessage() for r in caplog.records)
+
+
+def test_sync_session_raises_on_an_unusable_provider(tmp_path: Path) -> None:
+    # A script or `agentmem demo --live` should fail fast with a clear message rather
+    # than build a session that silently does nothing.
+    config = AgentMemConfig(state_dir=str(tmp_path), model="litellm/gpt-4o")
+    with pytest.raises(RuntimeError, match="litellm"):
+        MemorySession(task="t", config=config, session_id="s1", async_worker=False)
+
+
+def test_async_session_warns_but_still_builds_on_an_unusable_provider(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    # The daemon runs async: it must warn loudly but keep serving, never raise into a hook.
+    config = AgentMemConfig(state_dir=str(tmp_path), model="litellm/gpt-4o")
+    with caplog.at_level(logging.WARNING, logger="agentmem"):
+        mem = MemorySession(task="t", config=config, session_id="s1", async_worker=True)
+    mem.close()
+    assert any("can't reach a model" in r.getMessage() for r in caplog.records)

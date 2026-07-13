@@ -35,9 +35,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# `pip install agentmem[litellm]` to route the memory agent through any provider
-# litellm supports (OpenAI, vLLM, Ollama, ...). This is the path toward a self-hosted
-# fine-tuned memory model later on.
+# Planned: route the memory agent through any provider litellm supports (OpenAI,
+# vLLM, Ollama). The adapter is a stub today (Anthropic is the only working provider);
+# this extra just pins the dep so the work can start.
 litellm = ["litellm>=1.40"]
 
 [project.urls]

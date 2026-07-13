@@ -55,8 +55,9 @@ when to stay quiet is a feature, not an omission.
 
 ```bash
 pip install agentmem        # or: uv add agentmem
-export ANTHROPIC_API_KEY=sk-ant-...
-agentmem demo               # watch the memory layer stop a repeated failure
+agentmem demo               # offline, no key needed: watch memory stop a repeated failure
+
+export ANTHROPIC_API_KEY=sk-ant-...   # then point it at your own agent (see below)
 ```
 
 Wrap your own loop in five lines:
@@ -90,8 +91,8 @@ Two design decisions do most of the work:
   hundred milliseconds and never stall the agent. This is sound because a reminder always applies to
   the *next* turn, so there's time to compute it.
 - **The core imports nothing from the integrations.** Claude Code, the Agent SDK, and LangGraph all
-  sit on top of the same public API. Swapping the LLM provider (Anthropic today; OpenAI, vLLM, or a
-  fine-tuned local model later) is one adapter.
+  sit on top of the same public API, and the LLM provider is one adapter (Anthropic today; a litellm
+  adapter for OpenAI, vLLM, or local models is planned).
 
 ## Why not just... Mem0 / Letta / a `memory.md` file?
 

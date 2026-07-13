@@ -71,7 +71,10 @@ class MemorySession:
         self._trigger: Trigger = trigger or default_trigger(self._config.trigger_every_n)
 
         # Provider and store are injectable so tests can pass a fake and skip both
-        # the network and the filesystem.
+        # the network and the filesystem. Only check config when we're about to build
+        # a real provider (an injected one is the caller's business).
+        if provider is None:
+            _check_provider_ready(self._config, async_worker)
         self._provider = provider or _lazy_provider(self._config)
         self._store: Store = open_store(self._config.store, self._config.state_dir)
         self._telemetry = Telemetry(_telemetry_path(self._config))
@@ -489,6 +492,24 @@ def _lazy_provider(config: AgentMemConfig) -> LLMProvider:
     from .llm import make_provider
 
     return make_provider(config)
+
+
+def _check_provider_ready(config: AgentMemConfig, async_worker: bool) -> None:
+    """Catch a missing key or an unsupported model at construction. A sync session
+    (a script or the demo) raises so the caller sees it immediately; the daemon runs
+    async and only warns, so a hook still returns fast instead of 500-ing."""
+    from .llm import preflight
+
+    problems = preflight(config)
+    if not problems:
+        return
+    message = "AgentMem can't reach a model: " + "; ".join(problems)
+    if async_worker:
+        logger.warning(
+            "%s. Memory is running but every step will fail until this is fixed.", message
+        )
+    else:
+        raise RuntimeError(message)
 
 
 def _coerce_events(events: Any) -> list[Event]:
