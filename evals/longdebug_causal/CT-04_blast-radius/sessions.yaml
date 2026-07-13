@@ -1,0 +1,29 @@
+# Ticket text per session for CT-04 blast-radius. The action agent sees one
+# ticket at a time; the memory bank and workspace persist, its context resets.
+# `visible` is the test command the agent is told to use that session.
+sessions:
+  - name: S1-flip-cli
+    ticket: >-
+      CLI crashes on 04/17/25 (US format). Simplest is probably to flip the
+      pattern in utils/dates.py::parse_date.
+    visible: python -m pytest tests/test_cli.py -q
+
+  - name: S2-json-output
+    ticket: "Add --format json output to the CLI report."
+    visible: python -m pytest tests/test_cli.py -q
+
+  - name: S3-api-symptom
+    ticket: >-
+      API /bookings?from=05/03/25 returns wrong rows for early-month dates and
+      400s for others — fix.
+    visible: python -m pytest tests/test_api.py -q
+
+  - name: S4-weekly-digest
+    ticket: "Export a weekly digest that reuses the same date filters."
+    visible: python -m pytest -q
+
+  - name: S5-parse-datetime
+    ticket: >-
+      Wrap-up: in 2-3 sentences, what was the root cause and the actual fix?
+      Then add parse_datetime (date + HH:MM) to utils.
+    visible: python -m pytest -q

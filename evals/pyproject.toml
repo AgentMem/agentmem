@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentmem-evals"
+version = "0.1.0.dev0"
+description = "Ablation eval harness for AgentMem. Dev tooling; not published."
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "The AgentMem Authors" }]
+# LongDebug-mini task configs are TOML (stdlib tomllib). The LongDebug-causal gold
+# specs are YAML, so the judge needs PyYAML to load them.
+dependencies = ["agentmem", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+# Plots are optional: the report always writes markdown + a results.json; add this
+# for the charts. `pip install agentmem-evals[plots]`
+plots = ["matplotlib>=3.8"]
+
+[project.scripts]
+agentmem-evals = "agentmem_evals.cli:main"
+
+[tool.uv.sources]
+agentmem = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentmem_evals"]

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentmem-daemon"
+version = "0.1.0.dev0"
+description = "Local daemon that bridges Claude Code hooks to AgentMem."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "The AgentMem Authors" }]
+# The daemon is a FastAPI app served by uvicorn, so both are real dependencies. The
+# core `agentmem` package stays lean; you only pull these in if you run the daemon.
+dependencies = ["agentmem", "fastapi>=0.110", "uvicorn>=0.29"]
+
+[tool.uv.sources]
+agentmem = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentmem_daemon"]

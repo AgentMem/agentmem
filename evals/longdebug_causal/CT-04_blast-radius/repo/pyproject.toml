@@ -1,0 +1,5 @@
+[project]
+name = "bookings-report"
+version = "0.1.0"
+description = "A CLI report tool and a web API that share one date utility."
+requires-python = ">=3.11"

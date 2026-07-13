@@ -1,0 +1,66 @@
+# Lint -> typecheck -> test -> build, on every push and PR.
+#
+# Deliberately does NOT run the eval suite or any integration test: both cost real
+# money (they call a live model). Those run manually via workflow_dispatch or locally
+# with `-m integration`.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # A new push to a PR cancels the in-flight run for that PR — saves runner minutes.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Test the floor and the current default. If it breaks on 3.11, it's a bug
+        # even when 3.13 is happy.
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Lint
+        run: uv run ruff check --output-format=github .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+      - name: Typecheck (core is --strict)
+        run: uv run mypy packages/agentmem/src
+
+      - name: Test
+        run: uv run pytest
+
+  build:
+    # Only bother building the wheel once the checks pass.
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Build the agentmem wheel + sdist
+        run: uv build packages/agentmem
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: packages/agentmem/dist/

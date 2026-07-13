@@ -1,0 +1,18 @@
+# Retention probes for repo B (a data pipeline). Its lessons must not leak into A or C.
+repo: b
+requirements_summary: >
+  Cache keys must include the normalize.py version. City and country names are
+  casefolded. The nightly aggregate reads from the cache.
+probes:
+  - id: b-req-cache-versioned
+    question: "What must a cache key include?"
+    answer_contains: ["normalize", "version"]
+    forbidden: ["only the city", "timestamp only"]
+  - id: b-req-casefold
+    question: "How are city and country names normalized?"
+    answer_contains: ["casefold"]
+    forbidden: ["left as-is", "uppercase"]
+  - id: b-lesson-stale-cache
+    question: "Why did the nightly numbers go wrong for some cities?"
+    answer_contains: ["stale", "cache"]
+    forbidden: ["network", "database down"]

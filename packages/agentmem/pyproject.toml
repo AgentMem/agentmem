@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentmem"
+version = "0.1.0.dev0"
+description = "A proactive memory layer for long-horizon coding agents — it knows when to remind."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["../../LICENSE", "../../NOTICE"]
+authors = [{ name = "The AgentMem Authors" }]
+keywords = ["llm", "agents", "memory", "claude-code", "long-horizon", "coding-agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+# Kept intentionally small so `pip install agentmem` is quick and boring:
+#   - pydantic       : the schemas every module shares
+#   - pydantic-settings : env-var config (AGENTMEM_*)
+#   - anthropic      : the default (and only, for now) LLM provider
+# The SQLite store uses the stdlib `sqlite3`, so it adds no dependency.
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "anthropic>=0.40",
+]
+
+[project.optional-dependencies]
+# `pip install agentmem[litellm]` to route the memory agent through any provider
+# litellm supports (OpenAI, vLLM, Ollama, …). This is the path toward a self-hosted
+# fine-tuned memory model later on.
+litellm = ["litellm>=1.40"]
+
+[project.urls]
+Homepage = "https://agentmem.xyz"
+Repository = "https://github.com/agentmem/agentmem"
+Documentation = "https://agentmem.xyz/docs"
+Changelog = "https://github.com/agentmem/agentmem/blob/main/CHANGELOG.md"
+
+[project.scripts]
+agentmem = "agentmem.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentmem"]

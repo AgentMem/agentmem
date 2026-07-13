@@ -1,0 +1,3 @@
+[cache]
+# Memoizes the normalize step's output. Off by default.
+enabled = false

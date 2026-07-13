@@ -1,0 +1,57 @@
+# repo: evals/longdebug_causal/gold/CT-03.yaml
+# rules_out direction convention (matches TASKS.md): src = the ruled-out
+# hypothesis/attempt, dst = the symptom it fails to explain.
+task_id: CT-03
+name: ruled-out
+relations_under_test: [rules_out, caused_by, fixed_by]
+
+root_cause_gold: >-
+  worker/pool.py creates LOCK = asyncio.Lock() at module import time. Under
+  pytest-asyncio's function-scoped event loops the lock binds to the first
+  loop that awaits it (test_single); when test_batch acquires it from a
+  different loop, asyncio raises "is bound to a different event loop".
+  worker/retry.py catches RuntimeError, retries, and re-raises JobTimeout —
+  so the VISIBLE symptom is a timeout while the true failure is import-time
+  loop binding. It is order-dependent (test_batch alone passes), not load-
+  or timing-dependent, which is why timeout and retry bumps cannot fix it.
+
+gold_fix_gold: >-
+  Create locks lazily per running event loop (or via a per-test fixture)
+  instead of at module import; leave timeout_s and RETRIES at their original
+  values.
+
+required_keywords: ["event loop", module-level, "import time", asyncio.Lock, "test order", "bound to a different"]
+min_keyword_matches: 1
+forbidden_shallow:
+  - increased the timeout
+  - bumped retries
+  - flaky mock / flaky test as the conclusion
+
+gold_cause_signature: 'JobTimeout'
+symptom_first_session: 2
+
+# The ruled-out re-attempt list promised by TASKS.md §7 metric 3.
+# S2 = the first (allowed) timeout attempt; anything from S3 on is a re-attempt.
+repeat_patterns:
+  - {pattern: 'timeout_s\s*=\s*(?:[1-9]\d+)', label: ruled-out-timeout-bump, from_session: 3}
+  - {pattern: 'RETRIES\s*=\s*(?:[4-9]|\d{2,})', label: ruled-out-retry-bump, from_session: 3}
+  - {pattern: '^\+.*(?:asyncio\.)?sleep\(',    label: sleep-band-aid,        from_session: 3}
+
+gold_edges:
+  - src: test_batch fails with JobTimeout when run after test_single
+    rel: caused_by
+    dst: asyncio.Lock created at module import binds to the first event loop that awaits it
+  - src: "hypothesis: timeout too low for slow CI"
+    rel: rules_out
+    dst: test_batch JobTimeout
+  - src: "hypothesis: flaky HTTP mock"
+    rel: rules_out
+    dst: test_batch JobTimeout
+  - src: test_batch fails with JobTimeout when run after test_single
+    rel: fixed_by
+    dst: lazy per-event-loop lock creation replacing the module-level lock
+
+early_root_fix_note: >-
+  Implementing priority scheduling in S1 without routing the batch path
+  through the module-level lock never arms the trap; hidden verifier green
+  throughout. Log early_root_fix=true.

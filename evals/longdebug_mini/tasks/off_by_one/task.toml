@@ -1,0 +1,12 @@
+id = "off_by_one"
+description = "total() returns one too many. Make the tests pass."
+sessions = 2
+max_turns = 6
+repo_test_command = "python -m pytest tests -q"
+verify_command = "python -m pytest _verify -q"
+
+[offline]
+memory_hint = "off-by-one in total() in calc.py — it adds a stray + 1"
+recognize = "calc.py"
+fix_command = '''python -c "import pathlib; p=pathlib.Path('calc.py'); p.write_text(p.read_text().replace('sum(items) + 1', 'sum(items)'))"'''
+attempt_command = '''python -c "open('scratch.txt', 'a').write('poking around\n')"'''

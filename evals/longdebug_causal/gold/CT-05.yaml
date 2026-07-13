@@ -1,0 +1,63 @@
+# repo: evals/longdebug_causal/gold/CT-05.yaml
+# The only task with a stale_reminder spec (§7 metric 6): after the S4
+# upgrade ticket, a reminder still asserting the 0.25 constraint is HARMFUL
+# unless it is phrased as supersession (exclude_patterns guard).
+task_id: CT-05
+name: stale-pin
+relations_under_test: [supersedes, caused_by, fixed_by]
+
+root_cause_gold: >-
+  httpx was pinned to 0.25 in TWO places after INC-42: requirements.txt
+  (added by the session-1 stabilization) and the pre-existing
+  constraints.txt consumed by CI and the clean-runner install (-c). The
+  session-4 upgrade updated requirements.txt and the code but missed the
+  buried second pin, so constrained installs either fail dependency
+  resolution (>=0.28 vs ==0.25) or silently keep 0.25 while the code now
+  uses the 0.28 proxy= API. The old "must stay on 0.25" diagnosis became
+  obsolete the moment the upgrade ticket landed and must be superseded, not
+  replayed.
+
+gold_fix_gold: >-
+  Remove the 0.25 pin from EVERY pin site (constraints.txt and any CI
+  config) together with the requirements bump and the proxies= -> proxy=
+  code migration; supersede the INC-42 constraint instead of re-applying it.
+
+required_keywords: [constraints.txt, "second pin", supersede, obsolete, "0.25", resolver]
+min_keyword_matches: 1
+forbidden_shallow:
+  - pinned it back to 0.25
+  - downgraded httpx to make it pass
+  - stay on 0.25 (as the conclusion after the upgrade ticket)
+
+gold_cause_signature: "ResolutionImpossible|Cannot install|unexpected keyword argument 'proxy'"
+symptom_first_session: 4
+
+repeat_patterns:
+  - {pattern: '^\+.*httpx==0\.26', label: harmful-repin, from_session: 4}
+  - {pattern: '^\+.*proxies=',     label: revert-to-old-api, from_session: 4}
+
+gold_edges:
+  - src: "K: upgrade to httpx>=0.28 (session-4 ticket)"
+    rel: supersedes
+    dst: "K: httpx must stay pinned at 0.25 (INC-42)"
+  - src: setup/CI failure after the upgrade (resolver conflict or proxy TypeError)
+    rel: caused_by
+    dst: stale second pin in constraints.txt left over from the session-1 stabilization
+  - src: setup/CI failure after the upgrade (resolver conflict or proxy TypeError)
+    rel: fixed_by
+    dst: removed the 0.25 pin from constraints.txt and all other pin sites
+
+early_root_fix_note: >-
+  Noticing and recording BOTH pin sites in S1 (or removing the constraints
+  pin during the S4 upgrade on the first pass) defuses S5; log
+  early_root_fix=true.
+
+stale_reminder:
+  from_session: 4
+  patterns:
+    - '0\.26'
+    - 'INC-42'
+    - 'must (stay|remain) (on|at)'
+  exclude_patterns:
+    - 'obsolete|superseded|no longer|outdated'
+    - 'remove.*(pin|0\.26)|(pin|0\.26).*remove'

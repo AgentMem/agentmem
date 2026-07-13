@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest an integration, a trigger, or a capability.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Start with the pain, not the solution. "My agent keeps re-doing X across sessions…"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you have in mind
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Fit check
+      options:
+        - label: This keeps the action agent unchanged (no edits to its prompt, tools, or decoding).
+        - label: I've checked the roadmap in the README and this isn't already listed.

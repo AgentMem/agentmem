@@ -1,0 +1,49 @@
+# repo: evals/longdebug_causal/gold/CT-02.yaml
+task_id: CT-02
+name: config-drift
+relations_under_test: [caused_by, fixed_by]
+
+root_cause_gold: >-
+  The cache key in pipeline/cache.py derives only from input path + step name;
+  CACHE_SALT is a constant, so keys carry no code-version component. Once
+  caching was enabled (session 1), the later change to normalization logic
+  (session 2 casefold) left previously cached step outputs stale, and
+  aggregation silently consumed old normalize outputs, producing golden
+  mismatches. The cause is the CONJUNCTION of the agent's own two edits —
+  enable cache + change normalize — under version-blind keys.
+
+gold_fix_gold: >-
+  Make cache keys code-aware (e.g. salt derived from a hash of normalize.py
+  source, or an explicit version bumped on behavior change) plus a one-time
+  invalidation. Deleting .cache alone leaves the mechanism in place and the
+  failure recurs on the next code change (session 5).
+
+required_keywords: [cache, stale, invalidate, "cache key", version]
+min_keyword_matches: 1
+forbidden_shallow:
+  - rm -rf .cache without changing the key scheme
+  - cleared the cache (as the entire fix)
+  - adjusted golden numbers to match cached output
+
+gold_cause_signature: 'FAILED.*test_aggregates'
+symptom_first_session: 3
+
+# Metric 3 for CT-02 rides on signature recurrence (S5 after the S3 shallow
+# fix); cache clears are commands, not diffs, so no reliable diff pattern.
+repeat_patterns: []
+
+gold_edges:
+  - src: wrong aggregate numbers (golden mismatch in test_aggregates)
+    rel: caused_by
+    dst: cache enabled with keys lacking any code-version component
+  - src: wrong aggregate numbers (golden mismatch in test_aggregates)
+    rel: caused_by
+    dst: normalize.py logic changed after step outputs were already cached
+  - src: wrong aggregate numbers (golden mismatch in test_aggregates)
+    rel: fixed_by
+    dst: cache keys made code-aware (normalizer version/source hash) plus one-time invalidation
+
+early_root_fix_note: >-
+  Making keys version-aware in S1 while enabling the cache (REQUIREMENTS.md
+  hints at it: "caching must be safe under code changes") defuses the trap;
+  log early_root_fix=true.

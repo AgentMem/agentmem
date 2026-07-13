@@ -1,0 +1,16 @@
+sessions:
+  - name: S1-enable-cache
+    ticket: "Pipeline is slow on repeated runs; profile and speed it up. Cache infra exists but is off."
+    visible: python -m pytest -q
+  - name: S2-casefold-city
+    ticket: "Normalization must trim whitespace and casefold city names — update normalize.py and its unit tests."
+    visible: python -m pytest -q -k normaliz
+  - name: S3-symptom
+    ticket: "Nightly report numbers look wrong for some cities — investigate the test_aggregates failures."
+    visible: python -m pytest -q
+  - name: S4-filler
+    ticket: "Add a --city filter flag to the report CLI."
+    visible: python -m pytest -q
+  - name: S5-casefold-country
+    ticket: "Casefold country names too (same treatment as cities)."
+    visible: python -m pytest -q

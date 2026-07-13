@@ -1,0 +1,38 @@
+name: Reminder miscalibration
+description: AgentMem reminded when it shouldn't have, or stayed quiet when a reminder would have helped.
+labels: ["calibration"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        This is the single most valuable kind of report for the project. Calibration —
+        knowing *when* to speak — is the hard part. Traces here directly shape the
+        prompts and, eventually, the training data.
+  - type: dropdown
+    id: direction
+    attributes:
+      label: Which way did it miss?
+      options:
+        - Reminded when it should have stayed silent (false positive / nagging)
+        - Stayed silent when a reminder would have helped (false negative)
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: What was the agent about to do?
+      description: The action or observation around the memory-step. A few messages of window is plenty.
+    validations:
+      required: true
+  - type: textarea
+    id: replay
+    attributes:
+      label: Replay output
+      description: "Output of `agentmem replay <telemetry.jsonl>` around the step in question. Scrub secrets."
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened, and why?

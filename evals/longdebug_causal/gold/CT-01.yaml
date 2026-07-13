@@ -1,0 +1,50 @@
+# repo: evals/longdebug_causal/gold/CT-01.yaml
+# Normative grading truth for CT-01 (the sketch in TASKS.md §1 is illustrative;
+# this file wins on conflict). Signatures are regexes over combined
+# verifier/pytest output; repeat_patterns are regexes over per-session diffs.
+task_id: CT-01
+name: stale-artifacts
+relations_under_test: [caused_by, fixed_by]
+
+root_cause_gold: >-
+  generated/models.py and tests/fixtures/users.json are DERIVED artifacts,
+  produced from schema/user.yaml by `make generate` (tools/codegen.py). A
+  schema commit added display_name without re-running generation, so the
+  on-disk fixtures were stale relative to the schema. Any code reading
+  display_name from fixture-built objects therefore hits missing keys or
+  wrong values. This is a derivation-freshness failure, not a serializer bug.
+
+gold_fix_gold: >-
+  Run `make generate` to regenerate models and fixtures from the schema, and
+  re-run it after any future schema change (e.g. adding pronouns). Strict key
+  access in the serializer is correct and stays.
+
+required_keywords: ["make generate", codegen, regenerate, stale, fixtures, schema]
+min_keyword_matches: 1
+forbidden_shallow:
+  - '.get("display_name"'
+  - defensive default instead of regenerating
+  - hand-edited tests/fixtures/users.json
+
+gold_cause_signature: 'KeyError.*display_name'
+recurrence_signatures:
+  - 'FAILED.*test_display_name_value'
+symptom_first_session: 3
+
+repeat_patterns:
+  - {pattern: '\.get\(\s*["'']display_name', label: shallow-defensive-get, from_session: 3}
+  - {pattern: '\.get\(\s*["'']pronouns',     label: shallow-defensive-get-pronouns, from_session: 5}
+
+gold_edges:
+  - src: KeyError on display_name in serializer/API tests
+    rel: caused_by
+    dst: generated models and fixtures derive from schema/user.yaml via make generate; regeneration was not run after the schema commit that added display_name
+  - src: KeyError on display_name in serializer/API tests
+    rel: fixed_by
+    dst: ran make generate to regenerate models and fixtures from the schema
+
+early_root_fix_note: >-
+  Running make generate before S3 (e.g. while reading REQUIREMENTS.md in S1)
+  defuses the trap: hidden verifier green with the signature never firing.
+  Log early_root_fix=true, count as requirement-respected success, exclude
+  from causal-advantage aggregates.

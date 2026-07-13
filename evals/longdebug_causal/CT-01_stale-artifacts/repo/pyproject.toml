@@ -1,0 +1,6 @@
+[project]
+name = "user-service"
+version = "0.1.0"
+description = "Small user service with a schema-driven codegen step."
+requires-python = ">=3.11"
+dependencies = []

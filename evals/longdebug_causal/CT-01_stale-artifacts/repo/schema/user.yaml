@@ -1,0 +1,14 @@
+model: User
+fields:
+  - name: id
+    type: int
+  - name: email
+    type: str
+  - name: first_name
+    type: str
+  - name: last_name
+    type: str
+  - name: display_name
+    type: str
+    optional: true
+    default: ""

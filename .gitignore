@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+*.so
+
+# Virtual envs / uv
+.venv/
+venv/
+.python-version.local
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# AgentMem runtime state — never commit a user's memory bank, telemetry, or
+# local daemon config. This is the whole point of being local-first.
+.agentmem/
+*.agentmem.db
+telemetry*.jsonl
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Node (web/, docs/ site builds — added in M5)
+node_modules/
+.next/
+out/
+
+# Reference papers + internal planning docs — kept locally, not for the public repo
+docs/*.pdf
+docs/*.docx
+/PLAN.md
+docs/AgentMem_Build_Plan.md
+docs/AgentMem_Build_Plan_1.md
+docs/design/

@@ -1,0 +1,193 @@
+{
+  "meta": {
+    "mode": "offline",
+    "seeds": 1,
+    "tasks": 2,
+    "memory_model": "scripted",
+    "spent_usd": 0.0
+  },
+  "results": [
+    {
+      "task_id": "off_by_one",
+      "condition": "baseline",
+      "seed": 0,
+      "passed": false,
+      "repeated_failures": 5,
+      "requirement_violations": 0,
+      "interventions": 0,
+      "memory_steps": 0,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 12
+    },
+    {
+      "task_id": "off_by_one",
+      "condition": "agentmem",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 1,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "off_by_one",
+      "condition": "full_bank",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 7,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "off_by_one",
+      "condition": "always_inject",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 7,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "off_by_one",
+      "condition": "injection_only",
+      "seed": 0,
+      "passed": false,
+      "repeated_failures": 5,
+      "requirement_violations": 0,
+      "interventions": 6,
+      "memory_steps": 0,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 12
+    },
+    {
+      "task_id": "ttl_bug",
+      "condition": "baseline",
+      "seed": 0,
+      "passed": false,
+      "repeated_failures": 5,
+      "requirement_violations": 1,
+      "interventions": 0,
+      "memory_steps": 0,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 12
+    },
+    {
+      "task_id": "ttl_bug",
+      "condition": "agentmem",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 1,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "ttl_bug",
+      "condition": "full_bank",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 7,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "ttl_bug",
+      "condition": "always_inject",
+      "seed": 0,
+      "passed": true,
+      "repeated_failures": 1,
+      "requirement_violations": 0,
+      "interventions": 7,
+      "memory_steps": 3,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 6
+    },
+    {
+      "task_id": "ttl_bug",
+      "condition": "injection_only",
+      "seed": 0,
+      "passed": false,
+      "repeated_failures": 5,
+      "requirement_violations": 1,
+      "interventions": 6,
+      "memory_steps": 0,
+      "memory_tokens": 0,
+      "action_tokens": 0,
+      "turns": 12
+    }
+  ],
+  "summaries": [
+    {
+      "condition": "baseline",
+      "n": 2,
+      "pass_rate": 0.0,
+      "pass_rate_std": 0.0,
+      "repeated_failures": 5.0,
+      "requirement_violations": 0.5,
+      "interventions": 0.0,
+      "memory_tokens": 0.0
+    },
+    {
+      "condition": "injection_only",
+      "n": 2,
+      "pass_rate": 0.0,
+      "pass_rate_std": 0.0,
+      "repeated_failures": 5.0,
+      "requirement_violations": 0.5,
+      "interventions": 6.0,
+      "memory_tokens": 0.0
+    },
+    {
+      "condition": "full_bank",
+      "n": 2,
+      "pass_rate": 1.0,
+      "pass_rate_std": 0.0,
+      "repeated_failures": 1.0,
+      "requirement_violations": 0.0,
+      "interventions": 7.0,
+      "memory_tokens": 0.0
+    },
+    {
+      "condition": "always_inject",
+      "n": 2,
+      "pass_rate": 1.0,
+      "pass_rate_std": 0.0,
+      "repeated_failures": 1.0,
+      "requirement_violations": 0.0,
+      "interventions": 7.0,
+      "memory_tokens": 0.0
+    },
+    {
+      "condition": "agentmem",
+      "n": 2,
+      "pass_rate": 1.0,
+      "pass_rate_std": 0.0,
+      "repeated_failures": 1.0,
+      "requirement_violations": 0.0,
+      "interventions": 1.0,
+      "memory_tokens": 0.0
+    }
+  ]
+}

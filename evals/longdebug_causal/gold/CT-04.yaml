@@ -1,0 +1,51 @@
+# repo: evals/longdebug_causal/gold/CT-04.yaml
+task_id: CT-04
+name: blast-radius
+relations_under_test: [blocks, fixed_by, caused_by]
+
+root_cause_gold: >-
+  The session-1 CLI fix changed the SHARED utility utils/dates.py from
+  %d/%m/%y to %m/%d/%y. api/filters.py imports the same function for
+  EU-format inputs, so the change silently swapped day and month for days
+  <= 12 (wrong rows returned, no exception) and raised ValueError for days
+  > 12. The cause is a regional format hardcoded into shared code — a
+  blast-radius error that violates the requirement that utils stay
+  format-agnostic — not a bug in the API layer where the symptom surfaced.
+
+gold_fix_gold: >-
+  parse_date takes an explicit format argument; the CLI passes the US format
+  and the API passes the EU format at their own boundaries; the shared util
+  itself stays region-free per REQUIREMENTS.md. Any new helper
+  (parse_datetime) follows the same parameterized pattern.
+
+required_keywords: ["utils/dates", shared, "%m/%d", format-agnostic, boundary, "both CLI and API"]
+min_keyword_matches: 1
+forbidden_shallow:
+  - swap day and month back inside the API layer
+  - wrapper hack around the shared util
+  - flipping DATE_FMT again
+
+gold_cause_signature: 'FAILED.*(test_api_eu_values|test_no_silent_swap)'
+symptom_first_session: 3
+
+repeat_patterns:
+  - {pattern: 'DATE_FMT\s*=\s*"%[dm]/%[dm]/%y"', label: regional-format-in-shared-util, from_session: 3}
+  - {pattern: '(?:^\+.*\b\w+,\s*\w+\s*=\s*\w+,\s*\w+.*swap)|(?:^\+.*#.*swap.*day.*month)', label: day-month-swap-hack, from_session: 3}
+
+gold_edges:
+  - src: API returns wrong rows / 400s on EU dates
+    rel: caused_by
+    dst: shared parse_date flipped to %m/%d/%y by the session-1 CLI fix; both surfaces import the same util
+  - src: "requirement: shared utils stay format-agnostic"
+    rel: blocks
+    dst: editing shared parse_date to a regional default format
+  - src: API returns wrong rows / 400s on EU dates
+    rel: fixed_by
+    dst: boundary-specific formats — parse_date takes an explicit format; CLI passes US, API passes EU
+
+early_root_fix_note: >-
+  The primary early_root_fix task (per TASKS.md determinism policy): fixing
+  at the CLI boundary in S1, respecting REQUIREMENTS.md, means S3 never
+  breaks. Hidden verifier green with the signature never firing => log
+  early_root_fix=true, requirement-respected success, excluded from
+  causal-advantage aggregates.

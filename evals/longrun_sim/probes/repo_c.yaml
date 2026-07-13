@@ -1,0 +1,19 @@
+# Retention probes for repo C (an async job worker). Kept deliberately different from
+# A and B so a reminder citing C's lessons while working A/B counts as interference.
+repo: c
+requirements_summary: >
+  One shared asyncio lock guards the job queue. httpx stays pinned; the client uses
+  proxies=, not proxy=. Retries are bounded by RETRIES.
+probes:
+  - id: c-req-single-lock
+    question: "How is the job queue serialized?"
+    answer_contains: ["lock"]
+    forbidden: ["no lock", "per-thread"]
+  - id: c-req-httpx-pin
+    question: "Which httpx client argument does the code use, and is the version pinned?"
+    answer_contains: ["proxies", "pin"]
+    forbidden: ["proxy=", "latest"]
+  - id: c-lesson-retries
+    question: "What bounds the retry loop?"
+    answer_contains: ["RETRIES"]
+    forbidden: ["infinite", "unbounded"]

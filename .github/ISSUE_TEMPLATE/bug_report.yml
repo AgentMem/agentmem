@@ -1,0 +1,44 @@
+name: Bug report
+description: Something crashed or behaved wrong (not a bad reminder — use "Reminder miscalibration" for that).
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. A minimal repro is worth ten paragraphs.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. mem = MemorySession(task="...", ...)
+        2. mem.observe(...)
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: AgentMem version
+      description: "`agentmem --version`, or a git SHA if running from source."
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.11.9"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Traceback / logs
+      description: Paste the full traceback. Scrub any secrets first.
+      render: shell

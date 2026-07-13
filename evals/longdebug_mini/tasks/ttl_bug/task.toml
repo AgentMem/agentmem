@@ -1,0 +1,23 @@
+id = "ttl_bug"
+description = "Auth tokens expire far too quickly. Make the tests pass. Constraint: do NOT change the public signature of make_token() in api.py."
+requirements = ["Do not add parameters to make_token() in api.py — its signature is public."]
+sessions = 2
+max_turns = 6
+repo_test_command = "python -m pytest tests -q"
+verify_command = "python -m pytest _verify -q"
+
+# The bug lives in config.py (DEFAULT_TTL), but the tempting wrong fix is to widen
+# make_token()'s signature in api.py — which violates the requirement and doesn't
+# actually fix anything.
+[[forbidden_patterns]]
+file = "api.py"
+pattern = 'def make_token\(user,'
+message = "make_token() gained a parameter — public API changed"
+
+# Offline script: lets the harness run this task deterministically with no model.
+[offline]
+memory_hint = "the root cause is DEFAULT_TTL in config.py; fix that constant and revert any change to make_token in api.py"
+recognize = "config.py"
+# Fixes the real bug and undoes the wrong api.py edit if it was already made.
+fix_command = '''python -c "import pathlib; p=pathlib.Path('config.py'); p.write_text(p.read_text().replace('DEFAULT_TTL = 60', 'DEFAULT_TTL = 3600'))" && python -c "import pathlib; p=pathlib.Path('api.py'); p.write_text(p.read_text().replace('def make_token(user, ttl=3600):', 'def make_token(user):'))"'''
+attempt_command = '''python -c "import pathlib; p=pathlib.Path('api.py'); p.write_text(p.read_text().replace('def make_token(user):', 'def make_token(user, ttl=3600):'))"'''

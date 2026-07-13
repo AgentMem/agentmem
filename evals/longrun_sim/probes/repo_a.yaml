@@ -1,0 +1,19 @@
+# Retention probes for repo A (a small HTTP service). Asked from memory after the
+# agent has worked other repos in between, to check nothing important decayed away.
+repo: a
+requirements_summary: >
+  Public API signatures in api.py are frozen. All timeouts come from config.py.
+  Tests must pass with `pytest -q`.
+probes:
+  - id: a-req-frozen-api
+    question: "What must never change in api.py?"
+    answer_contains: ["public", "signature"]
+    forbidden: ["free to change", "any signature"]
+  - id: a-req-timeout-source
+    question: "Where do request timeouts come from?"
+    answer_contains: ["config.py"]
+    forbidden: ["hardcoded", "call site"]
+  - id: a-lesson-ttl
+    question: "What was the root cause of the token-expiry failures?"
+    answer_contains: ["DEFAULT_TTL", "config"]
+    forbidden: ["call site", "make_token"]

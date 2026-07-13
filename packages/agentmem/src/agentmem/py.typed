@@ -1,0 +1,2 @@
+# Marker file (PEP 561): agentmem ships inline type hints. Tools like mypy will
+# read the annotations in this package directly.

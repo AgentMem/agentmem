@@ -1,0 +1,7 @@
+[project]
+name = "stale-pin"
+version = "0"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
