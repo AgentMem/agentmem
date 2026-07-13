@@ -5,8 +5,8 @@ body:
   - type: markdown
     attributes:
       value: >
-        This is the single most valuable kind of report for the project. Calibration —
-        knowing *when* to speak — is the hard part. Traces here directly shape the
+        This is the single most valuable kind of report for the project. Calibration,
+        knowing *when* to speak, is the hard part. Traces here directly shape the
         prompts and, eventually, the training data.
   - type: dropdown
     id: direction

@@ -7,7 +7,7 @@ from pipeline.normalize import normalize
 
 
 def _normalized():
-    # The normalize step is the cached one — the cache key must track its logic.
+    # The normalize step is the cached one, the cache key must track its logic.
     return cached("normalize", RECORDS, lambda: normalize(RECORDS), cache_enabled())
 
 

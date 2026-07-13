@@ -6,7 +6,7 @@ signature overlap, average their returns to get a baseline V, average within eac
 action to get Q, and the advantage is Q - V. An action we've never tried here gets an
 optimism bonus so the layer doesn't quietly rule out exploring it.
 
-With too few neighbors it returns None, and the caller falls back to plain Phase 2 —
+With too few neighbors it returns None, and the caller falls back to plain Phase 2,
 a thin slice of history should never override the model.
 """
 

@@ -1,9 +1,9 @@
 # LongRun-sim
 
 A stress test for continual memory. One agent works three small repos over 30
-sessions, interleaved (A, B, C, A, B, C, …) so it never gets the same repo twice in a
+sessions, interleaved (A, B, C, A, B, C, ...) so it never gets the same repo twice in a
 row. The question is whether AgentMem helps an agent that keeps coming back to the same
-projects — without quietly forgetting the long tail, and without dragging one repo's
+projects, without quietly forgetting the long tail, and without dragging one repo's
 lessons into another.
 
 ## What it measures
@@ -20,9 +20,9 @@ The bars live in `metrics.py` (`RETENTION_MIN`, `INTERFERENCE_MAX`, `BANK_GROWTH
 
 ## Layout
 
-- `metrics.py` — pure scoring over the runner's `SessionRecord`s and `ProbeResult`s.
-- `scenario.py` — the 30-session schedule and the retention-probe loader.
-- `probes/repo_{a,b,c}.yaml` — hidden questions about each repo's requirements, asked
+- `metrics.py`, pure scoring over the runner's `SessionRecord`s and `ProbeResult`s.
+- `scenario.py`, the 30-session schedule and the retention-probe loader.
+- `probes/repo_{a,b,c}.yaml`, hidden questions about each repo's requirements, asked
   from memory after the agent has moved on to the other repos.
 
 ## Offline check (no key)

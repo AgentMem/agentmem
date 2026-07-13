@@ -2,7 +2,7 @@
 
 The local daemon that bridges Claude Code hooks to AgentMem. It receives hook events
 over HTTP, runs memory-steps on the session's background worker, and hands cached
-reminders back to the hooks — fast, because the hook path never waits on a model.
+reminders back to the hooks, fast, because the hook path never waits on a model.
 
 ```bash
 pip install agentmem-daemon

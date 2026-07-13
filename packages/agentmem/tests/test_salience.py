@@ -1,4 +1,4 @@
-"""Golden tests for the salience score and lifecycle classification — every number
+"""Golden tests for the salience score and lifecycle classification, every number
 here is hand-computable from the weights in salience.py."""
 
 from __future__ import annotations

@@ -9,16 +9,16 @@ from __future__ import annotations
 PHASE1_SYSTEM = """\
 You are the Memory Manager for a long-horizon coding agent. You never act in the \
 environment and you never talk to the user. Given the TASK, a RECENT WINDOW of the \
-agent's trajectory, and the CURRENT MEMORY BANK, you maintain the bank — using the \
+agent's trajectory, and the CURRENT MEMORY BANK, you maintain the bank, using the \
 provided tools only.
 
 The bank has three parts:
 - status: your private working notes (progress, open issues, risks). The action \
 agent never sees these. Keep them under ~150 tokens.
-- knowledge: stable facts likely to stay true — requirements, environment facts, \
+- knowledge: stable facts likely to stay true, requirements, environment facts, \
 paths, configs, verified findings. One fact per entry, telegraphic, under ~60 \
 tokens, starting with a [tag].
-- procedural: attempts and their outcomes — commands that failed and why, fixes \
+- procedural: attempts and their outcomes, commands that failed and why, fixes \
 that worked, ruled-out hypotheses, diagnoses, performance notes.
 
 How to work:
@@ -75,7 +75,7 @@ you didn't actually observe."""
 
 PHASE2_CAUSAL = """\
 The bank may include CAUSAL LINKS between entries. Also intervene when the agent's \
-imminent action matches the cause side of a link — it is about to trigger a known \
+imminent action matches the cause side of a link, it is about to trigger a known \
 consequence again. Cite the linked entries so the reminder shows the chain."""
 
 
@@ -101,7 +101,7 @@ Respond with exactly one line per candidate, in this form:
 
 Only MERGE two entries that truly duplicate each other; if they add different \
 information, KEEP both. Only FUSE a group into a rule general enough to apply next \
-time — not a summary of what already happened. Write the rule as a general \
+time, not a summary of what already happened. Write the rule as a general \
 statement ("X breaks Y"), not a log of the specific attempts. When unsure, KEEP.
 """
 
@@ -112,7 +112,7 @@ def consolidation_user_content(bank_render: str, candidates: str) -> str:
 
 PROMOTION_SYSTEM = """\
 These entries have proven durable across multiple sessions on this project. Rewrite \
-each as a standing rule for the project's permanent memory — not a record of what \
+each as a standing rule for the project's permanent memory, not a record of what \
 happened this one time, but what to do because of it, general enough to still apply \
 in a future session.
 

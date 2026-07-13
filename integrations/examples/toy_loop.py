@@ -63,7 +63,7 @@ def main() -> None:
                 ]
             )
             if passed:
-                print("\ndone — tests pass.")
+                print("\ndone, tests pass.")
                 break
 
         print("\nFinal memory bank:")

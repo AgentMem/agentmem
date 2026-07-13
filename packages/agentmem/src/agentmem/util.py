@@ -17,7 +17,7 @@ def clip_to_tokens(text: str, max_tokens: int) -> str:
     limit = max_tokens * _CHARS_PER_TOKEN
     if len(text) <= limit:
         return text
-    return text[:limit].rstrip() + " …"
+    return text[:limit].rstrip() + " ..."
 
 
 def truncate_middle(text: str, max_tokens: int) -> str:
@@ -29,7 +29,7 @@ def truncate_middle(text: str, max_tokens: int) -> str:
     limit = max_tokens * _CHARS_PER_TOKEN
     if len(text) <= limit:
         return text
-    marker = "\n  … [truncated] …\n"
+    marker = "\n  ... [truncated] ...\n"
     keep = max(limit - len(marker), 0)
     head = keep * 2 // 3
     tail = keep - head

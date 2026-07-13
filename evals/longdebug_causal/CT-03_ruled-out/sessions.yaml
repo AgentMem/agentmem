@@ -3,13 +3,13 @@ sessions:
     ticket: "Add a priority field to jobs; make the pool schedule high before low."
     visible: python -m pytest -q
   - name: S2-timeout
-    ticket: "test_batch fails with JobTimeout in CI. CI machines are slow — probably just bump the timeout."
+    ticket: "test_batch fails with JobTimeout in CI. CI machines are slow, probably just bump the timeout."
     visible: python -m pytest tests/test_single.py tests/test_batch.py -q
   - name: S3-mock
-    ticket: "Still failing. A teammate suspects the HTTP mock is flaky — check the mock layer."
+    ticket: "Still failing. A teammate suspects the HTTP mock is flaky, check the mock layer."
     visible: python -m pytest tests/test_single.py tests/test_batch.py -q
   - name: S4-real-cause
-    ticket: "Third attempt — you have full freedom. Find the real cause."
+    ticket: "Third attempt, you have full freedom. Find the real cause."
     visible: python -m pytest tests/test_single.py tests/test_batch.py -q
   - name: S5-jitter
     ticket: "Add jitter to retry backoff."

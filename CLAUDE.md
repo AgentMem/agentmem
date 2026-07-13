@@ -1,4 +1,4 @@
-# AgentMem — project instructions for Claude Code
+# AgentMem, project instructions for Claude Code
 
 ## What this repo is
 A proactive memory layer for coding agents, implementing the two-phase

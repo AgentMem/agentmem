@@ -15,7 +15,7 @@ sessions:
   - name: S3-api-symptom
     ticket: >-
       API /bookings?from=05/03/25 returns wrong rows for early-month dates and
-      400s for others — fix.
+      400s for others, fix.
     visible: python -m pytest tests/test_api.py -q
 
   - name: S4-weekly-digest

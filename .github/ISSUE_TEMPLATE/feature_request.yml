@@ -6,7 +6,7 @@ body:
     id: problem
     attributes:
       label: What problem does this solve?
-      description: Start with the pain, not the solution. "My agent keeps re-doing X across sessions…"
+      description: Start with the pain, not the solution. "My agent keeps re-doing X across sessions..."
     validations:
       required: true
   - type: textarea

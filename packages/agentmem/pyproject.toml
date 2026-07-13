@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "agentmem"
 version = "0.1.0.dev0"
-description = "A proactive memory layer for long-horizon coding agents — it knows when to remind."
+description = "A proactive memory layer for long-horizon coding agents, it knows when to remind."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
@@ -36,7 +36,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # `pip install agentmem[litellm]` to route the memory agent through any provider
-# litellm supports (OpenAI, vLLM, Ollama, …). This is the path toward a self-hosted
+# litellm supports (OpenAI, vLLM, Ollama, ...). This is the path toward a self-hosted
 # fine-tuned memory model later on.
 litellm = ["litellm>=1.40"]
 

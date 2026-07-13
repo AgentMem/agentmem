@@ -10,7 +10,7 @@ experience for everyone, regardless of experience level, background, or identity
 
 Things that keep this a good place to work:
 
-- Assume good faith and be patient with questions — everyone was new once.
+- Assume good faith and be patient with questions, everyone was new once.
 - Critique code and ideas, not people.
 - Accept that "no" is a complete answer, and that maintainers' time is finite.
 
@@ -22,7 +22,7 @@ Things that aren't welcome:
 
 ## Scope
 
-This applies in all project spaces — issues, pull requests, discussions — and when
+This applies in all project spaces, issues, pull requests, discussions, and when
 representing the project in public.
 
 ## Enforcement

@@ -34,4 +34,4 @@ Memory is keyed by working directory, so a project keeps its bank across session
 - Hooks fall back to a no-op (`|| echo '{}'`) when the daemon isn't running, so they
   can't wedge a session.
 - Claude Code's hook payload shape can change between versions. The translation lives
-  in one place — `agentmem.integrations.claude_code` — so it's easy to adjust.
+  in one place, `agentmem.integrations.claude_code`, so it's easy to adjust.

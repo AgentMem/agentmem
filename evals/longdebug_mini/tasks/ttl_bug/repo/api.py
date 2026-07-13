@@ -1,4 +1,4 @@
-"""Public API. Other services depend on these signatures — don't change them."""
+"""Public API. Other services depend on these signatures, don't change them."""
 
 from config import DEFAULT_TTL
 

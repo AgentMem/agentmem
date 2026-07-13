@@ -13,7 +13,7 @@ from .task import Task
 
 _SYSTEM = """You are fixing a bug in a code repository by running shell commands, one \
 per turn. After each command you'll see its output. Reply with EXACTLY one shell \
-command to run next — no markdown, no explanation — or the single word DONE once the \
+command to run next, no markdown, no explanation, or the single word DONE once the \
 tests pass. Respect any constraints stated in the task."""
 
 

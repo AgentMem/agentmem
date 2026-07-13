@@ -102,7 +102,7 @@ _TAG_RE = re.compile(r"^\[(\w+)\]\s*(.*)$")
 
 def parse_consolidation(text: str) -> dict[str, ConsolidationDecision]:
     """One decision per candidate key ("M1", "F1", ...). A candidate the model never
-    mentions, or mentions with no usable content, is absent — the caller treats an
+    mentions, or mentions with no usable content, is absent, the caller treats an
     absent key the same as an explicit KEEP."""
     decisions: dict[str, ConsolidationDecision] = {}
     for m in _LINE_RE.finditer(text):
@@ -153,7 +153,7 @@ def apply_consolidation(
     """Replay MERGE/FUSE decisions through the same tool-call reducer Phase 1 uses,
     so id allocation, tag coercion, and content clipping all stay in one place. The
     only thing that reducer doesn't know how to do is demote fusion sources to
-    dormant (never delete) — that happens as a small pass afterward."""
+    dormant (never delete), that happens as a small pass afterward."""
     calls: list[ToolCall] = []
     fusion_sources: list[MemoryEntry] = []
 
@@ -210,7 +210,7 @@ def run_consolidation(
     """Find candidates, ask the model what to do with them, apply its decisions.
 
     Returns None without calling the model at all when there's nothing to
-    consolidate — the common case for a bank with no near-duplicates.
+    consolidate, the common case for a bank with no near-duplicates.
     """
     merges = find_merge_candidates(bank)
     fusions = find_fusion_candidates(bank)

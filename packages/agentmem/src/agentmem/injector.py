@@ -12,7 +12,7 @@ from .config import AgentMemConfig
 from .schemas import Intervention, MemoryBank, MemoryEntry
 from .util import approx_tokens
 
-# Phrased as a statement, not a command: a system-style "You must…" can trip the
+# Phrased as a statement, not a command: a system-style "You must..." can trip the
 # action agent's own prompt-injection defenses.
 HEADER = "[AgentMem] Execution-state reminders (transient, from maintained memory):"
 
@@ -122,4 +122,4 @@ class Injector:
 
 def _short(text: str, words: int = 8) -> str:
     parts = text.split()
-    return " ".join(parts[:words]) + ("…" if len(parts) > words else "")
+    return " ".join(parts[:words]) + ("..." if len(parts) > words else "")

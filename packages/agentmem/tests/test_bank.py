@@ -105,8 +105,8 @@ def test_status_is_clipped_to_budget() -> None:
     out = apply_tool_calls(
         MemoryBank(), [_call(UPDATE_STATUS, status=long_status)], step=1, limits=limits
     )
-    assert out.bank.status.endswith("…")
-    assert len(out.bank.status) <= 5 * 4 + 2
+    assert out.bank.status.endswith("...")
+    assert len(out.bank.status) <= 5 * 4 + len(" ...")
 
 
 def test_bad_tag_falls_back_to_other() -> None:

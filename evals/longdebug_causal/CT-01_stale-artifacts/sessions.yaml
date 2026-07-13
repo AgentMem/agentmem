@@ -9,7 +9,7 @@ sessions:
     ticket: "Expose `display_name` in the `/users` response. Note from the previous dev: the field was already added to the schema last sprint, so this should be a one-liner in the serializer."
     visible: uv run pytest tests/test_api.py
   - name: S4-get-user-500
-    ticket: "QA reports `/users/{id}` 500s for some ids — investigate and fix."
+    ticket: "QA reports `/users/{id}` 500s for some ids, investigate and fix."
     visible: uv run pytest tests/test_api.py
   - name: S5-pronouns
     ticket: "Add optional `pronouns` field to the User schema and expose it."

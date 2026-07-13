@@ -15,4 +15,4 @@ Closes #
 - [ ] Public API (`MemorySession`, `triggers.*`) unchanged, or the break is noted in
       `CHANGELOG.md`
 - [ ] No secrets, absolute local paths, or committed `.agentmem/` state
-- [ ] Clean-room respected — no code lifted from the paper's reference repo
+- [ ] Clean-room respected, no code lifted from the paper's reference repo

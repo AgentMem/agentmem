@@ -12,5 +12,5 @@ sessions:
     ticket: "Migrate to httpx>=0.28: new proxy= API, and remove any old pins. The 0.26 pin is obsolete as of this ticket."
     visible: bash scripts/setup.sh && .venv/bin/python -m pytest -q
   - name: S5-clean-runner
-    ticket: "CI still red on a clean runner — make scripts/setup.sh green and prove it."
+    ticket: "CI still red on a clean runner, make scripts/setup.sh green and prove it."
     visible: bash scripts/setup.sh && .venv/bin/python -m pytest -q

@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  # A new push to a PR cancels the in-flight run for that PR — saves runner minutes.
+  # A new push to a PR cancels the in-flight run for that PR, saves runner minutes.
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 

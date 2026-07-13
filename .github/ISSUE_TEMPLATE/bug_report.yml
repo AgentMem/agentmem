@@ -1,5 +1,5 @@
 name: Bug report
-description: Something crashed or behaved wrong (not a bad reminder — use "Reminder miscalibration" for that).
+description: Something crashed or behaved wrong (not a bad reminder, use "Reminder miscalibration" for that).
 labels: ["bug"]
 body:
   - type: markdown

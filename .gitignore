@@ -19,7 +19,7 @@ venv/
 .coverage
 htmlcov/
 
-# AgentMem runtime state — never commit a user's memory bank, telemetry, or
+# AgentMem runtime state, never commit a user's memory bank, telemetry, or
 # local daemon config. This is the whole point of being local-first.
 .agentmem/
 *.agentmem.db
@@ -35,12 +35,12 @@ telemetry*.jsonl
 .vscode/
 .DS_Store
 
-# Node (web/, docs/ site builds — added in M5)
+# Node (web/, docs/ site builds, added in M5)
 node_modules/
 .next/
 out/
 
-# Reference papers + internal planning docs — kept locally, not for the public repo
+# Reference papers + internal planning docs, kept locally, not for the public repo
 docs/*.pdf
 docs/*.docx
 /PLAN.md

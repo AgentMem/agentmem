@@ -21,7 +21,7 @@ from ..llm.base import LLMProvider
 OUTCOME_EVALUATOR_SYSTEM = """\
 You are the Outcome Evaluator for a memory agent that assists a long-horizon coding \
 agent. You are given the TASK, the full TRAJECTORY, the final TASK RESULT (verifier \
-pass/fail if available), and the list of MEMORY STEPS — each with its step index, the \
+pass/fail if available), and the list of MEMORY STEPS, each with its step index, the \
 bank edits it made, and its decision (silent, or the injected reminder text).
 
 For EACH memory step output one JSON object:

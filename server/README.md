@@ -1,6 +1,6 @@
 # server/ (planned)
 
-The hosted API — a thin FastAPI service that reuses the `agentmem` core and adds
+The hosted API, a thin FastAPI service that reuses the `agentmem` core and adds
 multi-tenancy, auth, and metering. This is the SaaS tier, and it only gets built
 after the OSS core has traction.
 

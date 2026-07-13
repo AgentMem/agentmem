@@ -63,7 +63,7 @@ def attach_memory(
 ) -> Any:
     """Register AgentMem's hooks on a ClaudeAgentOptions and return it.
 
-    We never touch the user's tools or system prompt — only add hooks. The live
+    We never touch the user's tools or system prompt, only add hooks. The live
     session is stored on `options.agentmem_session` so callers can inspect or close it.
     """
     session = session or MemorySession(task=task, **session_kwargs)

@@ -20,7 +20,7 @@ The causal **mechanism** these tasks measure is built and tested:
 
 What's **not** here yet: the tasks as runnable Docker environments, and the live
 numbers. Each task needs a real action agent (a model that actually gets pulled toward
-the distractor) plus an LLM judge for root-cause scoring — a scripted offline agent
+the distractor) plus an LLM judge for root-cause scoring, a scripted offline agent
 can't reproduce that pull. `smoke.py` validates every task's trap deterministically
 offline; running the with-causal vs without-causal comparison across seeds is the
 remaining work, gated on a key and a budget.

@@ -130,7 +130,7 @@ class InjectionOnlyStrategy(Strategy):
 
     def context(self) -> str | None:
         if self._last_failed:
-            return self._count("[AgentMem] That last step failed — reconsider before repeating it.")
+            return self._count("[AgentMem] That last step failed, reconsider before repeating it.")
         return None
 
     def observe(self, events: list[Event]) -> None:

@@ -32,7 +32,7 @@ _TURNS: list[dict[str, object]] = [
         ],
     },
     {
-        "say": "Looks like the call site passes the wrong timeout — tweaking make_token() and re-running.",
+        "say": "Looks like the call site passes the wrong timeout, tweaking make_token() and re-running.",
         "events": [
             Event(kind="tool_call", tool_name="bash", text="pytest -q"),
             Event(kind="tool_result", tool_name="bash", ok=False, text=_FAIL),
@@ -41,7 +41,7 @@ _TURNS: list[dict[str, object]] = [
     {
         # What the agent does here depends on whether it got the reminder.
         "say": "Fixing DEFAULT_TTL in config.py (the real source), not the call site.",
-        "say_without_reminder": "Tweaking make_token() again — maybe a different argument this time.",
+        "say_without_reminder": "Tweaking make_token() again, maybe a different argument this time.",
         "events": [
             Event(kind="tool_call", tool_name="bash", text="pytest -q"),
             Event(kind="tool_result", tool_name="bash", ok=True, text="4 passed in 0.12s"),
@@ -93,7 +93,7 @@ class ScriptedProvider:
                         3,
                         id="P-001",
                         tag="diagnosis",
-                        content="test_token_expiry failed 2x; call-site edits don't help — root cause is DEFAULT_TTL in config.py",
+                        content="test_token_expiry failed 2x; call-site edits don't help, root cause is DEFAULT_TTL in config.py",
                     ),
                 ],
                 usage=_usage(),
@@ -105,7 +105,7 @@ class ScriptedProvider:
                 text=(
                     "<context_for_action>\n"
                     "- (P-001) test_token_expiry has failed twice on the same TTL error; "
-                    "the call site isn't the cause — fix DEFAULT_TTL in config.py instead of retrying the edit.\n"
+                    "the call site isn't the cause, fix DEFAULT_TTL in config.py instead of retrying the edit.\n"
                     "</context_for_action>"
                 ),
                 usage=_usage(),
@@ -173,5 +173,5 @@ def run_demo(live: bool = False) -> int:
             "  ✓ AgentMem caught the repeated failure and redirected the agent to the root cause.\n"
         )
         return 0
-    print("  (no intervention fired — unexpected for the offline demo)\n")
+    print("  (no intervention fired, unexpected for the offline demo)\n")
     return 0

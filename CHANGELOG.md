@@ -5,7 +5,7 @@ All notable changes to AgentMem are recorded here. The format follows
 to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once we cut
 `0.1.0`.
 
-The public API — `agentmem.MemorySession` and `agentmem.triggers.*` — is the
+The public API, `agentmem.MemorySession` and `agentmem.triggers.*`, is the
 contract we version against. Breaking it means a note here.
 
 ## [Unreleased]
@@ -15,8 +15,8 @@ contract we version against. Breaking it means a note here.
 - Core memory bank: `MemoryEntry` / `MemoryBank` schemas and the pure
   `apply_tool_calls` reducer with budget enforcement and eviction (M0).
 - JSON-file and SQLite stores behind a single `Store` protocol (M0).
-- Two-phase memory agent — bank management (Phase 1) and intervention
-  selection (Phase 2) — with the Anthropic provider (M1).
+- Two-phase memory agent, bank management (Phase 1) and intervention
+  selection (Phase 2), with the Anthropic provider (M1).
 - `Injector` with per-entry cooldown, `MemorySession` with a background
   memory-step worker, event triggers, JSONL telemetry, and a secret redactor.
 - `agentmem` CLI (`demo`, `replay`, `bank`) and the `toy_loop` example.
@@ -42,7 +42,7 @@ contract we version against. Breaking it means a note here.
   gate that can turn a would-be reminder into silence (never the reverse). Fails safe to
   plain behavior with too little history.
 - LongDebug-causal benchmark (`evals/longdebug_causal/`): five multi-session debugging
-  tasks where the real root cause hides behind a plausible wrong lead — stale build
+  tasks where the real root cause hides behind a plausible wrong lead: stale build
   artifacts, config drift, a ruled-out lock theory, cross-module blast radius, and a
   superseded version pin. Each task ships a `trap` and a `gold` session script, a hidden
   verifier, and a YAML gold spec (root cause, required keywords, causal edges). `smoke.py`
@@ -51,7 +51,7 @@ contract we version against. Breaking it means a note here.
   stale-reminder metrics.
 - Continual memory (on by default via `continual_enabled`): a salience score
   (recency + frequency + tag importance + reinforcement) drives an
-  active/dormant/archived lifecycle. Nothing is deleted for being unpopular — capacity
+  active/dormant/archived lifecycle. Nothing is deleted for being unpopular: capacity
   pressure demotes the lowest-salience entry, `policy`/`task` requirements are floored
   into `active`, and archived entries move to cold storage. A consolidation ladder
   (near-duplicate merge, repeated-attempt fusion into an abstract rule) runs at

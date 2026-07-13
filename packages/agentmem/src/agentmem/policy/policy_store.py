@@ -3,7 +3,7 @@ it turned out.
 
 The return (G) isn't known until the session ends and the evaluator scores it, so a
 row is written "pending" (G null) at decision time and filled in at SessionEnd. Only
-finalized rows feed the advantage estimate — a decision we can't yet grade shouldn't
+finalized rows feed the advantage estimate, a decision we can't yet grade shouldn't
 influence the next one.
 
 Its own SQLite file (.agentmem/policy.db), separate from the bank, so it can grow
@@ -81,7 +81,7 @@ class PolicyStore:
         self._db.commit()
 
     def finalized(self) -> list[DecisionRecord]:
-        """Every graded decision — the memory the advantage estimate draws on."""
+        """Every graded decision, the memory the advantage estimate draws on."""
         rows = self._db.execute(
             "SELECT state_sig, action, inject_class, g, session_id, step, model "
             "FROM decisions WHERE g IS NOT NULL"

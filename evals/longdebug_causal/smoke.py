@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""LongDebug-Causal smoke runner — scripted dummy agent, zero LLM calls.
+"""LongDebug-Causal smoke runner, scripted dummy agent, zero LLM calls.
 
 Repo location: evals/longdebug_causal/smoke.py
 Companion to TASKS.md §8. For every task this replays two canned action
 scripts against a fresh copy of the task repo:
 
-  * trap — the naive-agent path. Proves the causal trap fires
+  * trap, the naive-agent path. Proves the causal trap fires
     deterministically: the gold signature must appear at the specced
     session, persist/recur where specced, and the hidden verifier must
     end RED.
-  * gold — the root-cause path. Proves the intended fix exists and the
+  * gold, the root-cause path. Proves the intended fix exists and the
     hidden verifier ends GREEN.
 
 Design notes
@@ -285,7 +285,7 @@ def task_dir(tid: str) -> str:
     }[tid]
 
 
-# Canned plans (the dummy agent's brain) — anchors are NORMATIVE for scaffold
+# Canned plans (the dummy agent's brain), anchors are NORMATIVE for scaffold
 
 PYT = "python -m pytest"
 
@@ -440,7 +440,7 @@ CT02 = Task(
             f"{PYT} -q",
             True,
             expect_sig=False,
-            note="rm -rf .cache 'fixes' it — keys still version-blind",
+            note="rm -rf .cache 'fixes' it, keys still version-blind",
         ),
         Sess("S4-filler", [], f"{PYT} -q", True, expect_sig=False),
         Sess(
@@ -528,7 +528,7 @@ CT02 = Task(
             f"{PYT} -q",
             True,
             expect_sig=False,
-            note="same edit as trap-S5 — passes untouched: differential demonstrated",
+            note="same edit as trap-S5, passes untouched: differential demonstrated",
         ),
     ],
 )
@@ -776,7 +776,7 @@ CT05 = Task(
             False,
             sig=r"unexpected keyword argument 'proxy'",
             expect_sig=True,
-            note="'the bank said stay on 0.25' — stale memory replayed makes it worse",
+            note="'the bank said stay on 0.25', stale memory replayed makes it worse",
         ),
     ],
     gold=[
@@ -883,7 +883,7 @@ def main() -> int:
         args.json.write_text(json.dumps(results, indent=2))
     print(
         f"\n{'ALL GREEN' if failed == 0 else f'{failed} scenario(s) FAILED'} "
-        f"— traps are {'deterministic; safe to spend model tokens' if failed == 0 else 'NOT validated'}"
+        f", traps are {'deterministic; safe to spend model tokens' if failed == 0 else 'NOT validated'}"
     )
     return 0 if failed == 0 else 1
 

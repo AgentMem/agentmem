@@ -9,8 +9,8 @@ root_cause_gold: >-
   caching was enabled (session 1), the later change to normalization logic
   (session 2 casefold) left previously cached step outputs stale, and
   aggregation silently consumed old normalize outputs, producing golden
-  mismatches. The cause is the CONJUNCTION of the agent's own two edits —
-  enable cache + change normalize — under version-blind keys.
+  mismatches. The cause is the CONJUNCTION of the agent's own two edits,
+  enable cache + change normalize, under version-blind keys.
 
 gold_fix_gold: >-
   Make cache keys code-aware (e.g. salt derived from a hash of normalize.py

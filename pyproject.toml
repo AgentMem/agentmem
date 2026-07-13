@@ -53,7 +53,7 @@ extend-exclude = ["web", "evals/report", "evals/longdebug_causal/CT-*"]
 
 [tool.ruff.lint]
 # A deliberately small, opinionated set. We care about correctness (E, F, B),
-# import hygiene (I), modern syntax (UP), and a few bug-prone patterns — not
+# import hygiene (I), modern syntax (UP), and a few bug-prone patterns, not
 # turning the linter into a style police force that scares off contributors.
 select = ["E", "F", "I", "B", "UP", "W", "C4", "SIM"]
 ignore = [

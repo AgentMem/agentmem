@@ -3,7 +3,7 @@
 
 Repo location: evals/longdebug_causal/judge_prompts.py
 Companion to TASKS.md §7 and gold/CT-0X.yaml (which this module loads and
-validates — the YAMLs are the normative grading truth; the snippets inside
+validates, the YAMLs are the normative grading truth; the snippets inside
 TASKS.md are illustrative sketches).
 
 Philosophy: DETERMINISTIC FIRST. Everything that can be a regex or a string
@@ -200,7 +200,7 @@ class Judge(Protocol):
 
 @dataclass
 class FixtureJudge:
-    """Canned replies for CI / self-test — no live model."""
+    """Canned replies for CI / self-test, no live model."""
 
     replies: list[str]
     calls: list[str] = field(default_factory=list)
@@ -226,7 +226,7 @@ def parse_score(raw: str) -> float | None:
     return None
 
 
-# J1 — root-cause postmortem judge (metric 2)
+# J1, root-cause postmortem judge (metric 2)
 
 ROOT_CAUSE_JUDGE_PROMPT = """You are grading a debugging postmortem written by a coding agent.
 
@@ -293,7 +293,7 @@ def score_root_cause(
     return RootCauseResult(kw_ok, hits, score, identified, raw, needs_manual=score is None)
 
 
-# J2 — causal-edge concept matching (metric 5 PRE-SCREEN; human audits)
+# J2, causal-edge concept matching (metric 5 PRE-SCREEN; human audits)
 
 EDGE_MATCH_PROMPT = """You are pre-screening causal-memory edges produced by an agent against gold edges.
 
@@ -343,7 +343,7 @@ def prescreen_edge(gold: GoldSpec, candidate: dict, judge: Judge) -> EdgeMatch:
 
 def prescreen_edges(gold: GoldSpec, candidates: list[dict], judge: Judge) -> list[dict]:
     """Draft the human-audit sheet (metric 5). Returns CSV-ready rows; the
-    'gold_match' column is a PROPOSAL — a human confirms/overrides before the
+    'gold_match' column is a PROPOSAL, a human confirms/overrides before the
     edge-precision number goes anywhere near the M8 DoD."""
     rows = []
     for c in candidates:
@@ -362,7 +362,7 @@ def prescreen_edges(gold: GoldSpec, candidates: list[dict], judge: Judge) -> lis
     return rows
 
 
-# Metric 3 — repeated-cause-failure (deterministic)
+# Metric 3, repeated-cause-failure (deterministic)
 
 
 @dataclass
@@ -433,7 +433,7 @@ def repeated_cause_rate(records: list[SessionRecord], gold: GoldSpec) -> RateRes
     return RateResult(len(recur_sessions), opportunities, hits)
 
 
-# Metric 6 — stale-reminder count (CT-05; deterministic)
+# Metric 6, stale-reminder count (CT-05; deterministic)
 
 
 @dataclass
@@ -446,7 +446,7 @@ class StaleHit:
 def count_stale_reminders(injections: list[dict], gold: GoldSpec) -> list[StaleHit]:
     """injections = [{"session": int, "step": int, "text": str}] from telemetry.
     Hit = reminder at/after stale_reminder.from_session matching any pattern
-    and NO exclude pattern (so 'the 0.26 pin is obsolete — remove it' does not
+    and NO exclude pattern (so 'the 0.26 pin is obsolete, remove it' does not
     count against the memory agent)."""
     if gold.stale_reminder is None:
         return []
@@ -481,7 +481,7 @@ def validate_dir(gold_dir: Path) -> int:
                 f"{len(g.required_keywords)} keywords"
                 + (", stale-reminder spec" if g.stale_reminder else "")
             )
-        except Exception as e:  # noqa: BLE001 — report every file
+        except Exception as e:  # noqa: BLE001, report every file
             bad += 1
             print(f"FAIL {f.name}: {e}")
     return 0 if bad == 0 else 1

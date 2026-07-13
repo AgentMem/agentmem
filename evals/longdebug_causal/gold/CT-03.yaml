@@ -10,7 +10,7 @@ root_cause_gold: >-
   pytest-asyncio's function-scoped event loops the lock binds to the first
   loop that awaits it (test_single); when test_batch acquires it from a
   different loop, asyncio raises "is bound to a different event loop".
-  worker/retry.py catches RuntimeError, retries, and re-raises JobTimeout —
+  worker/retry.py catches RuntimeError, retries, and re-raises JobTimeout,
   so the VISIBLE symptom is a timeout while the true failure is import-time
   loop binding. It is order-dependent (test_batch alone passes), not load-
   or timing-dependent, which is why timeout and retry bumps cannot fix it.

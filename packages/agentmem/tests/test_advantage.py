@@ -1,4 +1,4 @@
-"""Golden tests for the advantage estimate — every number is hand-computable."""
+"""Golden tests for the advantage estimate, every number is hand-computable."""
 
 from __future__ import annotations
 

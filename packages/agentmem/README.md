@@ -2,7 +2,7 @@
 
 The core of [AgentMem](https://github.com/agentmem/agentmem): a proactive memory layer
 for long-horizon coding agents. It maintains a structured memory bank and decides *when*
-to remind your agent — instead of dumping everything or retrieving on similarity.
+to remind your agent, instead of dumping everything or retrieving on similarity.
 
 ```bash
 pip install agentmem

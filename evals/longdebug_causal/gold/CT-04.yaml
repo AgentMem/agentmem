@@ -8,9 +8,9 @@ root_cause_gold: >-
   %d/%m/%y to %m/%d/%y. api/filters.py imports the same function for
   EU-format inputs, so the change silently swapped day and month for days
   <= 12 (wrong rows returned, no exception) and raised ValueError for days
-  > 12. The cause is a regional format hardcoded into shared code — a
+  > 12. The cause is a regional format hardcoded into shared code, a
   blast-radius error that violates the requirement that utils stay
-  format-agnostic — not a bug in the API layer where the symptom surfaced.
+  format-agnostic, not a bug in the API layer where the symptom surfaced.
 
 gold_fix_gold: >-
   parse_date takes an explicit format argument; the CLI passes the US format
@@ -41,7 +41,7 @@ gold_edges:
     dst: editing shared parse_date to a regional default format
   - src: API returns wrong rows / 400s on EU dates
     rel: fixed_by
-    dst: boundary-specific formats — parse_date takes an explicit format; CLI passes US, API passes EU
+    dst: boundary-specific formats, parse_date takes an explicit format; CLI passes US, API passes EU
 
 early_root_fix_note: >-
   The primary early_root_fix task (per TASKS.md determinism policy): fixing
