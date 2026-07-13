@@ -1,6 +1,9 @@
 <div align="center">
 
-# AgentMem
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/lockup-white.svg">
+  <img alt="AgentMem" src="assets/brand/lockup-ink.svg" width="380">
+</picture>
 
 **Memory that doesn't just store — it knows *when* to remind.**
 
@@ -76,18 +79,9 @@ while not done:
 
 ## How it fits in
 
-```
-   Action Agent (unchanged)                 AgentMem
-   Claude Code / Agent SDK /            ┌──────────────────────────┐
-   LangGraph / Aider / custom          │  core (Python package)   │
-        │  transcript events           │   bank + store           │
-        ▼                              │   MemoryAgent            │
-   [hooks / wrapper / callbacks] ─────▶│    ├ Phase 1: manage     │
-        ▲                              │    └ Phase 2: decide     │
-        │  transient reminder          │   triggers · injector    │
-        └───────────────────────────── │   telemetry (JSONL)      │
-                                       └──────────────────────────┘
-```
+<div align="center">
+  <img src="assets/architecture.svg" alt="The action agent emits trajectory events to AgentMem, which manages a memory bank (Phase 1), decides whether to intervene (Phase 2), and sends a transient reminder back for the agent's next turn." width="820">
+</div>
 
 Two design decisions do most of the work:
 

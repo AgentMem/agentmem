@@ -47,3 +47,6 @@ docs/*.docx
 docs/AgentMem_Build_Plan.md
 docs/AgentMem_Build_Plan_1.md
 docs/design/
+
+# brand kit source (canonical copy lives in assets/brand/)
+/agentmem-brand-kit/
