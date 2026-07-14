@@ -113,6 +113,17 @@ class _Fake:
         )
 
 
+# List prices per Mtok (in, out), matched by id prefix so the --max-usd cap is honest on
+# any model. Unknown models assume Opus prices, erring toward stopping early. Verify
+# actual spend on the billing page (Sonnet 5 has an intro discount through 2026-08).
+_PRICES = {
+    "claude-haiku-4-5": (1.0, 5.0),
+    "claude-sonnet-5": (3.0, 15.0),
+    "claude-opus-4-8": (5.0, 25.0),
+}
+_DEFAULT_PRICE = (5.0, 25.0)
+
+
 class Counting:
     """Wrap the provider to sum tokens across every call and estimate cost."""
 
@@ -125,6 +136,9 @@ class Counting:
             self.inner = AnthropicProvider(model=model)
         self.model = model
         self.tin = self.tout = self.calls = 0
+        self.price = next(
+            (p for prefix, p in _PRICES.items() if model.startswith(prefix)), _DEFAULT_PRICE
+        )
 
     def complete(self, **kw: object) -> LLMResponse:
         r = self.inner.complete(**kw)  # type: ignore[attr-defined]
@@ -135,8 +149,7 @@ class Counting:
 
     @property
     def cost(self) -> float:
-        # Assumed Haiku list price ($1 / $5 per Mtok in / out); verify on the billing page.
-        return self.tin / 1e6 * 1.0 + self.tout / 1e6 * 5.0
+        return self.tin / 1e6 * self.price[0] + self.tout / 1e6 * self.price[1]
 
 
 def _config(state_dir: str) -> AgentMemConfig:
@@ -145,6 +158,9 @@ def _config(state_dir: str) -> AgentMemConfig:
         max_tool_rounds=2,  # a second round lets Phase 1 add causal links
         advantage_enabled=True,  # learned policy on
         advantage_gate=True,  # let it gate (a learned-to-stay-silent signal)
+        # Sonnet-tier models run adaptive thinking by default, which spends from the
+        # same output budget; the default 1024 would truncate tool calls mid-step.
+        max_output_tokens=4096,
     )
 
 
@@ -153,7 +169,7 @@ def _ask(provider: Counting, question: str, memory: str | None) -> str:
     return provider.complete(
         system="You answer questions about projects you have worked on. If you do not know, say so.",
         messages=[{"role": "user", "content": f"{ctx}Question: {question}\nAnswer in one sentence."}],
-        max_tokens=120,
+        max_tokens=1024,  # room for adaptive thinking ahead of the one-sentence answer
     ).text
 
 
@@ -208,7 +224,8 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
 
         final = MemorySession(task="inspect", provider=provider, session_id="longrun", config=_config(state_dir))
         entries, edges = final.bank.all_entries(), final.bank.edges
-        digest = bank_digest(final.bank) or ""
+        # Same recall surface production uses at SessionStart: project tier included.
+        digest = bank_digest(final.bank, project=final.project_bank) or ""
         mem_probes, base_probes = [], []
         for probe in S.all_probes():
             mem_probes.append(M.ProbeResult(probe.repo, 30, grade(_ask(provider, probe.question, digest), probe)))
