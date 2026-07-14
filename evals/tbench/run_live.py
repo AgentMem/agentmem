@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--task-usd-cap", type=float, default=0.25)
     p.add_argument("--run-usd-cap", type=float, required=True)
     p.add_argument("--exec-timeout-sec", type=int, default=120)
+    p.add_argument("--max-tokens", type=int, default=1024)
     p.add_argument("--tb-dir", required=True, help="downloaded terminal-bench task dir")
     p.add_argument("--jobs-dir", required=True)
     p.add_argument("--harbor-bin", default="harbor")
@@ -68,6 +69,8 @@ def harbor_cmd(args: argparse.Namespace, arm: str, tasks: list[str], job: str) -
         f"task_usd_cap={args.task_usd_cap}",
         "--ak",
         f"exec_timeout_sec={args.exec_timeout_sec}",
+        "--ak",
+        f"max_tokens={args.max_tokens}",
         "-o",
         str(Path(args.jobs_dir).expanduser()),
         "--job-name",

@@ -42,6 +42,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         max_turns: str = "30",
         task_usd_cap: str = "0.25",
         exec_timeout_sec: str = "120",
+        max_tokens: str = "1024",
         **kwargs: Any,
     ) -> None:
         if not _HAVE_HARBOR:
@@ -58,6 +59,8 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         self._max_turns = int(max_turns)
         self._task_usd_cap = float(task_usd_cap)
         self._exec_timeout_sec = int(exec_timeout_sec)
+        # Models with adaptive thinking (Sonnet 5 and up) need real output headroom.
+        self._max_tokens = int(max_tokens)
 
     @staticmethod
     def name() -> str:
@@ -95,6 +98,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
             extra_cost=(lambda: mem_provider.usd) if mem_provider is not None else None,
             max_turns=self._max_turns,
             usd_cap=self._task_usd_cap,
+            max_tokens=self._max_tokens,
         )
 
         try:
