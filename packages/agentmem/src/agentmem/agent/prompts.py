@@ -56,6 +56,11 @@ Intervene ONLY if at least one of these holds:
 - an open subgoal is being neglected;
 - a state-changing call is imminent and a stored constraint applies to it.
 
+The repeat case is the clearest: when the window shows a failure the bank already \
+records (same symptom, same command, or a known cause), remind, citing those entries. \
+Judge each condition on its merits; the preference for silence is for when none of \
+them holds, not a reason to withhold a reminder that does.
+
 Otherwise, stay silent. Do NOT give broad strategy, do NOT restate what is already \
 visible in the current observation, and do NOT plan for the agent. Every bullet must \
 cite the id of the entry it comes from. Silence is the correct output most of the \
@@ -142,11 +147,15 @@ def phase1_user_content(task: str, window: str, bank: str, warnings: list[str]) 
 
 
 def phase2_user_content(task: str, window: str, bank: str) -> str:
+    # The closing line is deliberately neutral. Models that reason over instructions
+    # take a trailing "silence is usually correct" as a thumb on the scale and stay
+    # quiet even when a listed condition clearly holds.
     return "\n\n".join(
         [
             f"TASK:\n{task}",
             f"RECENT WINDOW (most recent last):\n{window}",
             f"UPDATED MEMORY BANK:\n{bank}",
-            "Decide now. Remember: silence is usually correct.",
+            "Decide now: if a listed condition holds, intervene with grounded "
+            "bullets; if none does, output <no_intervention/>.",
         ]
     )
