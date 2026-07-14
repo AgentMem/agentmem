@@ -226,10 +226,21 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
         entries, edges = final.bank.all_entries(), final.bank.edges
         # Same recall surface production uses at SessionStart: project tier included.
         digest = bank_digest(final.bank, project=final.project_bank) or ""
-        mem_probes, base_probes = [], []
+        mem_probes, base_probes, probe_rows = [], [], []
         for probe in S.all_probes():
-            mem_probes.append(M.ProbeResult(probe.repo, 30, grade(_ask(provider, probe.question, digest), probe)))
-            base_probes.append(M.ProbeResult(probe.repo, 30, grade(_ask(provider, probe.question, None), probe)))
+            # Separate the two failure modes: fact absent from the digest is a memory
+            # problem; fact present but the graded answer missing it is an answer or
+            # grading problem. Without this split a miss is undiagnosable.
+            in_digest = all(t.lower() in digest.lower() for t in probe.answer_contains)
+            answer = _ask(provider, probe.question, digest)
+            mem_ok = grade(answer, probe)
+            base_ok = grade(_ask(provider, probe.question, None), probe)
+            mem_probes.append(M.ProbeResult(probe.repo, 30, mem_ok))
+            base_probes.append(M.ProbeResult(probe.repo, 30, base_ok))
+            probe_rows.append(
+                {"id": probe.id, "in_digest": in_digest, "mem_ok": mem_ok, "base_ok": base_ok,
+                 "answer": " ".join(answer.split())[:80]}
+            )
 
     injects = [r for r in rows if r.get("decision") == "inject"]
     return {
@@ -240,6 +251,7 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
         "records": records,
         "mem_probes": mem_probes,
         "base_probes": base_probes,
+        "probe_rows": probe_rows,
         "provider": provider,
     }
 
@@ -281,7 +293,18 @@ def report(res: dict) -> str:
         "Interference is measured on one shared bank across all three repos (the hard case); "
         "in production AgentMem scopes memory per project, so cross-repo citation is structurally "
         "near zero.",
+        "",
+        "## Per-probe detail",
+        "",
+        "| Probe | Fact in digest | With memory | No memory | Answer (with memory) |",
+        "|---|---|---|---|---|",
     ]
+    for p in res["probe_rows"]:
+        lines.append(
+            f"| {p['id']} | {'yes' if p['in_digest'] else 'NO'} | "
+            f"{'ok' if p['mem_ok'] else 'miss'} | {'ok' if p['base_ok'] else 'miss'} | "
+            f"{p['answer']} |"
+        )
     return "\n".join(lines)
 
 
