@@ -51,3 +51,4 @@ docs/agentmem-landing.html
 
 # brand kit source (canonical copy lives in assets/brand/)
 /agentmem-brand-kit/
+/RUNBOOK-*.md
