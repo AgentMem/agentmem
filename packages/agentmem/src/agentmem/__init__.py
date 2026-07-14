@@ -11,9 +11,11 @@ from . import triggers
 from .config import AgentMemConfig
 from .schemas import EntryLifecycle, Event, Intervention, MemoryBank, MemoryEntry, StepResult
 from .session import MemorySession
+from .wrapper import wrap
 
 __all__ = [
     "MemorySession",
+    "wrap",
     "triggers",
     "AgentMemConfig",
     "Event",
