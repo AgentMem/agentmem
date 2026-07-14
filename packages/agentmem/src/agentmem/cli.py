@@ -50,7 +50,12 @@ def main(argv: list[str] | None = None) -> int:
 
     p_init = sub.add_parser("init", help="wire AgentMem into an agent harness")
     p_init.add_argument("target", choices=["claude-code"], help="which harness to set up")
-    p_init.add_argument("--port", type=int, default=8642, help="daemon port the hooks call")
+    p_init.add_argument(
+        "--daemon",
+        action="store_true",
+        help="use a long-running daemon instead of the default daemon-less hooks",
+    )
+    p_init.add_argument("--port", type=int, default=8642, help="daemon port (with --daemon)")
     p_init.add_argument("--cwd", default=".", help="project directory to set up")
 
     p_serve = sub.add_parser("serve", help="run the Claude Code daemon")
@@ -188,13 +193,17 @@ def _cmd_bank_project(args: argparse.Namespace) -> int:
 def _cmd_init(args: argparse.Namespace) -> int:
     from .integrations.claude_code import install_claude_code
 
-    settings_path, created = install_claude_code(args.cwd, port=args.port)
+    settings_path, created = install_claude_code(args.cwd, port=args.port, daemon=args.daemon)
     verb = "Created" if created else "Updated"
-    port_flag = f" --port {args.port}" if args.port != 8642 else ""
     print(f"{verb} {settings_path}")
-    print(f"Wired Claude Code hooks to the daemon on http://127.0.0.1:{args.port}.")
-    print(f"\nNext:  agentmem serve{port_flag}   (needs: pip install agentmem-daemon)")
-    print("Then:  agentmem doctor   (verify the key, hooks, and daemon)")
+    if args.daemon:
+        port_flag = f" --port {args.port}" if args.port != 8642 else ""
+        print(f"Wired warm-mode hooks to a daemon on http://127.0.0.1:{args.port}.")
+        print(f"\nNext:  agentmem serve{port_flag}   (needs: pip install 'agentmem[daemon]')")
+    else:
+        print("Wired daemon-less hooks (they call `agentmem hook`). Nothing to keep running.")
+        print("\nJust make sure ANTHROPIC_API_KEY is set.")
+    print("Then:  agentmem doctor   (verify the key, hooks, and model)")
     return 0
 
 
@@ -234,11 +243,14 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     provider_ok = not problems
     _row(provider_ok, "model/key", f"{config.model} is reachable" if provider_ok else problems[0])
 
-    hooks_ok, hooks_detail = _hooks_status(args.cwd)
+    hooks_ok, hooks_detail, daemon_mode = _hooks_status(args.cwd)
     _row(hooks_ok, "hooks", hooks_detail)
 
-    daemon_ok, daemon_detail = _daemon_status(args.port)
-    _row(daemon_ok, "daemon", daemon_detail)
+    if daemon_mode:
+        daemon_ok, daemon_detail = _daemon_status(args.port)
+        _row(daemon_ok, "daemon", daemon_detail)
+    else:
+        _row(True, "daemon", "not needed (daemon-less hooks)")
 
     # Only the provider check is universal; hooks/daemon are Claude-Code-only, so a
     # missing one is advice, not an error. The exit code gates on the provider.
@@ -255,7 +267,9 @@ def _row(ok: bool, label: str, detail: str) -> None:
     print(f"  {mark}  {label:<8}  {detail}")
 
 
-def _hooks_status(cwd: str) -> tuple[bool, str]:
+def _hooks_status(cwd: str) -> tuple[bool, str, bool]:
+    """Returns (installed, detail, daemon_mode). daemon_mode is True only when the
+    installed hooks are the curl-to-daemon variant, so doctor knows whether to probe."""
     import json
     from pathlib import Path
 
@@ -263,14 +277,16 @@ def _hooks_status(cwd: str) -> tuple[bool, str]:
 
     settings = Path(cwd) / ".claude" / "settings.json"
     if not settings.exists():
-        return False, "no .claude/settings.json  (run: agentmem init claude-code)"
+        return False, "no .claude/settings.json  (run: agentmem init claude-code)", False
     try:
         data = json.loads(settings.read_text())
     except (OSError, ValueError):
-        return False, f"could not read {settings}"
-    if has_our_hooks(data):
-        return True, f"installed in {settings}"
-    return False, "not installed  (run: agentmem init claude-code)"
+        return False, f"could not read {settings}", False
+    if not has_our_hooks(data):
+        return False, "not installed  (run: agentmem init claude-code)", False
+    daemon_mode = "/hook/" in json.dumps(data)  # curl-to-daemon commands contain it
+    mode = "daemon" if daemon_mode else "daemon-less"
+    return True, f"installed, {mode} mode", daemon_mode
 
 
 def _daemon_status(port: int) -> tuple[bool, str]:

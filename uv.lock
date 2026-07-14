@@ -26,18 +26,22 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+daemon = [
+    { name = "agentmem-daemon" },
+]
 litellm = [
     { name = "litellm" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "agentmem-daemon", marker = "extra == 'daemon'", editable = "packages/agentmem-daemon" },
     { name = "anthropic", specifier = ">=0.40" },
     { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.40" },
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pydantic-settings", specifier = ">=2.3" },
 ]
-provides-extras = ["litellm"]
+provides-extras = ["daemon", "litellm"]
 
 [[package]]
 name = "agentmem-daemon"

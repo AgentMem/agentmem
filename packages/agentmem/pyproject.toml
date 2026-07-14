@@ -35,6 +35,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Warm mode: the optional long-running daemon (FastAPI + uvicorn). Most setups use the
+# default daemon-less command hooks and don't need this.
+daemon = ["agentmem-daemon"]
 # Planned: route the memory agent through any provider litellm supports (OpenAI,
 # vLLM, Ollama). The adapter is a stub today (Anthropic is the only working provider);
 # this extra just pins the dep so the work can start.

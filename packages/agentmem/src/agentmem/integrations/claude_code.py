@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Callable
 from copy import deepcopy
 from itertools import islice
 from pathlib import Path
@@ -144,11 +145,29 @@ def _compact_json(value: Any) -> str:
 
 
 # `agentmem init claude-code` writes these hooks into a project's
-# .claude/settings.json. They're command hooks that pipe the event JSON (stdin) to
-# the local daemon and return its response. `|| echo '{}'` means a hook is a no-op
-# when the daemon isn't running, so it can never wedge a session.
+# .claude/settings.json. The default is daemon-less: each hook is a command that runs
+# `agentmem hook <event>`, which reads the event JSON on stdin and prints any reminder.
+# The --daemon variant pipes to a long-running local daemon over curl instead; its
+# `|| echo '{}'` makes a hook a no-op when the daemon isn't running.
 
 DEFAULT_PORT = 8642
+
+# The five events AgentMem hooks, in (event, matcher) form. PostToolUse covers failures
+# too (the runtime reads the tool's exit code), so there's no separate failure hook.
+_EVENTS: tuple[tuple[str, str | None], ...] = (
+    ("session-start", None),
+    ("prompt", None),
+    ("post-tool", "*"),
+    ("pre-compact", None),
+    ("session-end", None),
+)
+_EVENT_TO_HOOK = {
+    "session-start": "SessionStart",
+    "prompt": "UserPromptSubmit",
+    "post-tool": "PostToolUse",
+    "pre-compact": "PreCompact",
+    "session-end": "SessionEnd",
+}
 
 
 def _curl(port: int, path: str) -> str:
@@ -159,28 +178,30 @@ def _curl(port: int, path: str) -> str:
     )
 
 
-def default_hooks(port: int = DEFAULT_PORT) -> dict[str, Any]:
-    """The hooks block AgentMem installs into .claude/settings.json."""
+def _hook_block(command_for: Callable[[str], str]) -> dict[str, Any]:
+    block: dict[str, Any] = {}
+    for event, matcher in _EVENTS:
+        entry: dict[str, Any] = {"hooks": [{"type": "command", "command": command_for(event)}]}
+        if matcher:
+            entry = {"matcher": matcher, **entry}
+        block[_EVENT_TO_HOOK[event]] = [entry]
+    return block
 
-    def entry(path: str, matcher: str | None = None) -> dict[str, Any]:
-        e: dict[str, Any] = {"hooks": [{"type": "command", "command": _curl(port, path)}]}
-        return {"matcher": matcher, **e} if matcher else e
 
-    # PostToolUse covers failures too: the daemon reads the exit code from the
-    # response, so there's no separate failure hook to depend on.
-    return {
-        "SessionStart": [entry("session-start")],
-        "UserPromptSubmit": [entry("prompt")],
-        "PostToolUse": [entry("post-tool", matcher="*")],
-        "PreCompact": [entry("pre-compact")],
-        "SessionEnd": [entry("session-end")],
-    }
+def daemonless_hooks() -> dict[str, Any]:
+    """The default: command hooks that call the CLI directly, no daemon to run."""
+    return _hook_block(lambda event: f"agentmem hook {event}")
+
+
+def daemon_hooks(port: int = DEFAULT_PORT) -> dict[str, Any]:
+    """The --daemon variant: curl the event to a long-running local daemon."""
+    return _hook_block(lambda event: _curl(port, event))
 
 
 def _is_ours(entry: dict[str, Any]) -> bool:
     return any(
-        "127.0.0.1" in h.get("command", "") and "/hook/" in h.get("command", "")
-        for h in entry.get("hooks", [])
+        "agentmem hook " in cmd or ("127.0.0.1" in cmd and "/hook/" in cmd)
+        for cmd in (h.get("command", "") for h in entry.get("hooks", []))
     )
 
 
@@ -204,11 +225,13 @@ def merge_settings(existing: dict[str, Any], hooks: dict[str, Any]) -> dict[str,
     return result
 
 
-def install_claude_code(cwd: str, port: int = DEFAULT_PORT) -> tuple[Path, bool]:
+def install_claude_code(
+    cwd: str, port: int = DEFAULT_PORT, *, daemon: bool = False
+) -> tuple[Path, bool]:
     """Create .agentmem/ and merge the hooks into .claude/settings.json.
 
-    Returns (settings_path, created) where `created` is True when settings.json
-    didn't exist before.
+    Default is the daemon-less command hooks; `daemon=True` writes the curl-to-daemon
+    variant. Returns (settings_path, created), `created` True when settings.json was new.
     """
     root = Path(cwd)
     (root / ".agentmem").mkdir(parents=True, exist_ok=True)
@@ -224,6 +247,7 @@ def install_claude_code(cwd: str, port: int = DEFAULT_PORT) -> tuple[Path, bool]
         except (json.JSONDecodeError, OSError):
             existing = {}
 
-    merged = merge_settings(existing, default_hooks(port))
+    hooks = daemon_hooks(port) if daemon else daemonless_hooks()
+    merged = merge_settings(existing, hooks)
     settings_path.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
     return settings_path, created

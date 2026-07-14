@@ -71,5 +71,13 @@ contract we version against. Breaking it means a note here.
   daemon warns and keeps serving); `agentmem serve` warns at startup on a missing key;
   and a new `agentmem doctor` prints a checklist (model/key, hooks, daemon). The
   litellm provider now advertises itself honestly as planned, not shipped.
+- Daemon-less Claude Code integration, now the default: `agentmem init claude-code`
+  writes `command` hooks that call `agentmem hook <event>`, so there's no daemon to
+  keep running. State lives on disk between the short-lived hook processes (a per-session
+  live file plus the pending reminder), and the memory-step's model call is spawned
+  detached (`python -m agentmem _step`) so a hook returns in milliseconds. Ships as a
+  Claude Code plugin (`integrations/claude-code-plugin/`) for one-command install, with
+  a `/agentmem:status` skill. The long-running daemon is still available as opt-in warm
+  mode via `agentmem init claude-code --daemon` and `pip install "agentmem[daemon]"`.
 
 [Unreleased]: https://github.com/agentmem/agentmem/commits/main

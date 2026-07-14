@@ -5,10 +5,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from agentmem.integrations.claude_code import default_hooks, install_claude_code, merge_settings
+from agentmem.integrations.claude_code import (
+    daemon_hooks,
+    daemonless_hooks,
+    has_our_hooks,
+    install_claude_code,
+)
 
 
-def test_install_creates_files(tmp_path: Path) -> None:
+def test_install_defaults_to_daemonless_hooks(tmp_path: Path) -> None:
     settings_path, created = install_claude_code(str(tmp_path))
 
     assert created is True
@@ -17,8 +22,14 @@ def test_install_creates_files(tmp_path: Path) -> None:
 
     hooks = json.loads(settings_path.read_text())["hooks"]
     cmd = hooks["PostToolUse"][0]["hooks"][0]["command"]
+    assert cmd == "agentmem hook post-tool"  # no daemon, no curl
+
+
+def test_daemon_mode_writes_curl_hooks(tmp_path: Path) -> None:
+    settings_path, _ = install_claude_code(str(tmp_path), port=9000, daemon=True)
+    cmd = json.loads(settings_path.read_text())["hooks"]["PostToolUse"][0]["hooks"][0]["command"]
     assert "/hook/post-tool" in cmd
-    assert "127.0.0.1:8642" in cmd
+    assert "127.0.0.1:9000" in cmd
 
 
 def test_install_is_idempotent(tmp_path: Path) -> None:
@@ -28,6 +39,18 @@ def test_install_is_idempotent(tmp_path: Path) -> None:
     assert created is False
     hooks = json.loads(settings_path.read_text())["hooks"]
     assert len(hooks["PostToolUse"]) == 1  # not duplicated on re-run
+
+
+def test_switching_modes_replaces_not_duplicates(tmp_path: Path) -> None:
+    install_claude_code(str(tmp_path))  # daemon-less
+    settings_path, _ = install_claude_code(str(tmp_path), daemon=True)  # switch to daemon
+    commands = [
+        h["command"]
+        for e in json.loads(settings_path.read_text())["hooks"]["PostToolUse"]
+        for h in e["hooks"]
+    ]
+    assert len(commands) == 1  # the daemon-less entry was dropped, not stacked
+    assert "/hook/" in commands[0]
 
 
 def test_install_preserves_user_settings(tmp_path: Path) -> None:
@@ -52,17 +75,19 @@ def test_install_preserves_user_settings(tmp_path: Path) -> None:
     assert data["model"] == "sonnet"  # unrelated settings untouched
     commands = [h["command"] for e in data["hooks"]["PostToolUse"] for h in e["hooks"]]
     assert "echo hi" in commands  # the user's own hook survives
-    assert any("/hook/post-tool" in c for c in commands)  # ours is added alongside
+    assert "agentmem hook post-tool" in commands  # ours is added alongside
 
 
-def test_default_hooks_use_the_given_port() -> None:
-    cmd = default_hooks(port=9000)["SessionStart"][0]["hooks"][0]["command"]
-    assert "127.0.0.1:9000" in cmd
+def test_has_our_hooks_detects_both_modes() -> None:
+    assert has_our_hooks({"hooks": daemonless_hooks()})
+    assert has_our_hooks({"hooks": daemon_hooks(8642)})
+    assert not has_our_hooks({"hooks": {"PostToolUse": [{"hooks": [{"command": "echo hi"}]}]}})
 
 
-def test_reinstall_on_new_port_replaces_not_duplicates() -> None:
-    first = merge_settings({}, default_hooks(8642))
-    second = merge_settings(first, default_hooks(9999))
-    commands = [h["command"] for e in second["hooks"]["SessionStart"] for h in e["hooks"]]
-    assert len(commands) == 1
-    assert "9999" in commands[0]
+def test_plugin_hooks_stay_in_sync_with_the_installer() -> None:
+    import pytest
+
+    plugin = Path(__file__).parents[3] / "integrations" / "claude-code-plugin" / "hooks" / "hooks.json"
+    if not plugin.exists():
+        pytest.skip("plugin not present (running outside the repo checkout)")
+    assert json.loads(plugin.read_text()) == {"hooks": daemonless_hooks()}

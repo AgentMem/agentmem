@@ -8,9 +8,9 @@ decoding. Reminders go in as transient context and nothing else.
 The importable adapters live inside the package as `agentmem.integrations.*`; this
 directory holds the docs and runnable examples for each.
 
-| Adapter | Import | Docs |
+| Adapter | Setup | Docs |
 |---|---|---|
-| Claude Code | daemon: `agentmem serve` + `agentmem init claude-code` | [`claude_code/`](./claude_code) |
+| Claude Code | `claude plugin install agentmem`, or `agentmem init claude-code` (daemon-less) | [`claude_code/`](./claude_code) · [plugin](./claude-code-plugin) |
 | Claude Agent SDK | `from agentmem.integrations.claude_agent_sdk import attach_memory` | [`claude_agent_sdk/`](./claude_agent_sdk) |
 | LangGraph | `from agentmem.integrations.langgraph import AgentMemNode` | [`langgraph/`](./langgraph) |
 | Your own loop | just `MemorySession`, no adapter needed | [`examples/toy_loop.py`](./examples/toy_loop.py) |

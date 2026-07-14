@@ -1,0 +1,7 @@
+{
+  "name": "agentmem",
+  "description": "Proactive memory for Claude Code: remembers when it matters, not everything.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/AgentMem/agentmem",
+  "license": "Apache-2.0"
+}

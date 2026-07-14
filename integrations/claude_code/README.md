@@ -1,37 +1,55 @@
 # Claude Code
 
-A local daemon plus hooks. The daemon runs memory-steps in the background and hands
-cached reminders back to hooks fast, so nothing in Claude Code waits on a model.
+Two ways to wire AgentMem into Claude Code. Both use hooks; neither touches the action
+agent's prompt or tools.
 
-## Setup
+## Daemon-less (default)
+
+Command hooks that call `agentmem hook <event>` directly. No process to keep running.
 
 ```bash
-pip install agentmem-daemon        # brings in the daemon + FastAPI/uvicorn
+pip install agentmem
 cd your-project
-agentmem init claude-code          # writes hooks into .claude/settings.json
-agentmem serve                     # start the daemon on 127.0.0.1:8642
+agentmem init claude-code           # writes daemon-less hooks into .claude/settings.json
+export ANTHROPIC_API_KEY=sk-ant-...
+agentmem doctor                     # verify key, model, hooks
 ```
 
-`init` is idempotent and preserves any hooks you already have. Pass `--port` to both
-commands to use a different port.
+Or install the whole thing as a plugin (see
+[`../claude-code-plugin/`](../claude-code-plugin)):
+
+```bash
+pip install agentmem
+claude plugin install agentmem
+```
+
+Each hook is a short-lived process, so state lives on disk between calls: the bank in
+`.agentmem/`, a small live-state file, and the pending reminder. The memory-step's model
+call is spawned detached, so the hook itself returns in milliseconds.
+
+## Warm mode (optional daemon)
+
+For high-volume use, a long-running daemon keeps the bank in memory:
+
+```bash
+pip install "agentmem[daemon]"
+agentmem init claude-code --daemon
+agentmem serve                      # 127.0.0.1:8642
+```
+
+The `--daemon` hooks pipe each event to the daemon over curl and fall back to a no-op
+(`|| echo '{}'`) when it isn't running, so they can't wedge a session.
 
 ## What the hooks do
 
-The installer wires command hooks that pipe each event to the daemon:
-
-| Hook | Daemon does |
+| Hook | Behavior |
 |---|---|
-| `SessionStart` | returns a digest of the project's memory from earlier sessions |
-| `UserPromptSubmit` | returns any pending reminder; records the prompt |
-| `PostToolUse` | records the tool call/result (detecting failures by exit code); returns a pending reminder |
-| `PreCompact` | runs a synchronous consolidation step before the transcript is squeezed |
-| `SessionEnd` | flushes and persists |
+| `SessionStart` | recap the project's memory from earlier sessions |
+| `UserPromptSubmit` | deliver any pending reminder before the turn |
+| `PostToolUse` | record the tool call/result (failures detected by exit code); trigger a step |
+| `PreCompact` | run a step before the transcript is squeezed |
+| `SessionEnd` | consolidate, promote, persist |
 
 Memory is keyed by working directory, so a project keeps its bank across sessions.
-
-## Notes
-
-- Hooks fall back to a no-op (`|| echo '{}'`) when the daemon isn't running, so they
-  can't wedge a session.
-- Claude Code's hook payload shape can change between versions. The translation lives
-  in one place, `agentmem.integrations.claude_code`, so it's easy to adjust.
+Claude Code's hook payload shape can change between versions; the translation lives in
+one place, `agentmem.integrations.claude_code`, so it's easy to adjust.
