@@ -136,7 +136,12 @@ against the project's salient memory, rather than a raw list of matches.
 ```bash
 pip install 'agentmem-core[mcp]'
 claude mcp add --scope project agentmem -- agentmem-mcp   # or add to .cursor/mcp.json, .vscode/mcp.json, ...
+codex mcp add agentmem -- agentmem-mcp                    # Codex CLI (writes ~/.codex/config.toml)
 ```
+
+There is no dedicated Codex adapter yet because Codex doesn't expose lifecycle hooks the way
+Claude Code does; the MCP server above is the supported path, and a proactive adapter will follow
+if those hooks land.
 
 ## How it fits in
 
