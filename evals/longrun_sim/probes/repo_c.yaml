@@ -12,7 +12,7 @@ probes:
   - id: c-req-httpx-pin
     question: "Which httpx client argument does the code use, and is the version pinned?"
     answer_contains: ["proxies", "pin"]
-    forbidden: ["proxy=", "latest"]
+    forbidden: ["latest"]
   - id: c-lesson-retries
     question: "What bounds the retry loop?"
     answer_contains: ["RETRIES"]

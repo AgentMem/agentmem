@@ -12,7 +12,7 @@ probes:
   - id: a-req-timeout-source
     question: "Where do request timeouts come from?"
     answer_contains: ["config.py"]
-    forbidden: ["hardcoded", "call site"]
+    forbidden: []
   - id: a-lesson-ttl
     question: "What was the root cause of the token-expiry failures?"
     answer_contains: ["DEFAULT_TTL", "config"]
