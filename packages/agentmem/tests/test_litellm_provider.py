@@ -123,3 +123,63 @@ def test_response_with_no_choices_is_an_empty_turn() -> None:
     out = lp._from_openai_response(resp, model="gemini/gemini-2.5-flash", latency_ms=1.0)
     assert out.text == "" and out.tool_calls == [] and out.stop_reason == "empty"
     assert out.usage.input_tokens == 5
+
+
+def test_retry_delay_prefers_the_servers_hint() -> None:
+    assert lp._retry_delay(Exception("Please retry in 12.5s."), 0) == 13.5
+    assert lp._retry_delay(Exception("no hint"), 0) == 5.0
+    assert lp._retry_delay(Exception("no hint"), 3) == 40.0
+    assert lp._retry_delay(Exception("retry in 999s"), 0) == 65.0  # capped
+
+
+def test_is_retryable_matches_rate_limits_and_5xx() -> None:
+    class ServiceUnavailableError(Exception):
+        pass
+
+    class BadRequestError(Exception):
+        pass
+
+    assert lp._is_retryable(ServiceUnavailableError("high demand"))
+    err503 = Exception("x")
+    err503.status_code = 503  # type: ignore[attr-defined]
+    assert lp._is_retryable(err503)
+    assert not lp._is_retryable(BadRequestError("bad schema"))
+    err400 = Exception("x")
+    err400.status_code = 400  # type: ignore[attr-defined]
+    assert not lp._is_retryable(err400)
+
+
+def test_complete_retries_a_transient_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    # class name must be one _is_retryable recognizes
+    class RateLimitError(Exception):
+        pass
+
+    calls = {"n": 0}
+
+    def fake_completion(**_: object) -> object:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RateLimitError("Please retry in 0.01s.")
+        return _fake_response("recovered")
+
+    monkeypatch.setitem(
+        __import__("sys").modules, "litellm", types.SimpleNamespace(completion=fake_completion)
+    )
+    monkeypatch.setattr(lp.time, "sleep", lambda _: None)  # don't actually wait
+
+    provider = lp.LiteLLMProvider(model="gemini/gemini-2.5-flash", max_retries=3)
+    out = provider.complete(system="s", messages=[{"role": "user", "content": "hi"}])
+    assert out.text == "recovered" and calls["n"] == 2
+
+
+def test_complete_reraises_a_non_retryable_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    class BadRequestError(Exception):
+        pass
+
+    def boom(**_: object) -> object:
+        raise BadRequestError("bad tool schema")
+
+    monkeypatch.setitem(__import__("sys").modules, "litellm", types.SimpleNamespace(completion=boom))
+    provider = lp.LiteLLMProvider(model="gemini/gemini-2.5-flash", max_retries=3)
+    with pytest.raises(BadRequestError):
+        provider.complete(system="s", messages=[{"role": "user", "content": "hi"}])

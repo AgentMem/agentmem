@@ -12,12 +12,45 @@ set. Optional extra: `pip install 'agentmem[litellm]'`.
 from __future__ import annotations
 
 import json
+import re
 import time
 from typing import Any
 
 from ..schemas import TokenUsage
 from ..tools import ToolCall
 from .base import LLMResponse
+
+_MAX_RETRY_DELAY = 65.0
+
+# Transient errors worth retrying: rate limits and the 5xx family. Matched by class name
+# and status code so we don't depend on which exceptions a given litellm version exports.
+_RETRYABLE_NAMES = frozenset(
+    {
+        "RateLimitError",
+        "ServiceUnavailableError",
+        "InternalServerError",
+        "APIConnectionError",
+        "APIError",
+        "Timeout",
+    }
+)
+_RETRYABLE_STATUS = frozenset({429, 500, 502, 503, 504})
+
+
+def _is_retryable(err: Exception) -> bool:
+    if type(err).__name__ in _RETRYABLE_NAMES:
+        return True
+    return getattr(err, "status_code", None) in _RETRYABLE_STATUS
+
+
+def _retry_delay(err: Exception, attempt: int) -> float:
+    """How long to wait before retrying. Prefer the server's own 'retry in Ns' hint
+    (Gemini's free tier sends one), else back off exponentially."""
+    match = re.search(r"retry in ([\d.]+)s", str(err), re.I)
+    if match:
+        hint: float = float(match.group(1)) + 1.0
+        return min(_MAX_RETRY_DELAY, hint)
+    return min(_MAX_RETRY_DELAY, 5.0 * (2.0**attempt))
 
 
 def _to_openai_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -140,8 +173,12 @@ def _from_openai_response(resp: Any, model: str, latency_ms: float) -> LLMRespon
 
 
 class LiteLLMProvider:
-    def __init__(self, model: str, **_: Any) -> None:
+    def __init__(self, model: str, *, max_retries: int = 2, **_: Any) -> None:
         self.model = model
+        # Free tiers rate-limit hard (Gemini's is 5 requests/minute) and 5xx under load,
+        # so unlike the Anthropic provider this one retries transient errors rather than
+        # losing the whole memory-step. Non-transient errors still propagate.
+        self.max_retries = max_retries
 
     def complete(
         self,
@@ -167,6 +204,14 @@ class LiteLLMProvider:
             kwargs["tools"] = _to_openai_tools(tools)
 
         started = time.perf_counter()
-        resp = completion(**kwargs)
+        resp = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                resp = completion(**kwargs)
+                break
+            except Exception as err:
+                if attempt >= self.max_retries or not _is_retryable(err):
+                    raise
+                time.sleep(_retry_delay(err, attempt))
         latency_ms = (time.perf_counter() - started) * 1000.0
         return _from_openai_response(resp, self.model, latency_ms)
