@@ -78,11 +78,15 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        action = CountingProvider(AnthropicProvider(model=self._action_model))
+        # 300s, not the library's 30s default: a thinking model chewing on a long
+        # task instruction blows well past 30s and the whole trial dies at turn 0.
+        action = CountingProvider(AnthropicProvider(model=self._action_model, timeout=300.0))
         memory: MemorySession | None = None
         mem_provider: CountingProvider | None = None
         if self._arm == "memory":
-            mem_provider = CountingProvider(AnthropicProvider(model=self._memory_model))
+            mem_provider = CountingProvider(
+                AnthropicProvider(model=self._memory_model, timeout=300.0)
+            )
             memory = MemorySession(
                 task=instruction[:400],
                 provider=mem_provider,
