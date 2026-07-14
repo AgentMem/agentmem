@@ -261,12 +261,12 @@ def report(res: dict) -> str:
         f"({provider.calls} calls, {provider.tin} in / {provider.tout} out)",
         "",
         "## The four differentiators",
-        f"1. **Structured procedural memory** — {len(entries)} entries {dict(kinds)}; "
+        f"1. **Structured procedural memory**: {len(entries)} entries {dict(kinds)}; "
         f"procedural tags {dict(ptags) or '(none)'}.",
-        f"2. **Causal memory** — {len(edges)} edges {dict(erels) or '(none)'}.",
-        f"3. **Proactive intervention** — {len(injects)} injects over {len(rows)} steps; "
+        f"2. **Causal memory**: {len(edges)} edges {dict(erels) or '(none)'}.",
+        f"3. **Proactive intervention**: {len(injects)} injects over {len(rows)} steps; "
         f"{trap_injects} on recurring-failure sessions, {len(injects) - trap_injects} on routine.",
-        f"4. **Learned policy (advantage)** — {adv_rows} steps carried an advantage estimate, "
+        f"4. **Learned policy (advantage)**: {adv_rows} steps carried an advantage estimate, "
         f"{gated} gated to silence.",
         "",
         "## Long-horizon numbers",
