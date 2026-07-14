@@ -1,7 +1,19 @@
-# web/ (planned)
+# web/
 
-The `agentmem.xyz` site: a landing page first (hero, quickstart, benchmark numbers
-once they exist), then a dashboard for the hosted tier (API keys, sessions, and a
-Bank Inspector that shows the K/P entries and the intervention timeline).
+The `agentmem.xyz` landing page. Static, single file, no build step: the page, its
+favicons, and the OG image. The benchmark numbers on it come from
+`evals/longrun_sim/README.md`; update both together.
 
-Next.js + Tailwind. Nothing here yet.
+## Preview locally
+
+```
+python3 -m http.server 8871 --directory web
+```
+
+## Deploy (Cloudflare Pages)
+
+1. Cloudflare dashboard: Workers & Pages, create a Pages project, connect this repo.
+2. Build settings: no framework, no build command, output directory `web`.
+3. Custom domain: `agentmem.xyz` (the zone already lives on Cloudflare).
+
+Pushes to `main` redeploy automatically after that.
