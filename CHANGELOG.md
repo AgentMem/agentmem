@@ -79,5 +79,14 @@ contract we version against. Breaking it means a note here.
   Claude Code plugin (`integrations/claude-code-plugin/`) for one-command install, with
   a `/agentmem:status` skill. The long-running daemon is still available as opt-in warm
   mode via `agentmem init claude-code --daemon` and `pip install "agentmem[daemon]"`.
+- `agentmem.wrap(action_fn)`: the one-liner for a hand-written loop. It injects the
+  pending reminder as a `memory_context` keyword and observes what the turn returns.
+- A committable `agentmem.toml` at the project root pins model/store/trigger settings
+  for the whole team (env vars and code still override); see `agentmem.toml.example`.
+- Integration correctness: the Claude Agent SDK adapter now wraps its callback in the
+  SDK's `HookMatcher` and rides on PostToolUse (the SDK's UserPromptSubmit can't inject),
+  with a clear "pip install 'agentmem[agent-sdk]'" error when the SDK is missing. The
+  LangGraph node documents (and makes configurable) the `memory_context` state key a
+  graph must declare.
 
 [Unreleased]: https://github.com/agentmem/agentmem/commits/main

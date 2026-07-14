@@ -1,18 +1,26 @@
 # Claude Agent SDK
 
 In-process hooks for the [Claude Agent SDK](https://pypi.org/project/claude-agent-sdk/).
-No edits to your tools or system prompt, just added hooks.
+No edits to your tools or system prompt, just an added hook.
+
+```bash
+pip install "agentmem[agent-sdk]"
+```
 
 ```python
 from agentmem.integrations.claude_agent_sdk import attach_memory
 
 options = ClaudeAgentOptions(...)
 options = attach_memory(options, task="fix the failing auth tests")
-# registers UserPromptSubmit + PostToolUse hooks; the live session is on
-# options.agentmem_session so you can inspect or close it.
+# registers a PostToolUse hook; the live session is on options.agentmem_session
+# so you can inspect or close it.
 ```
 
-The hook callbacks (`MemoryHooks`) do the work: observe tool use, hand back a pending
-reminder as `additionalContext`. The SDK's hook-registration shape has shifted between
-versions, so `attach_memory` keeps that wiring thin, if your version differs, the
-callbacks are the part that matters and they're unchanged.
+AgentMem rides on the SDK's **PostToolUse** hook: it sees each tool call and result,
+and returns the pending reminder as `additionalContext`, so the reminder lands on the
+tool result right before the agent's next action. The adapter wraps its callback in the
+SDK's `HookMatcher` (verified against `claude-agent-sdk` 0.2.x).
+
+The SDK's `UserPromptSubmit` hook is deliberately not used: in the current SDK it
+carries no prompt text and can't add context, so it can't observe or inject. PostToolUse
+covers the loop.

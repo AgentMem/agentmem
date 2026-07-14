@@ -1,13 +1,14 @@
 """Adapter for the Claude Agent SDK (in-process hooks).
 
-The SDK exposes hooks much like Claude Code, so the callbacks here reuse the same
-payload-translation helpers. `MemoryHooks` holds the callback logic (and is what the
-tests exercise directly); `attach_memory` wires those callbacks onto a
-`ClaudeAgentOptions` and hands back the options plus the session.
+AgentMem rides on the SDK's **PostToolUse** hook. That hook sees each tool call and its
+result, and it can return `additionalContext`, which is exactly the injection point: a
+reminder lands on the tool result, right before the agent's next action. The SDK's
+UserPromptSubmit hook can do neither (it carries no prompt text and can't add context),
+so this adapter doesn't use it.
 
-The exact hook-registration shape has moved between SDK versions, so `attach_memory`
-keeps that wiring minimal and easy to adjust; the behavior it wires up is fully
-tested via `MemoryHooks`.
+Verified against `claude-agent-sdk` 0.2.x, whose `ClaudeAgentOptions.hooks` is
+`dict[HookEvent, list[HookMatcher]]`. `MemoryHooks` holds the callback and is what the
+tests exercise; `attach_memory` wraps it in a `HookMatcher` on the options.
 """
 
 from __future__ import annotations
@@ -15,33 +16,18 @@ from __future__ import annotations
 from typing import Any
 
 from ..session import MemorySession
-from .claude_code import (
-    event_from_prompt,
-    events_from_tool_use,
-    hook_output,
-    response_indicates_error,
-)
+from .claude_code import events_from_tool_use, hook_output, response_indicates_error
 
 
 class MemoryHooks:
-    """Hook callbacks bound to a MemorySession.
+    """The PostToolUse callback bound to a MemorySession.
 
-    The signatures match the SDK's `(input_data, tool_use_id, context)` shape, but
-    only `input_data` is used, so they're trivial to call in a test.
+    The signature matches the SDK's `(input_data, tool_use_id, context)`, but only
+    `input_data` is used, so it's trivial to call in a test.
     """
 
     def __init__(self, session: MemorySession) -> None:
         self.session = session
-
-    async def on_user_prompt(
-        self, input_data: dict[str, Any], tool_use_id: Any = None, context: Any = None
-    ) -> dict[str, Any]:
-        # Read the pending reminder before observing the new prompt.
-        reminder = self.session.pending_context()
-        prompt = str(input_data.get("prompt") or "")
-        if prompt:
-            self.session.observe([event_from_prompt(prompt)])
-        return hook_output("UserPromptSubmit", reminder)
 
     async def on_post_tool(
         self, input_data: dict[str, Any], tool_use_id: Any = None, context: Any = None
@@ -61,19 +47,25 @@ def attach_memory(
     session: MemorySession | None = None,
     **session_kwargs: Any,
 ) -> Any:
-    """Register AgentMem's hooks on a ClaudeAgentOptions and return it.
+    """Register AgentMem's PostToolUse hook on a ClaudeAgentOptions and return it.
 
-    We never touch the user's tools or system prompt, only add hooks. The live
-    session is stored on `options.agentmem_session` so callers can inspect or close it.
+    We never touch the user's tools or system prompt, only add a hook. The live session
+    is stored on `options.agentmem_session` so callers can inspect or close it.
     """
+    try:
+        from claude_agent_sdk import HookMatcher  # type: ignore[import-not-found]
+    except ImportError as exc:  # pragma: no cover - exercised only without the SDK
+        raise ImportError(
+            "The Claude Agent SDK isn't installed. Run: pip install 'agentmem[agent-sdk]'"
+        ) from exc
+
     session = session or MemorySession(task=task, **session_kwargs)
     hooks = MemoryHooks(session)
 
     registry = getattr(options, "hooks", None)
     if not isinstance(registry, dict):
         registry = {}
-    registry.setdefault("UserPromptSubmit", []).append(hooks.on_user_prompt)
-    registry.setdefault("PostToolUse", []).append(hooks.on_post_tool)
+    registry.setdefault("PostToolUse", []).append(HookMatcher(hooks=[hooks.on_post_tool]))
 
     options.hooks = registry
     options.agentmem_session = session

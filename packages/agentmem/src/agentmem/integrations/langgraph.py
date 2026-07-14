@@ -1,9 +1,19 @@
 """A LangGraph node that plugs AgentMem into a graph.
 
 Drop `AgentMemNode` into your graph before the action node: it observes new messages
-from the state and writes `memory_context` for the action node to read. It duck-types
-the messages (LangChain objects, dicts, or (role, content) tuples), so importing
-LangChain isn't required to use or test it.
+from the state and writes the pending reminder into `memory_context` for the action
+node to read. It duck-types the messages (LangChain objects, dicts, or (role, content)
+tuples), so importing LangChain isn't required to use or test it.
+
+Your graph's state must declare the two keys this node touches: `messages` (read) and
+`memory_context` (written). A strict `TypedDict`/`StateGraph` schema will drop or reject
+an undeclared key, so add it, for example:
+
+    class State(TypedDict):
+        messages: Annotated[list, add_messages]
+        memory_context: str | None
+
+Both key names are configurable via `messages_key` / `context_key`.
 """
 
 from __future__ import annotations
@@ -12,17 +22,27 @@ from typing import Any
 
 from ..schemas import Event
 
+# The state key AgentMemNode writes the reminder into (the action node reads it).
+DEFAULT_CONTEXT_KEY = "memory_context"
+
 
 class AgentMemNode:
-    """Reads new messages off the state, returns a `memory_context` update.
+    """Reads new messages off the state, returns a `{context_key: reminder}` update.
 
     Nodes see the whole accumulated message list each call, so we track how many
-    we've already observed and only feed the new ones.
+    we've already observed and only feed the new ones. `context_key` is the state key
+    the update is written under; declare it in your graph's state schema.
     """
 
-    def __init__(self, session: Any, messages_key: str = "messages") -> None:
+    def __init__(
+        self,
+        session: Any,
+        messages_key: str = "messages",
+        context_key: str = DEFAULT_CONTEXT_KEY,
+    ) -> None:
         self._session = session
         self._key = messages_key
+        self._context_key = context_key
         self._seen = 0
 
     def __call__(self, state: dict[str, Any]) -> dict[str, Any]:
@@ -34,16 +54,23 @@ class AgentMemNode:
         if events:
             self._session.observe(events)
 
-        return {"memory_context": self._session.pending_context()}
+        return {self._context_key: self._session.pending_context()}
 
 
-def make_memory_node(task: str, *, session: Any = None, **session_kwargs: Any) -> AgentMemNode:
+def make_memory_node(
+    task: str,
+    *,
+    session: Any = None,
+    messages_key: str = "messages",
+    context_key: str = DEFAULT_CONTEXT_KEY,
+    **session_kwargs: Any,
+) -> AgentMemNode:
     """Convenience: build a MemorySession and wrap it in a node in one call."""
     if session is None:
         from ..session import MemorySession
 
         session = MemorySession(task=task, **session_kwargs)
-    return AgentMemNode(session)
+    return AgentMemNode(session, messages_key=messages_key, context_key=context_key)
 
 
 def _to_event(message: Any) -> Event:

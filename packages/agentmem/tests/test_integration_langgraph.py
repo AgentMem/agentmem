@@ -75,6 +75,12 @@ def test_no_messages_means_no_observe() -> None:
     assert session.observed == []
 
 
+def test_context_key_is_configurable() -> None:
+    session = RecordingSession(pending="reminder")
+    node = AgentMemNode(session, context_key="am_ctx")
+    assert node({"messages": [{"role": "user", "content": "hi"}]}) == {"am_ctx": "reminder"}
+
+
 def test_make_memory_node_builds_a_working_node(tmp_path: Path) -> None:
     node = make_memory_node(
         "fix the tests",
