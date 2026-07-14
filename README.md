@@ -201,6 +201,16 @@ For how this differs from CLAUDE.md files, Cursor rules, and retrieval APIs like
 see [docs/comparison.md](./docs/comparison.md); every claim in the AgentMem column links
 to code or a measured result in this repo.
 
+The clearest cross-session result comes from the
+[LongDebug-Causal harness](./evals/longdebug_causal): three multi-session debugging tasks
+where the root cause is separated from the symptom by session resets. Asked at the end what
+originally broke, the no-memory agent answers, in its own words, that it has no access to
+earlier sessions, so it identifies the root cause in 0 of 3 tasks; with AgentMem the same
+model answers substantively in all three and nails one outright, with the recurring trap
+dropping from 0.50 to 0.00 where comparable ([RESULTS.md](./evals/longdebug_causal/RESULTS.md)).
+This is the mirror image of the Terminal-Bench result below: memory earns its keep across
+sessions, not inside a single short task.
+
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
 that count the memory calls too. Three budget-capped runs (23 paired tasks, Haiku and
