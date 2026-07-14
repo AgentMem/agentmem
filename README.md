@@ -197,11 +197,13 @@ floor, and the session-start digest ranks by salience). Same model, same scenari
 retention went from 56% to 78%.
 
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
-harbor with the same action loop bare vs memory-attached, hard USD caps on both arms.
-The first budget-capped pilot (6 tasks, Haiku both roles) came out flat on pass rate and
-is written up honestly, including what the memory calls cost, in
-[`evals/tbench/RESULTS.md`](./evals/tbench/RESULTS.md); the interesting part is that the
-reminders were correct and the harness prices them, which the original paper never does.
+harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
+that count the memory calls too. Two budget-capped runs (15 paired tasks, Haiku both
+roles, about $5.70) came out flat on pass rate, and
+[`evals/tbench/RESULTS.md`](./evals/tbench/RESULTS.md) says so plainly, with the part
+the original paper never reports: what the memory layer costs. The reminders were
+accurate throughout; at budget-model prices they just don't repay their turns on
+sub-hour tasks. The long-horizon table above is where the layer earns its keep.
 
 ## Status
 
