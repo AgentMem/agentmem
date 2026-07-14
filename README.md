@@ -96,7 +96,7 @@ allows.
 | **Aider** | `pip install 'agentmem[aider]'` | Proactive, drives the coder loop |
 | **OpenAI Agents SDK** | `pip install 'agentmem[openai-agents]'` | Proactive, run hooks + input filter |
 | **Your own loop** | built in | Proactive, `wrap()` or two calls |
-| **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem[mcp]'` | On demand, an MCP server it can query |
+| **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem[mcp]'` | On demand via MCP, plus a `checkpoint` nudge |
 
 **Proactive** hosts get the full two-phase behavior: AgentMem decides *when* to speak and pushes a
 transient, once-consumed reminder into the next turn. The OpenAI Agents SDK, for example, wires in
@@ -127,8 +127,11 @@ mem.run("the token expiry test is red, take a look")
 ```
 
 **MCP** hosts (Cursor, GitHub Copilot, Codex CLI, Gemini CLI, Continue, Windsurf) can't be handed a
-reminder mid-turn, so there AgentMem is a *pull* surface instead: a small server exposing `recap`,
-`search`, and `bank` as read-only tools the agent calls when it wants project context.
+reminder mid-turn, so there AgentMem is a *pull* surface: a small server exposing `recap`, `search`,
+`bank`, and a `checkpoint` tool. `checkpoint` is the closest thing to proactive that portable MCP
+allows: the server's own instructions tell the agent to call it before an edit or right after a
+failure, and it answers with the same silence-gated, id-cited Phase-2 decision, computed on demand
+against the project's salient memory, rather than a raw list of matches.
 
 ```bash
 pip install 'agentmem[mcp]'

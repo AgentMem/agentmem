@@ -55,3 +55,27 @@ def test_bank_text_renders_the_project_bank(tmp_path: Path) -> None:
     _seed_project(tmp_path, _entry("PK-001", "never touch generated code", tag="policy"))
     out = mcp.bank_text(str(tmp_path))
     assert "PK-001" in out and "generated code" in out
+
+
+def test_checkpoint_surfaces_a_relevant_lesson(tmp_path: Path) -> None:
+    _seed_project(
+        tmp_path, _entry("PK-001", "the DEFAULT_TTL in config.py is the real fix", tag="other")
+    )
+    out = mcp.checkpoint(str(tmp_path), context="editing config.py for the token expiry test")
+    assert "PK-001" in out and "DEFAULT_TTL" in out
+
+
+def test_checkpoint_stays_silent_when_nothing_relevant(tmp_path: Path) -> None:
+    _seed_project(tmp_path, _entry("PK-001", "prefer ruff over flake8 for linting", tag="other"))
+    out = mcp.checkpoint(str(tmp_path), context="deploying the kubernetes cluster")
+    assert "Nothing in memory" in out
+
+
+def test_checkpoint_always_surfaces_policy_rules(tmp_path: Path) -> None:
+    _seed_project(tmp_path, _entry("PK-001", "never touch the generated protobuf files", tag="policy"))
+    out = mcp.checkpoint(str(tmp_path), context="working on the frontend styles")
+    assert "PK-001" in out  # a policy rule applies even without keyword overlap
+
+
+def test_checkpoint_is_silent_on_an_empty_bank(tmp_path: Path) -> None:
+    assert "Nothing in memory" in mcp.checkpoint(str(tmp_path), context="anything")

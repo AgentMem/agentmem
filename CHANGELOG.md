@@ -91,10 +91,12 @@ contract we version against. Breaking it means a note here.
 - Three more integrations, each on the same public API and leaving the action agent
   untouched:
   - An MCP server (`agentmem[mcp]`, the `agentmem-mcp` command) exposing `recap`,
-    `search`, and `bank` as read-only tools, so any MCP host (Cursor, Copilot, Codex,
-    Gemini CLI, Continue, Windsurf) can pull project memory on demand. Standard MCP has
-    no way to push a reminder mid-turn, so this is a pull surface by design; proactive
-    injection stays with the hook-based hosts.
+    `search`, `bank`, and `checkpoint` as tools, so any MCP host (Cursor, Copilot, Codex,
+    Gemini CLI, Continue, Windsurf) can reach project memory. Standard MCP can't push a
+    reminder mid-turn, so `checkpoint` is the portable substitute: the server's own
+    instructions tell the agent to call it before an edit or after a failure, and it
+    returns a silence-gated, id-cited Phase-2-style decision computed on demand against
+    the project's salient memory. True mid-turn injection stays with the hook-based hosts.
   - An Aider adapter (`agentmem[aider]`): a thin `Coder` subclass injects a transient
     reminder through `format_chat_chunks` (never persisted to Aider's history), while
     `AiderMemory.run()` drives the turn and observes the reply, edited files, and

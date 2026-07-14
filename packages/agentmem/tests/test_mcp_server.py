@@ -25,3 +25,4 @@ def test_the_tools_are_backed_by_the_module_functions() -> None:
     assert mcp._CORE["recap"] is mcp.recap
     assert mcp._CORE["search"] is mcp.search
     assert mcp._CORE["bank"] is mcp.bank_text
+    assert mcp._CORE["checkpoint"] is mcp.checkpoint
