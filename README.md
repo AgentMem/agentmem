@@ -204,8 +204,8 @@ to code or a measured result in this repo.
 
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
-that count the memory calls too. Two budget-capped runs (15 paired tasks, Haiku both
-roles, about $5.70) came out flat on pass rate, and
+that count the memory calls too. Three budget-capped runs (23 paired tasks, Haiku and
+Sonnet action models, about $14) came out flat on pass rate, and
 [`evals/tbench/RESULTS.md`](./evals/tbench/RESULTS.md) says so plainly, with the part
 the original paper never reports: what the memory layer costs. The reminders were
 accurate throughout; at budget-model prices they just don't repay their turns on

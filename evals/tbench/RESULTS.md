@@ -1,10 +1,42 @@
 # Terminal-Bench 2.0: baseline vs AgentMem
 
-2026-07-14. Two budget-capped runs on the official harbor harness with Docker
-sandboxes, Claude Haiku 4.5 for both the action loop and the memory agent. Fifteen
-paired tasks total for about $5.70. Headline, stated plainly: the pass sets were
-identical in every paired trial, and the harness put a price on the memory layer
-that the original paper never reports.
+2026-07-14. Three budget-capped runs on the official harbor harness with Docker
+sandboxes: two with Claude Haiku 4.5 in both roles, then one with Claude Sonnet 5
+as the action model to test whether a stronger executor converts memory's advice
+into passes. Twenty-three paired tasks for about $14. Headline, stated plainly:
+no genuine pass-rate flip in either direction anywhere, and the harness put a
+price on the memory layer that the original paper never reports.
+
+## Sonnet-action run (8 tasks, $0.55/trial cap, 40 turns, $7.53)
+
+Claude Sonnet 5 action, Claude Haiku 4.5 memory, on the seven tasks Haiku had
+failed plus one anchor it had passed. Two artifact rows from a 30s client timeout
+were rerun after the fix (commit deef6ba) and are shown post-rerun.
+
+| task | baseline | memory | baseline cost/turns | memory cost/turns | reminders |
+|---|---|---|---|---|---|
+| break-filter-js-from-html | fail (budget) | fail (budget) | $0.553 / 17t | $0.561 / 13t | 1 |
+| cobol-modernization | fail (budget) | fail (budget) | $0.595 / 18t | $0.602 / 16t | 2 |
+| constraints-scheduling | PASS | PASS | $0.161 / 6t | $0.269 / 6t | 0 |
+| extract-elf | PASS | PASS | $0.527 / 16t | $0.272 / 10t | 0 |
+| overfull-hbox | fail (budget) | fail (budget) | $0.571 / 21t | $0.561 / 18t | 3 |
+| polyglot-c-py | fail (task_done, wrong) | fail (no_tool_call) | $0.393 / 9t | $0.151 / 2t | 0 |
+| raman-fitting | fail (budget) | fail (budget) | $0.575 / 19t | $0.632 / 17t | 2 |
+| vulnerable-secret | PASS | PASS | $0.557 / 20t | $0.512 / 18t | 3 |
+| **total** | **3/8** | **3/8** | **$3.93** | **$3.56** | 11 |
+
+Notes that keep this table honest. The polyglot memory row is a harness artifact,
+not a memory effect: Sonnet opened with prose twice and the loop's one-nudge rule
+ended the trial before any reminder existed; the baseline row failed on its own by
+declaring victory the verifier rejected. Sonnet's baseline pass rate here (37.5%)
+lands within a point of the paper's Sonnet 4.5 baseline on the full suite (37.6%),
+which is luck at n=8, but pleasant luck. And the stronger action model made the
+memory layer quieter, 11 reminders across 8 trials versus 43 across 9 in the Haiku
+run: fewer failure streaks, fewer triggers, exactly the design intent.
+
+The conversion hypothesis (a stronger executor turns advice into passes) did not
+show up at this budget tier either: every hard fail above ran out of its $0.55 cap
+mid-investigation in both arms alike.
 
 ## Main run (9 tasks, $0.25/trial cap, 40 turns, $4.12)
 
@@ -80,21 +112,22 @@ contract for benchmark points.
 
 | | paper (Table 1) | these runs |
 |---|---|---|
-| tasks | 85 of Terminal-Bench 2.0 | 15 paired (easy/medium subsets) |
-| action model | Claude Sonnet 4.5 | Claude Haiku 4.5 |
+| tasks | 85 of Terminal-Bench 2.0 | 23 paired (easy/medium subsets) |
+| action model | Claude Sonnet 4.5 | Claude Haiku 4.5, then Claude Sonnet 5 |
 | memory model | Claude Opus 4.6 | Claude Haiku 4.5 |
 | memory cadence | every step, window k=8 | trigger-based (failure streaks + cadence) |
-| budget | not reported | $0.15-0.25 hard cap per trial, both arms |
-| result | 37.6% -> 45.9% (+8.3pp) | no flips in 15 pairs (0pp) |
+| budget | not reported | $0.15-0.55 hard cap per trial, both arms |
+| result | 37.6% -> 45.9% (+8.3pp) | no genuine flips in 23 pairs (0pp) |
 
-Their delta remains untested by us, not contradicted: different action-model tier,
-different budget regime, a 5.7x smaller task set. The comparison to run when a
-bigger budget is approved: the same 85 tasks, a frontier action model, caps loose
-enough that no trial dies on budget, 3+ attempts per task. Rough prices at current
-rates: Haiku/Haiku about $30 (now known to be capability-limited), Sonnet-action
-about $120-160. Until then the honest sentence is: the harness reproduces their
-setup end to end, the mechanism visibly fires and is priced; at budget-model
-economics the intervention does not convert to pass-rate on tasks this short.
+Their delta remains untested by us, not contradicted, and the remaining
+differences have narrowed to three: their memory model is Opus-tier, their memory
+agent runs at every step, and their trials never die on a budget cap (every hard
+fail in our Sonnet run did). The decisive next experiment is caps loose enough
+that trials end on their own merits, on the full suite, with 3+ attempts per
+task; at current rates that is roughly $250-350 with a Sonnet action model. Until
+then the honest sentence is: the harness reproduces their setup end to end, the
+mechanism visibly fires and is priced; under hard budget caps the intervention
+has not converted to pass-rate at either action-model tier we could afford.
 
 ## Reproduce
 
