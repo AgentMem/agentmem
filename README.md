@@ -167,11 +167,35 @@ Two design decisions do most of the work:
 They're complementary: you can point AgentMem's store at a vector DB. The difference is
 architectural: retrieval answers *what's relevant*, AgentMem answers *whether to speak now*.
 
+## Measured
+
+LongRun-sim stresses the core claim: one agent maintains three repos over 30 interleaved
+sessions, each repo's hard requirements stated early, each repo's known failure resurfacing
+sessions later. The harness lives in [`evals/longrun_sim/`](./evals/longrun_sim) and one
+command reproduces the run.
+
+| At session 30 | No memory | With AgentMem |
+|---|---|---|
+| Requirements and lessons still recalled | **0%** | **78%** |
+| Recurring failures caught before the repeat | none | **3 of 3** |
+| Reminders on routine turns | n/a | 4 of 27 (silence is the default) |
+| Memory bank growth | n/a | **1.08x** (bounded by decay + consolidation) |
+
+Every fact behind the probes was still surfaced by the bank at session 30 (9 of 9); the
+two graded misses were one-sentence answers tripping the grader, not lost memory. Numbers
+from `claude-haiku-4-5` as the memory model, July 2026, about $0.30 of API spend for the
+full 30-session run.
+
+The eval also paid for itself: the retention gap it exposed drove three lifecycle fixes
+(linking to a lesson now revives it, causally load-bearing entries hold their salience
+floor, and the session-start digest ranks by salience). Same model, same scenario:
+retention went from 56% to 78%.
+
 ## Status
 
-Early and moving fast. The public API (`MemorySession`, `triggers.*`) is the part we keep stable;
-everything else may shift until `0.1.0`. Offline tests run without a key (LLM calls are mocked); the
-benchmark numbers land with the first release. See [`evals/`](./evals).
+Early and moving fast. The public API (`MemorySession`, `triggers.*`) is the part we keep stable.
+Offline tests run without a key (LLM calls are mocked); the long-horizon numbers above come from
+the live harness in [`evals/`](./evals).
 
 **Built**
 

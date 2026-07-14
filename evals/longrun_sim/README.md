@@ -58,3 +58,22 @@ It reports, with numbers from the run:
 Plus retention (against a no-memory baseline), interference, and bank growth. Interference
 is measured on one shared bank across all three repos (the hard case); in production
 AgentMem scopes memory per project, so cross-repo citation is structurally near zero.
+
+## Latest numbers (July 2026, `claude-haiku-4-5`, ~$0.30/run)
+
+| Metric | No memory | With AgentMem | Bar |
+|---|---|---|---|
+| Retention at session 30 | 0% | **78%** | 90% |
+| Probe facts still surfaced by the bank | n/a | **9 of 9** | - |
+| Recurring failures caught | none | **3 of 3** | - |
+| Bank growth | n/a | **1.08x** | < 1.5 |
+
+The gap between "9 of 9 facts surfaced" and "78% graded" was two one-sentence answers that
+quoted a requirement verbatim and tripped the forbidden-term grader; the probe specs were
+fixed after that run, so the numbers above are the conservative pre-fix grades.
+
+Run-to-run history worth knowing: the first runs scored 56%. The per-probe breakdown showed
+root-cause lessons decaying to dormant while newer entries linked to them, which drove three
+lifecycle fixes in the core (revive-on-link, a salience floor for causal-edge endpoints,
+salience-ordered digests). Same model and scenario afterward: 78%. That is what this harness
+is for.
