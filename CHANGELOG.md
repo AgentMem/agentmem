@@ -10,6 +10,12 @@ contract we version against. Breaking it means a note here.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-14
+
+First release on PyPI. Measured on the 30-session LongRun-sim harness: retention 0%
+without memory against 78% with it, all three recurring failures caught before the
+repeat, bank growth held to 1.08x. See `evals/longrun_sim/`.
+
 ### Added
 - Monorepo scaffold, `uv` workspace, and CI (ruff + mypy + pytest).
 - Core memory bank: `MemoryEntry` / `MemoryBank` schemas and the pure
@@ -109,4 +115,5 @@ contract we version against. Breaking it means a note here.
   `model="litellm/<backend>"`. It translates our Anthropic-native content blocks, including
   the Phase 1 tool loop, to and from OpenAI's format at the edge.
 
-[Unreleased]: https://github.com/agentmem/agentmem/commits/main
+[Unreleased]: https://github.com/agentmem/agentmem/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/agentmem/agentmem/releases/tag/v0.1.0

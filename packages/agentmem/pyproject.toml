@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentmem"
-version = "0.1.0.dev0"
+dynamic = ["version"]
 description = "A proactive memory layer for long-horizon coding agents, it knows when to remind."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -47,15 +47,15 @@ mcp = ["mcp>=1.28,<2"]
 aider = ["aider-chat>=0.86,<0.87"]
 # OpenAI Agents SDK adapter: observe via RunHooks, inject via call_model_input_filter.
 openai-agents = ["openai-agents>=0.18,<0.19"]
+# Route the memory agent through any backend litellm supports (Gemini, OpenAI, vLLM,
+# Ollama) by setting model="litellm/<backend>", e.g. litellm/gemini/gemini-2.5-flash.
+litellm = ["litellm>=1.40"]
 
 [tool.uv]
 # aider-chat pins openai==2.20 while openai-agents needs openai>=2.45, so a single
 # environment can't hold both. They're independent adapters, install whichever you use;
 # this tells uv to resolve them in separate forks instead of failing the lockfile.
 conflicts = [[{ extra = "aider" }, { extra = "openai-agents" }]]
-# Route the memory agent through any backend litellm supports (Gemini, OpenAI, vLLM,
-# Ollama) by setting model="litellm/<backend>", e.g. litellm/gemini/gemini-2.5-flash.
-litellm = ["litellm>=1.40"]
 
 [project.urls]
 Homepage = "https://agentmem.xyz"
@@ -66,6 +66,9 @@ Changelog = "https://github.com/agentmem/agentmem/blob/main/CHANGELOG.md"
 [project.scripts]
 agentmem = "agentmem.cli:main"
 agentmem-mcp = "agentmem.mcp:main"
+
+[tool.hatch.version]
+path = "src/agentmem/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentmem"]

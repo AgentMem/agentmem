@@ -40,7 +40,6 @@ members = [
 
 [[package]]
 name = "agentmem"
-version = "0.1.0.dev0"
 source = { editable = "packages/agentmem" }
 dependencies = [
     { name = "anthropic" },
@@ -59,6 +58,9 @@ aider = [
 daemon = [
     { name = "agentmem-daemon" },
 ]
+litellm = [
+    { name = "litellm" },
+]
 mcp = [
     { name = "mcp" },
 ]
@@ -72,16 +74,17 @@ requires-dist = [
     { name = "aider-chat", marker = "extra == 'aider'", specifier = ">=0.86,<0.87" },
     { name = "anthropic", specifier = ">=0.40" },
     { name = "claude-agent-sdk", marker = "extra == 'agent-sdk'", specifier = ">=0.2" },
+    { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.40" },
     { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.28,<2" },
     { name = "openai-agents", marker = "extra == 'openai-agents'", specifier = ">=0.18,<0.19" },
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pydantic-settings", specifier = ">=2.3" },
 ]
-provides-extras = ["daemon", "agent-sdk", "mcp", "aider", "openai-agents"]
+provides-extras = ["agent-sdk", "aider", "daemon", "litellm", "mcp", "openai-agents"]
 
 [[package]]
 name = "agentmem-daemon"
-version = "0.1.0.dev0"
+version = "0.1.0"
 source = { editable = "packages/agentmem-daemon" }
 dependencies = [
     { name = "agentmem" },
@@ -295,7 +298,8 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohappyeyeballs" },
     { name = "aiosignal" },
-    { name = "attrs", version = "25.4.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "attrs", version = "25.4.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "attrs", version = "26.1.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "frozenlist" },
     { name = "multidict" },
     { name = "propcache" },
@@ -396,7 +400,8 @@ version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "frozenlist" },
-    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and extra == 'extra-8-agentmem-aider') or (extra == 'extra-8-agentmem-aider' and extra == 'extra-8-agentmem-openai-agents')" },
+    { name = "typing-extensions", version = "4.16.0", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and extra != 'extra-8-agentmem-aider') or (extra == 'extra-8-agentmem-aider' and extra == 'extra-8-agentmem-openai-agents')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/61/62/06741b579156360248d1ec624842ad0edf697050bbaf7c3e46394e106ad1/aiosignal-1.4.0.tar.gz", hash = "sha256:f47eecd9468083c2029cc99945502cb7708b082c232f9aca65da147157b251c7", size = 25007, upload-time = "2025-07-03T22:54:43.528Z" }
 wheels = [
@@ -1668,14 +1673,17 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
     { name = "fsspec" },
-    { name = "hf-xet", marker = "platform_machine == 'AMD64' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
+    { name = "hf-xet", marker = "platform_machine == 'AMD64' or platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64' or (extra == 'extra-8-agentmem-aider' and extra == 'extra-8-agentmem-openai-agents')" },
     { name = "httpx" },
-    { name = "packaging", version = "26.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "packaging", version = "26.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "packaging", version = "26.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "pyyaml" },
     { name = "shellingham" },
-    { name = "tqdm", version = "4.67.3", source = { registry = "https://pypi.org/simple" } },
+    { name = "tqdm", version = "4.67.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "tqdm", version = "4.68.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "typer-slim" },
-    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "typing-extensions", version = "4.16.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c4/fc/eb9bc06130e8bbda6a616e1b80a7aa127681c448d6b49806f61db2670b61/huggingface_hub-1.4.1.tar.gz", hash = "sha256:b41131ec35e631e7383ab26d6146b8d8972abc8b6309b963b306fbcca87f5ed5", size = 642156, upload-time = "2026-02-06T09:20:03.013Z" }
 wheels = [
@@ -2174,15 +2182,19 @@ version = "1.81.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
-    { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "fastuuid" },
     { name = "httpx" },
     { name = "importlib-metadata" },
     { name = "jinja2" },
     { name = "jsonschema" },
-    { name = "openai", version = "2.20.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "pydantic", version = "2.12.5", source = { registry = "https://pypi.org/simple" } },
-    { name = "python-dotenv", version = "1.2.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "openai", version = "2.20.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "openai", version = "2.45.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "pydantic", version = "2.12.5", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "pydantic", version = "2.13.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "python-dotenv", version = "1.2.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "python-dotenv", version = "1.2.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
@@ -2792,14 +2804,14 @@ resolution-markers = [
     "python_full_version < '3.14' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "anyio", version = "4.12.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "jiter", version = "0.13.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "pydantic", version = "2.12.5", source = { registry = "https://pypi.org/simple" } },
-    { name = "sniffio" },
-    { name = "tqdm", version = "4.67.3", source = { registry = "https://pypi.org/simple" } },
-    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "anyio", version = "4.12.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "distro", marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "httpx", marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "jiter", version = "0.13.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "pydantic", version = "2.12.5", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "sniffio", marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "tqdm", version = "4.67.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6e/5a/f495777c02625bfa18212b6e3b73f1893094f2bf660976eb4bc6f43a1ca2/openai-2.20.0.tar.gz", hash = "sha256:2654a689208cd0bf1098bb9462e8d722af5cbe961e6bba54e6f19fb843d88db1", size = 642355, upload-time = "2026-02-10T19:02:54.145Z" }
 wheels = [
@@ -2821,14 +2833,14 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "anyio", version = "4.14.1", source = { registry = "https://pypi.org/simple" } },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "jiter", version = "0.16.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "pydantic", version = "2.13.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "sniffio" },
-    { name = "tqdm", version = "4.68.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "typing-extensions", version = "4.16.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "anyio", version = "4.14.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "distro", marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "httpx", marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "jiter", version = "0.16.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "pydantic", version = "2.13.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "sniffio", marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "tqdm", version = "4.68.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "typing-extensions", version = "4.16.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/78/60/d4219875289b11d2c2f7da93c36283da224a2e55865ed865ab64e0ce9217/openai-2.45.0.tar.gz", hash = "sha256:10d34ca9c5643bce775852fddbfc172505cb1d4de1ccd101696c3ecff358765d", size = 1109653, upload-time = "2026-07-09T18:02:44.091Z" }
 wheels = [
@@ -4075,10 +4087,10 @@ resolution-markers = [
     "python_full_version < '3.14' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "certifi", version = "2026.1.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "charset-normalizer", version = "3.4.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "idna", version = "3.11", source = { registry = "https://pypi.org/simple" } },
-    { name = "urllib3", version = "2.6.3", source = { registry = "https://pypi.org/simple" } },
+    { name = "certifi", version = "2026.1.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "charset-normalizer", version = "3.4.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "idna", version = "3.11", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "urllib3", version = "2.6.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf", size = 134517, upload-time = "2025-08-18T20:46:02.573Z" }
 wheels = [
@@ -4100,10 +4112,10 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "certifi", version = "2026.6.17", source = { registry = "https://pypi.org/simple" } },
-    { name = "charset-normalizer", version = "3.4.9", source = { registry = "https://pypi.org/simple" } },
-    { name = "idna", version = "3.18", source = { registry = "https://pypi.org/simple" } },
-    { name = "urllib3", version = "2.7.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "certifi", version = "2026.6.17", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "charset-normalizer", version = "3.4.9", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "idna", version = "3.18", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
+    { name = "urllib3", version = "2.7.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
@@ -4128,7 +4140,8 @@ version = "14.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown-it-py" },
-    { name = "pygments", version = "2.19.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "pygments", version = "2.19.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "pygments", version = "2.20.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/74/99/a4cab2acbb884f80e558b0771e97e21e939c5dfb460f488d19df485e8298/rich-14.3.2.tar.gz", hash = "sha256:e712f11c1a562a11843306f5ed999475f09ac31ffb64281f73ab29ffdda8b3b8", size = 230143, upload-time = "2026-02-01T16:20:47.908Z" }
 wheels = [
@@ -4619,7 +4632,8 @@ version = "0.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "regex" },
-    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "requests", version = "2.34.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7d/ab/4d017d0f76ec3171d469d80fc03dfbb4e48a4bcaddaa831b31d526f05edc/tiktoken-0.12.0.tar.gz", hash = "sha256:b18ba7ee2b093863978fcb14f74b3707cdc8d4d4d3836853ce7ec60772139931", size = 37806, upload-time = "2025-10-06T20:22:45.419Z" }
 wheels = [
@@ -4706,7 +4720,7 @@ resolution-markers = [
     "python_full_version < '3.14' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "(sys_platform == 'win32' and extra == 'extra-8-agentmem-aider') or (extra == 'extra-8-agentmem-aider' and extra == 'extra-8-agentmem-openai-agents')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/09/a9/6ba95a270c6f1fbcd8dac228323f2777d886cb206987444e4bce66338dd4/tqdm-4.67.3.tar.gz", hash = "sha256:7d825f03f89244ef73f1d4ce193cb1774a8179fd96f31d7e1dcde62092b960bb", size = 169598, upload-time = "2026-02-03T17:35:53.048Z" }
 wheels = [
@@ -4728,7 +4742,7 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "(sys_platform == 'win32' and extra != 'extra-8-agentmem-aider') or (extra == 'extra-8-agentmem-aider' and extra == 'extra-8-agentmem-openai-agents')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ae/5f/57ff8b434839e70dab45601284ea413e947a63799891b7553e5960a793a8/tqdm-4.68.4.tar.gz", hash = "sha256:19829c9673638f2a0b8617da4cdcb927e831cd88bcfcb6e78d42a4d1af131520", size = 792418, upload-time = "2026-07-07T09:58:18.369Z" }
 wheels = [
@@ -4851,7 +4865,8 @@ version = "0.23.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
-    { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "click", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "rich" },
     { name = "shellingham" },
 ]
@@ -5171,7 +5186,8 @@ name = "yarl"
 version = "1.22.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "idna", version = "3.11", source = { registry = "https://pypi.org/simple" } },
+    { name = "idna", version = "3.11", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-aider'" },
+    { name = "idna", version = "3.18", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-agentmem-openai-agents' or extra != 'extra-8-agentmem-aider'" },
     { name = "multidict" },
     { name = "propcache" },
 ]
