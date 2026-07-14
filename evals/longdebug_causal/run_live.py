@@ -71,7 +71,7 @@ def load_sessions(task_dir: Path) -> list[dict]:
 
 
 def sh(cmd: list[str], timeout: int = 600) -> tuple[int, str]:
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    p = subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=timeout)
     return p.returncode, (p.stdout or "") + (p.stderr or "")
 
 
