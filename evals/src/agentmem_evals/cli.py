@@ -28,6 +28,11 @@ def main(argv: list[str] | None = None) -> int:
         "--live", action="store_true", help="use a real model (needs ANTHROPIC_API_KEY)"
     )
     parser.add_argument("--model-mem", default="claude-haiku-4-5", help="memory-agent model")
+    parser.add_argument(
+        "--model-action",
+        default=None,
+        help="action-agent model (defaults to --model-mem); use a stronger one here",
+    )
     parser.add_argument("--max-usd", type=float, default=None, help="hard spend cap for live runs")
     parser.add_argument("--tasks-dir", default=str(_DEFAULT_TASKS))
     parser.add_argument("--out", default="evals/report", help="report output directory")
@@ -58,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
                         seed,
                         offline=offline,
                         memory_model=args.model_mem,
+                        action_model=args.model_action,
                         budget=budget,
                     )
                 except BudgetExceeded as exc:
@@ -86,6 +92,7 @@ def main(argv: list[str] | None = None) -> int:
             "seeds": args.seeds,
             "tasks": len(tasks),
             "memory_model": args.model_mem if not offline else "scripted",
+            "action_model": (args.model_action or args.model_mem) if not offline else "scripted",
             "spent_usd": round(budget.spent, 4),
         },
     )

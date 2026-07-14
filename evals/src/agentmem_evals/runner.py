@@ -32,6 +32,7 @@ def run_task(
     *,
     offline: bool = True,
     memory_model: str = "claude-haiku-4-5",
+    action_model: str | None = None,
     budget: UsdBudget | None = None,
 ) -> TaskResult:
     budget = budget or UsdBudget()
@@ -47,7 +48,9 @@ def run_task(
             else None
         )
         strategy = build_strategy(condition, task, state_dir, provider)
-        agent: ActionAgent = ScriptedActionAgent() if offline else _live_agent(memory_model)
+        agent: ActionAgent = (
+            ScriptedActionAgent() if offline else _live_agent(action_model or memory_model)
+        )
 
         all_obs: list[TurnObservation] = []
         try:
