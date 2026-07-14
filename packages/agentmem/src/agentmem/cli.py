@@ -62,6 +62,20 @@ def main(argv: list[str] | None = None) -> int:
     p_doctor.add_argument("--cwd", default=".", help="project directory to check")
     p_doctor.add_argument("--state-dir", default=".agentmem", help="state directory")
 
+    # The daemon-less path: Claude Code command hooks call `agentmem hook <event>`,
+    # reading the event JSON on stdin and printing any additionalContext on stdout.
+    p_hook = sub.add_parser("hook", help="handle a Claude Code hook event (reads JSON on stdin)")
+    p_hook.add_argument(
+        "event",
+        choices=["session-start", "prompt", "post-tool", "pre-compact", "session-end"],
+    )
+
+    # Internal: the detached memory-step a hook spawns. Hidden from help.
+    p_step = sub.add_parser("_step", help=argparse.SUPPRESS)
+    p_step.add_argument("session")
+    p_step.add_argument("--state-dir", default=".agentmem")
+    p_step.add_argument("--tool-failure", action="store_true")
+
     args = parser.parse_args(argv)
 
     if args.command == "demo":
@@ -76,6 +90,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_serve(args)
     if args.command == "doctor":
         return _cmd_doctor(args)
+    if args.command == "hook":
+        return _cmd_hook(args)
+    if args.command == "_step":
+        return _cmd_step(args)
 
     parser.print_help()
     return 0
@@ -266,6 +284,81 @@ def _daemon_status(port: int) -> tuple[bool, str]:
         return True, f"up on http://127.0.0.1:{port}  (version {data.get('version', '?')})"
     except Exception:
         return False, f"not reachable on http://127.0.0.1:{port}  (run: agentmem serve)"
+
+
+def _cmd_hook(args: argparse.Namespace) -> int:
+    # A hook must never break the session, so anything unexpected returns empty JSON.
+
+    print(_handle_hook(args))
+    return 0
+
+
+def _handle_hook(args: argparse.Namespace) -> str:
+    import json
+    from pathlib import Path
+
+    from . import hookrunner
+    from .config import AgentMemConfig
+    from .integrations.claude_code import hook_output, project_key
+
+    try:
+        raw = sys.stdin.read()
+        payload = json.loads(raw) if raw.strip() else {}
+        if not isinstance(payload, dict):
+            payload = {}
+
+        cwd = str(payload.get("cwd") or ".")
+        config = AgentMemConfig(state_dir=str(Path(cwd) / ".agentmem"))
+        session_id = project_key(cwd)
+
+        context: str | None = None
+        event_name = ""
+        if args.event == "session-start":
+            context, event_name = hookrunner.on_session_start(config, session_id), "SessionStart"
+        elif args.event == "prompt":
+            context = hookrunner.on_prompt(config, session_id, str(payload.get("prompt") or ""))
+            event_name = "UserPromptSubmit"
+        elif args.event == "post-tool":
+            name = str(payload.get("tool_name") or payload.get("toolName") or "tool")
+            tool_input = payload.get("tool_input", payload.get("toolInput"))
+            tool_response = payload.get("tool_response", payload.get("toolResponse"))
+            context = hookrunner.on_post_tool(config, session_id, name, tool_input, tool_response)
+            event_name = "PostToolUse"
+        elif args.event == "pre-compact":
+            hookrunner.on_pre_compact(config, session_id)
+        elif args.event == "session-end":
+            hookrunner.on_session_end(config, session_id)
+
+        return json.dumps(hook_output(event_name, context))
+    except Exception:
+        return "{}"
+
+
+def _cmd_step(args: argparse.Namespace) -> int:
+    # The detached memory-step. It has no console, so route logs to a file: a failure
+    # (bad key, provider error) lands in .agentmem/agentmem.log instead of vanishing.
+    import logging
+    from pathlib import Path
+
+    from . import hookrunner
+    from .config import AgentMemConfig
+
+    log_path = Path(args.state_dir) / "agentmem.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    handler = logging.FileHandler(log_path)
+    handler.setFormatter(logging.Formatter("%(asctime)s  %(levelname)s  %(message)s"))
+    log = logging.getLogger("agentmem")
+    log.addHandler(handler)
+    log.setLevel(logging.INFO)
+
+    try:
+        hookrunner.run_step_cold(
+            AgentMemConfig(state_dir=args.state_dir), args.session, bypass_cooldown=args.tool_failure
+        )
+    except Exception:
+        log.exception("detached memory-step failed")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

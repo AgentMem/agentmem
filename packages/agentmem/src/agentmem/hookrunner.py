@@ -242,6 +242,14 @@ def run_step_cold(
         write_pending(config, session_id, outcome.result.intervention.text)
 
 
+def on_pre_compact(
+    config: AgentMemConfig, session_id: str, *, provider: LLMProvider | None = None
+) -> None:
+    """Capture the recent window into the bank before the transcript is compacted away.
+    PreCompact allows a long timeout, so this runs the step synchronously."""
+    run_step_cold(config, session_id, provider=provider)
+
+
 def on_session_end(config: AgentMemConfig, session_id: str) -> None:
     """Consolidate, promote, and persist at the end of a conversation. Reuses the full
     session machinery synchronously; SessionEnd isn't on any latency-critical path.
