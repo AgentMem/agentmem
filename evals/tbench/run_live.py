@@ -87,6 +87,31 @@ def harbor_cmd(args: argparse.Namespace, arm: str, tasks: list[str], job: str) -
     return cmd
 
 
+def finalize_policy_dbs(jobs_dir: Path, job: str, results: dict[str, dict]) -> int:
+    """Fold each trial's real verifier verdict into its recorded decisions.
+
+    The agent closes its session before the verifier runs, so decisions get graded
+    with task_reward 0. Adding gamma^(n-1-i) * reward afterwards makes g match what
+    close() would have produced had it known the verdict."""
+    import sqlite3
+
+    gamma = 0.9
+    updated = 0
+    for db_path in sorted((jobs_dir / job).rglob("agentmem/policy.db")):
+        task = next((p.name.split("__")[0] for p in db_path.parents if "__" in p.name), None)
+        reward = 1.0 if task and results.get(task, {}).get("resolved") else 0.0
+        db = sqlite3.connect(db_path)
+        rows = db.execute("SELECT id FROM decisions WHERE g IS NOT NULL ORDER BY step").fetchall()
+        n = len(rows)
+        for i, (row_id,) in enumerate(rows):
+            bonus = (gamma ** ((n - 1) - i)) * reward
+            db.execute("UPDATE decisions SET g = g + ? WHERE id = ?", (bonus, row_id))
+            updated += 1
+        db.commit()
+        db.close()
+    return updated
+
+
 def collect(jobs_dir: Path, job: str) -> dict[str, dict]:
     """task name -> {resolved, rewards, cost, turns, stop_reason} for one job.
 
@@ -137,6 +162,12 @@ def main() -> None:
         if proc.returncode != 0:
             print(f"harbor exited {proc.returncode} for {arm}; collecting what exists.")
         results[arm] = collect(jobs_dir, job)
+        if arm == "memory":
+            n = finalize_policy_dbs(jobs_dir, job, results[arm])
+            if n:
+                dbs = f"{jobs_dir / job}/**/agentmem/policy.db"
+                print(f"finalized {n} recorded decisions with real verdicts")
+                print(f"AUC: python evals/longrun_sim/policy_auc.py {dbs}")
 
     if args.dry_run:
         return

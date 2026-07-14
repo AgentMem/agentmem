@@ -88,7 +88,13 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
                 provider=mem_provider,
                 trigger=default(),
                 async_worker=False,
-                config=AgentMemConfig(state_dir=str(Path(self.logs_dir) / "agentmem")),
+                # Record decisions for offline analysis. The gate stays off and the
+                # per-trial store starts empty, so recording can't change behavior.
+                config=AgentMemConfig(
+                    state_dir=str(Path(self.logs_dir) / "agentmem"),
+                    advantage_enabled=True,
+                    advantage_gate=False,
+                ),
             )
 
         loop = ActionLoop(

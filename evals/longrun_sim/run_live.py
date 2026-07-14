@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import sys
 import tempfile
@@ -177,9 +178,16 @@ def _ask(provider: Counting, question: str, memory: str | None) -> str:
     ).text
 
 
-def run(model: str, max_usd: float, dry_run: bool) -> dict:
+def run(model: str, max_usd: float, dry_run: bool, keep_state: str | None = None) -> dict:
     provider = Counting(model, dry_run)
-    with tempfile.TemporaryDirectory(prefix="agentmem-longrun-") as tmp:
+    # A kept state dir means the policy DB survives for offline analysis (AUC).
+    holder = (
+        tempfile.TemporaryDirectory(prefix="agentmem-longrun-")
+        if keep_state is None
+        else contextlib.nullcontext(keep_state)
+    )
+    with holder as tmp:
+        Path(tmp).mkdir(parents=True, exist_ok=True)
         state_dir = f"{tmp}/mem"
         tele = Path(state_dir) / "telemetry.jsonl"
         created_repo: dict[str, str] = {}
@@ -344,9 +352,12 @@ def main(argv: list[str] | None = None) -> int:
         "--dry-run", action="store_true", help="offline plumbing check, no key, no cost"
     )
     ap.add_argument("--out", default="evals/report/longrun", help="report directory")
+    ap.add_argument(
+        "--keep-state", default=None, help="keep session state here instead of a tempdir"
+    )
     args = ap.parse_args(argv)
 
-    res = run(args.model, args.max_usd, args.dry_run)
+    res = run(args.model, args.max_usd, args.dry_run, args.keep_state)
     md = report(res)
     print("\n" + md)
     out = Path(args.out)
