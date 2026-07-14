@@ -5,7 +5,9 @@
   <img alt="AgentMem" src="assets/brand/lockup-ink.svg" width="380">
 </picture>
 
-**Memory that doesn't just store. It knows *when* to remind.**
+**The proactive memory layer for long-horizon coding agents.**
+
+*It doesn't just store. It knows when to remind.*
 
 A proactive memory layer for long-horizon coding agents.
 Runs alongside Claude Code, Cursor, Aider, the Claude Agent SDK, LangGraph, the OpenAI
@@ -195,6 +197,10 @@ The eval also paid for itself: the retention gap it exposed drove three lifecycl
 (linking to a lesson now revives it, causally load-bearing entries hold their salience
 floor, and the session-start digest ranks by salience). Same model, same scenario:
 retention went from 56% to 78%.
+
+For how this differs from CLAUDE.md files, Cursor rules, and retrieval APIs like Mem0,
+see [docs/comparison.md](./docs/comparison.md); every claim in the AgentMem column links
+to code or a measured result in this repo.
 
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
