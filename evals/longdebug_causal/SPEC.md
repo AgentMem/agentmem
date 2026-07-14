@@ -1,4 +1,4 @@
-# LongDebug-Causal, Task Specifications (v1.0)
+# LongDebug-Causal benchmark spec (v1.0)
 
 > The benchmark for causal memory. Five multi-session debugging tasks where the **root cause is temporally and semantically distant from the symptom**, designed so that (a) plain context windows lose the cause across session resets, (b) semantic-similarity retrieval surfaces the wrong material, and (c) causal edges (`caused_by`, `fixed_by`, `rules_out`, `blocks`, `supersedes`) provide a measurable advantage.
 > Each task exercises a **different edge relation**, together they cover the full set.
@@ -22,7 +22,7 @@ The answer is scored by (1) keyword gate, at least one `required_keywords` term 
 **Directory layout per task:**
 ```
 evals/longdebug_causal/
-├── TASKS.md                  # this file
+├── SPEC.md                   # this file
 ├── judge_prompts.py          # rubric prompts
 ├── gold/
 │   └── CT-0X.yaml            # gold edges + keywords + cause signatures

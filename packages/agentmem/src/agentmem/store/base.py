@@ -1,13 +1,4 @@
-"""The storage contract.
-
-A store persists memory banks by session id and can list the sessions it knows
-about. That's what makes cross-session memory work: a new run loads the bank the
-last run left behind.
-
-Synchronous by design: the memory-step worker runs on a background thread, so a sync
-store (the SQLite backend uses the stdlib sqlite3, no extra dependency) is the
-simpler fit and never blocks the action agent.
-"""
+"""The storage contract."""
 
 from __future__ import annotations
 

@@ -1,9 +1,4 @@
-"""End-to-end offline runs: real temp repo, real pytest, scripted agent + memory.
-
-These spawn subprocess pytest against a temp copy of each task, so they're a bit
-slower than the unit tests, but they exercise the whole harness and pin down the
-result that matters: with memory the agent recovers; without it, it doesn't.
-"""
+"""End-to-end offline runs: real temp repo, real pytest, scripted agent + memory."""
 
 from __future__ import annotations
 

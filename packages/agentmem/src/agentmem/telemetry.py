@@ -1,9 +1,4 @@
-"""One JSONL line per memory-step, including the silent ones.
-
-Records what triggered the step, what it changed, whether it spoke, and what it cost;
-`agentmem replay` reads it back. We hash the window rather than store it, to avoid
-copying the transcript into a log file.
-"""
+"""One JSONL line per memory-step, including the silent ones."""
 
 from __future__ import annotations
 

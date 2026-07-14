@@ -1,8 +1,4 @@
-"""Test doubles, importable from any test module.
-
-Kept out of conftest.py so tests can ``from _fakes import FakeProvider`` explicitly
-rather than leaning on conftest's implicit-plugin import.
-"""
+"""Test doubles, importable from any test module."""
 
 from __future__ import annotations
 

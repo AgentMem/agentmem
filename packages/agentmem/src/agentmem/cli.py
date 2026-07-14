@@ -1,12 +1,4 @@
-"""The ``agentmem`` command. Plain argparse, no CLI framework dependency.
-
-demo    run the offline (or --live) demonstration
-replay  pretty-print a telemetry file, step by step
-bank    inspect stored memory banks
-init    wire AgentMem into a harness (claude-code)
-serve   run the Claude Code daemon
-doctor  check the setup: key, model, hooks, daemon
-"""
+"""The ``agentmem`` command."""
 
 from __future__ import annotations
 
@@ -369,7 +361,9 @@ def _cmd_step(args: argparse.Namespace) -> int:
 
     try:
         hookrunner.run_step_cold(
-            AgentMemConfig(state_dir=args.state_dir), args.session, bypass_cooldown=args.tool_failure
+            AgentMemConfig(state_dir=args.state_dir),
+            args.session,
+            bypass_cooldown=args.tool_failure,
         )
     except Exception:
         log.exception("detached memory-step failed")

@@ -1,9 +1,4 @@
-"""The four tools the memory agent uses to edit the bank.
-
-The agent emits tool calls instead of rewriting the bank as free text, which keeps
-edits structured and auditable. This module holds the tool schemas and the parsed
-`ToolCall`; applying a call to the bank lives in bank.apply_tool_calls.
-"""
+"""The four tools the memory agent uses to edit the bank."""
 
 from __future__ import annotations
 

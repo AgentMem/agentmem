@@ -1,12 +1,4 @@
-"""Score how worth keeping each entry still is, and classify it into the
-active -> dormant -> archived lifecycle.
-
-Four signals blend into one score per entry: how recently it was touched, how
-often it gets used, how much its tag matters on its own, and whether the
-evaluator's reinforcement signal says it actually helped. Nothing here deletes:
-low salience only demotes an entry, and `policy`/`task` entries have a floor that
-keeps them in `active` through decay alone.
-"""
+"""Score how worth keeping each entry still is, and classify it into the active -> dormant -> archived lifecycle."""
 
 from __future__ import annotations
 

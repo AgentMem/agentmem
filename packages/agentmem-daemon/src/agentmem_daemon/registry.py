@@ -1,12 +1,4 @@
-"""Keeps one MemorySession alive per project.
-
-The daemon is long-lived and serves many hook requests; this maps a project key to
-its session so a project's bank stays warm and consistent across requests (and across
-Claude Code sessions, since the key is derived from the working directory).
-
-Sessions are created through an injectable factory, which is what lets the tests run
-the whole daemon against a fake provider with no network.
-"""
+"""Keeps one MemorySession alive per project."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 # repo: evals/longdebug_causal/gold/CT-03.yaml
-# rules_out direction convention (matches TASKS.md): src = the ruled-out
+# rules_out direction convention (matches SPEC.md): src = the ruled-out
 # hypothesis/attempt, dst = the symptom it fails to explain.
 task_id: CT-03
 name: ruled-out
@@ -30,7 +30,7 @@ forbidden_shallow:
 gold_cause_signature: 'JobTimeout'
 symptom_first_session: 2
 
-# The ruled-out re-attempt list promised by TASKS.md §7 metric 3.
+# The ruled-out re-attempt list promised by SPEC.md metric 3.
 # S2 = the first (allowed) timeout attempt; anything from S3 on is a re-attempt.
 repeat_patterns:
   - {pattern: 'timeout_s\s*=\s*(?:[1-9]\d+)', label: ruled-out-timeout-bump, from_session: 3}

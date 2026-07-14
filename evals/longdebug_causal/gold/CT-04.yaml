@@ -44,7 +44,7 @@ gold_edges:
     dst: boundary-specific formats, parse_date takes an explicit format; CLI passes US, API passes EU
 
 early_root_fix_note: >-
-  The primary early_root_fix task (per TASKS.md determinism policy): fixing
+  The primary early_root_fix task (per SPEC.md determinism policy): fixing
   at the CLI boundary in S1, respecting REQUIREMENTS.md, means S3 never
   breaks. Hidden verifier green with the signature never firing => log
   early_root_fix=true, requirement-respected success, excluded from

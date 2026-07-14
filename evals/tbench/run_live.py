@@ -1,15 +1,4 @@
-"""Drive the Terminal-Bench 2.0 comparison: same tasks, same action loop, one arm
-bare and one with AgentMem attached, then a table of what the verifier said.
-
-This script only shells out to harbor and reads its results.json files, so it runs
-under any Python. The heavy lifting happens in the eval venv harbor lives in; see
-README.md next to this file for the one-time setup.
-
-Typical smoke:
-    python evals/tbench/run_live.py --tasks fix-git,overfull-hbox \\
-        --tb-dir ~/tb2/terminal-bench --harbor-bin ~/harborenv/bin/harbor \\
-        --jobs-dir ~/tb-jobs --run-usd-cap 1.50
-"""
+"""Run the Terminal-Bench 2.0 baseline-vs-memory comparison and print the verifier table."""
 
 from __future__ import annotations
 

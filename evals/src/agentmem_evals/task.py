@@ -1,12 +1,4 @@
-"""Load a task from disk.
-
-A task is a directory:
-
-    tasks/<id>/
-        task.toml   metadata (see the fields on Task below)
-        repo/       the buggy project, copied to a fresh workdir per run
-        verify/     hidden tests, copied in only to score pass@1
-"""
+"""Load a task from disk."""
 
 from __future__ import annotations
 

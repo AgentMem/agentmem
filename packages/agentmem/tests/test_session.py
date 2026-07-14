@@ -1,8 +1,4 @@
-"""End-to-end MemorySession tests, driven by a fake provider.
-
-Runs with async_worker=False so each observe() finishes its memory-step inline, which
-keeps the tests deterministic. The async worker path has its own test below.
-"""
+"""End-to-end MemorySession tests, driven by a fake provider."""
 
 from __future__ import annotations
 

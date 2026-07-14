@@ -1,5 +1,5 @@
 # repo: evals/longdebug_causal/gold/CT-05.yaml
-# The only task with a stale_reminder spec (§7 metric 6): after the S4
+# The only task with a stale_reminder spec (SPEC.md metric 6): after the S4
 # upgrade ticket, a reminder still asserting the 0.25 constraint is HARMFUL
 # unless it is phrased as supersession (exclude_patterns guard).
 task_id: CT-05

@@ -1,8 +1,4 @@
-"""Tests for the secret redactor.
-
-Two things matter: it catches the common secret shapes, and it leaves ordinary code
-alone (a redactor that mangles source would just get switched off).
-"""
+"""Tests for the secret redactor."""
 
 from __future__ import annotations
 

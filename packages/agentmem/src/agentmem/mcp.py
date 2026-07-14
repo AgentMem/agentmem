@@ -1,15 +1,4 @@
-"""MCP server: read-only memory for any MCP host (Cursor, Copilot, Codex, Gemini CLI,
-Continue, Windsurf).
-
-An MCP host can only ask for memory on demand, it can't be handed a reminder mid-turn,
-so this exposes three questions an agent can ask about the project it's working in: a
-recap, a keyword search, and the full project bank. They read the on-disk banks and
-never call a model.
-
-The memory-access functions here are plain and testable; the FastMCP wrapping in
-`build_server()` / `main()` is a thin shell imported lazily, so `import agentmem.mcp`
-doesn't require the `mcp` package until you actually run the server.
-"""
+"""MCP server: read-only memory for any MCP host (Cursor, Copilot, Codex, Gemini CLI, Continue, Windsurf)."""
 
 from __future__ import annotations
 
@@ -169,7 +158,9 @@ def build_server(state_dir: str | None = None) -> Any:
     try:
         from mcp.server.fastmcp import FastMCP
     except ImportError as exc:  # pragma: no cover - only without the mcp SDK installed
-        raise ImportError("The MCP SDK isn't installed. Run: pip install 'agentmem-core[mcp]'") from exc
+        raise ImportError(
+            "The MCP SDK isn't installed. Run: pip install 'agentmem-core[mcp]'"
+        ) from exc
 
     resolved = state_dir or AgentMemConfig().state_dir
     server = FastMCP("agentmem", instructions=_INSTRUCTIONS)

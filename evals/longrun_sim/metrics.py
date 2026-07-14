@@ -1,11 +1,4 @@
-"""Scoring for LongRun-sim: does memory actually help an agent that works the same
-few repos for weeks, without quietly forgetting the long tail or dragging one repo's
-lessons into another?
-
-Everything here is pure and has no LLM calls, so `--selftest` checks the math offline
-before a live run spends any tokens. The live runner fills in the SessionRecords; this
-file just turns them into the numbers we care about.
-"""
+"""Scoring for LongRun-sim: retention, interference, and bank growth."""
 
 from __future__ import annotations
 

@@ -1,14 +1,4 @@
-"""Wrapping your own agent loop with AgentMem.
-
-The integration is small: read `pending_context()` before each turn, feed events to
-`observe()` after. This script is a runnable template. The "action agent" here is a
-stand-in that decides what to do based on whether it got a reminder; swap in your own
-harness and drop the `provider=` override to use a real model.
-
-Run it:
-
-    python integrations/examples/toy_loop.py
-"""
+"""Wrapping your own agent loop with AgentMem."""
 
 from __future__ import annotations
 

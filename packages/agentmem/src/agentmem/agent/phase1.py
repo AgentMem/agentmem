@@ -1,9 +1,4 @@
-"""Phase 1: maintain the bank through tool calls.
-
-One LLM call, optionally a second round so the model can see the result of its edits
-before deciding it's done. Errors here are the caller's to swallow; Phase 1's job is
-to return a bank, and worst case that's the one it started with.
-"""
+"""Phase 1: maintain the bank through tool calls."""
 
 from __future__ import annotations
 

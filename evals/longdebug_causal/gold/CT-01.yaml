@@ -1,5 +1,5 @@
 # repo: evals/longdebug_causal/gold/CT-01.yaml
-# Normative grading truth for CT-01 (the sketch in TASKS.md §1 is illustrative;
+# Normative grading truth for CT-01 (the sketch in SPEC.md is illustrative;
 # this file wins on conflict). Signatures are regexes over combined
 # verifier/pytest output; repeat_patterns are regexes over per-session diffs.
 task_id: CT-01

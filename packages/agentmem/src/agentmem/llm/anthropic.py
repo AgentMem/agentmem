@@ -1,8 +1,4 @@
-"""Anthropic Messages API provider (the default).
-
-No retries or backoff: a memory-step is best-effort, and the session treats any
-exception as "skip this step, keep the old bank".
-"""
+"""Anthropic Messages API provider (the default)."""
 
 from __future__ import annotations
 

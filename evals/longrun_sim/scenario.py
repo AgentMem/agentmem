@@ -1,13 +1,4 @@
-"""Build the 30-session LongRun-sim schedule and load its retention probes.
-
-Three repos, ten sessions each, interleaved (A, B, C, A, B, C, ...) so the agent never
-gets two sessions on the same repo in a row. That interleaving is the point: it forces
-the memory layer to keep three sets of lessons apart and recall the right one after a
-gap, which is where forgetting and cross-repo interference show up.
-
-The tasks and repo contents are specs for the live runner; offline, `--selftest` just
-checks the schedule is well-formed and every probe file loads.
-"""
+"""Build the 30-session LongRun-sim schedule and load its retention probes."""
 
 from __future__ import annotations
 

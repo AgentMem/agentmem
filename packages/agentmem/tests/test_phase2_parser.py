@@ -1,8 +1,4 @@
-"""Tests for the Phase 2 parser.
-
-The rule under test: extract grounded bullets, fall back to silence for anything we
-can't read cleanly. Silence is safe; a hallucinated reminder is not.
-"""
+"""Tests for the Phase 2 parser."""
 
 from __future__ import annotations
 

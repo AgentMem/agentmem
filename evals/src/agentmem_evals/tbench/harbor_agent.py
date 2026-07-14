@@ -1,17 +1,4 @@
-"""The harbor-facing shim around ActionLoop.
-
-harbor only exists in the eval venv (it needs Python 3.13), so the import is guarded:
-the module still imports in the workspace venv, and only building the agent requires
-harbor to be present.
-
-Run it through harbor like:
-
-    harbor run -p <tasks-dir> -i fix-git \\
-        --agent agentmem_evals.tbench.harbor_agent:AgentMemTerminalAgent \\
-        --ak arm=memory --ak action_model=claude-haiku-4-5 -n 2
-
-Every --ak value arrives as a string, so numeric knobs are coerced here.
-"""
+"""harbor shim around ActionLoop; see evals/tbench/README.md for how to run it."""
 
 from __future__ import annotations
 

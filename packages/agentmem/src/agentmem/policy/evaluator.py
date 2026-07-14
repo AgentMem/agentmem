@@ -1,14 +1,4 @@
-"""Grade each memory-step after the fact.
-
-At SessionEnd we hand the whole trajectory and the list of decisions to one LLM call,
-which scores every step in [-1, 1] with a label (did the reminder change behavior for
-the better, was silence right, was it a redundant nag, and so on). Those rewards, plus
-the task's own pass/fail, become the discounted return G that the advantage layer
-learns from.
-
-One call per session, cheap enough to leave on. When it can't be run or parsed, we
-just get no labels and the advantage layer stays quiet.
-"""
+"""Grade each memory-step after the fact."""
 
 from __future__ import annotations
 

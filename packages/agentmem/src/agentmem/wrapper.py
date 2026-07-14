@@ -1,9 +1,4 @@
-"""`wrap(action_fn)`: the one-liner for a hand-written loop.
-
-The manual integration is two calls, `pending_context()` before a turn and `observe()`
-after. `wrap` folds them into the function you already have: it injects the pending
-reminder as a `memory_context` keyword and observes whatever the turn produced.
-"""
+"""`wrap(action_fn)`: the one-liner for a hand-written loop."""
 
 from __future__ import annotations
 

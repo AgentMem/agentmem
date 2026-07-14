@@ -1,10 +1,4 @@
-"""Daemon test fixtures.
-
-The client fixture wires the app to a session factory that uses the scripted demo
-provider (no network) and runs steps inline (async_worker=False) for determinism.
-The async, non-blocking behavior gets its own test that deliberately uses a slow
-provider.
-"""
+"""Daemon test fixtures."""
 
 from __future__ import annotations
 

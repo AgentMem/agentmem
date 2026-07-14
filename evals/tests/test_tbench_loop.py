@@ -47,7 +47,9 @@ def _tool_use_ids_answered(window: list[dict[str, Any]]) -> bool:
     for i, msg in enumerate(window):
         if msg["role"] != "assistant":
             continue
-        uses = [b["id"] for b in msg["content"] if isinstance(b, dict) and b.get("type") == "tool_use"]
+        uses = [
+            b["id"] for b in msg["content"] if isinstance(b, dict) and b.get("type") == "tool_use"
+        ]
         if not uses:
             continue
         if i + 1 >= len(window):
@@ -69,7 +71,9 @@ def _memory_session(tmp_path: Path) -> MemorySession:
 
 
 def test_exec_then_done_shapes_the_conversation() -> None:
-    fake = FakeAction([_resp(_bash("ls")), _resp(ToolCall(name="task_done", args={"summary": "did it"}))])
+    fake = FakeAction(
+        [_resp(_bash("ls")), _resp(ToolCall(name="task_done", args={"summary": "did it"}))]
+    )
     loop = ActionLoop(fake, "list the files", usd_cap=1.0)
 
     d1 = loop.next_decision()
@@ -176,9 +180,7 @@ def test_long_output_is_truncated() -> None:
     d = loop.next_decision()
     loop.record_exec(d, "x" * 5000, "", 0)
     loop.next_decision()
-    result = next(
-        b for b in fake.windows[-1][-1]["content"] if b.get("type") == "tool_result"
-    )
+    result = next(b for b in fake.windows[-1][-1]["content"] if b.get("type") == "tool_result")
     assert len(result["content"]) < 700
     assert "truncated" in result["content"]
 

@@ -1,11 +1,4 @@
-"""The advantage layer as one object the agent talks to.
-
-It holds the graded history, turns a state into a prior ("in N similar states,
-injecting averaged +0.4, silence −0.1") for the Phase 2 prompt, and offers a one-way
-gate that can turn a would-be reminder into silence when history says injecting here
-tends to backfire. It never turns silence into a reminder. At SessionEnd it runs the
-evaluator and writes the returns back so the next session is a little wiser.
-"""
+"""The advantage layer as one object the agent talks to."""
 
 from __future__ import annotations
 

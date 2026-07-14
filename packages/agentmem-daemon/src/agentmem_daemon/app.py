@@ -1,12 +1,4 @@
-"""The FastAPI daemon: HTTP endpoints for Claude Code hooks.
-
-Each endpoint is a thin wrapper: parse the hook payload, translate it with the
-`agentmem.integrations.claude_code` helpers, and touch the project's MemorySession.
-The heavy lifting (running a memory-step) happens on the session's background worker,
-so every endpoint here returns quickly. The one exception is pre-compact, which
-consolidates synchronously before the transcript is squeezed; it runs in a threadpool
-so it doesn't stall the event loop.
-"""
+"""The FastAPI daemon: HTTP endpoints for Claude Code hooks."""
 
 from __future__ import annotations
 

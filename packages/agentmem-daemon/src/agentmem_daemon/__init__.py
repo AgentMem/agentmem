@@ -1,8 +1,4 @@
-"""AgentMem daemon: a localhost HTTP bridge between Claude Code hooks and AgentMem.
-
-Start it with `agentmem serve`. It receives hook events, runs memory-steps in the
-background, and returns cached reminders fast enough that hooks never wait on a model.
-"""
+"""AgentMem daemon: a localhost HTTP bridge between Claude Code hooks and AgentMem."""
 
 from __future__ import annotations
 

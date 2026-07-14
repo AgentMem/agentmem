@@ -1,9 +1,4 @@
-"""SQLite store: many sessions in one file.
-
-The bank is stored as a JSON blob, not shredded into rows: we always load it whole,
-mutate in Python, and write it back, so there's nothing to query inside it. Uses the
-stdlib sqlite3; WAL mode lets a reader and the single writer coexist.
-"""
+"""SQLite store: many sessions in one file."""
 
 from __future__ import annotations
 

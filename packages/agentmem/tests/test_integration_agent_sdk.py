@@ -1,10 +1,4 @@
-"""Tests for the Claude Agent SDK adapter.
-
-The PostToolUse callback runs against a real MemorySession (scripted provider, inline
-steps), so this exercises the full observe -> step -> reminder path. `attach_memory`
-needs the SDK's HookMatcher, which isn't a test dependency, so those tests stand in a
-fake `claude_agent_sdk` module.
-"""
+"""Tests for the Claude Agent SDK adapter."""
 
 from __future__ import annotations
 

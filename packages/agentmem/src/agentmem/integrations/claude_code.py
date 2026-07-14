@@ -1,12 +1,4 @@
-"""Translation helpers between Claude Code hook payloads and AgentMem.
-
-These are pure functions so they can be tested without a running daemon or a real
-Claude Code session. The daemon (agentmem-daemon) is a thin HTTP shell around them.
-
-Hook payload shapes vary between Claude Code versions, so we read fields defensively
-and never assume a key is present. If the shape changes, this file is the one place
-to adjust.
-"""
+"""Translation helpers between Claude Code hook payloads and AgentMem."""
 
 from __future__ import annotations
 

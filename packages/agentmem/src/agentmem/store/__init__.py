@@ -1,9 +1,4 @@
-"""Store selection from a config string.
-
-"json"                      -> JsonFileStore under <state_dir>/
-"sqlite"                    -> SqliteStore at <state_dir>/agentmem.db
-"sqlite:///path/to/run.db"  -> SqliteStore at that path
-"""
+"""Store selection from a config string."""
 
 from __future__ import annotations
 

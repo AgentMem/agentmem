@@ -1,10 +1,4 @@
-"""Turn the situation at a memory-step into a bag of tokens.
-
-Two similar situations should share most of their tokens, so a Jaccard overlap is a
-good "have I seen a state like this before?" measure. Everything is bucketed and
-stripped of specifics (paths, ids, exact counts) so, say, "pytest just failed with the
-bank half full" collides across projects instead of being unique every time.
-"""
+"""Turn the situation at a memory-step into a bag of tokens."""
 
 from __future__ import annotations
 

@@ -1,14 +1,4 @@
-"""Where past decisions live: one row per memory-step, its state, what we did, and how
-it turned out.
-
-The return (G) isn't known until the session ends and the evaluator scores it, so a
-row is written "pending" (G null) at decision time and filled in at SessionEnd. Only
-finalized rows feed the advantage estimate, a decision we can't yet grade shouldn't
-influence the next one.
-
-Its own SQLite file (.agentmem/policy.db), separate from the bank, so it can grow
-without bloating the thing we load every step.
-"""
+"""Where past decisions live: one row per memory-step, its state, what we did, and how it turned out."""
 
 from __future__ import annotations
 

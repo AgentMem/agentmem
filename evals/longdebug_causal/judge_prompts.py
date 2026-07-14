@@ -1,38 +1,5 @@
 #!/usr/bin/env python3
-"""LLM-judge prompts + deterministic scorers for LongDebug-Causal §7.
-
-Repo location: evals/longdebug_causal/judge_prompts.py
-Companion to TASKS.md §7 and gold/CT-0X.yaml (which this module loads and
-validates, the YAMLs are the normative grading truth; the snippets inside
-TASKS.md are illustrative sketches).
-
-Philosophy: DETERMINISTIC FIRST. Everything that can be a regex or a string
-gate runs without any model call (keyword gate, repeated-cause detection,
-stale-reminder counting, edge-relation pre-check). The LLM judge is reserved
-for the two genuinely semantic calls:
-
-  J1  root-cause postmortem grading      -> metric 2 (root-cause-identification)
-  J2  causal-edge concept matching       -> metric 5 pre-screen ONLY
-                                            (a human still audits the 30-edge
-                                             sample; J2 just drafts the sheet)
-
-Judge model guidance: Haiku, temperature 0, one retry on unparseable output,
-then flag for manual grading rather than guessing.
-
-The module is stdlib-only at import time; PyYAML is imported lazily inside
-load_gold(). Plug in any LLM through the tiny Judge protocol, e.g.:
-
-    class HaikuJudge:                       # adapter over the package provider
-        def __init__(self, provider):       # agentmem.llm.LLMProvider
-            self.p = provider
-        def complete(self, prompt: str) -> str:
-            return self.p.complete(model="claude-haiku-4-5", prompt=prompt,
-                                   max_tokens=8, temperature=0)
-
-CLI:
-    python judge_prompts.py --validate gold/     # schema-check every yaml
-    python judge_prompts.py --selftest           # no-LLM fixture tests
-"""
+"""LLM-judge prompts and deterministic scorers for LongDebug-Causal (grading spec: SPEC.md)."""
 
 from __future__ import annotations
 
@@ -408,10 +375,10 @@ def detect_repeats(diff_text: str, gold: GoldSpec, session: int) -> list[RepeatH
 
 
 def repeated_cause_rate(records: list[SessionRecord], gold: GoldSpec) -> RateResult:
-    """§7 metric 3. Opportunity = every session strictly after the FIRST fix
-    attempt. Recurrence in an opportunity session = the gold signature fires
-    again in that session's hidden snapshot, OR the diff re-attempts an action
-    covered by repeat_patterns (the ruled-out / known-cause list)."""
+    """Opportunity = every session strictly after the FIRST fix attempt.
+    Recurrence in an opportunity session = the gold signature fires again in
+    that session's hidden snapshot, OR the diff re-attempts an action covered
+    by repeat_patterns (the ruled-out / known-cause list)."""
     records = sorted(records, key=lambda r: r.session)
     sigs = gold.all_signatures()
     first_fix = next((r.session for r in records if infer_fix_attempted(r, gold)), None)

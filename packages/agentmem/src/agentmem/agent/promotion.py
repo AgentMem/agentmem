@@ -1,12 +1,4 @@
-"""Promote entries from the session bank into the project bank: the smaller,
-durable tier that survives across sessions on this project.
-
-Promotion isn't a move: the session-tier original stays exactly where it is, subject
-to its own normal decay. What lands in the project bank is a copy, rewritten by the
-model as a general rule ("what to do next time") rather than a record of what happened
-this one instance. Eligibility and id allocation are system-decided; only the rewrite
-goes through the model.
-"""
+"""Promote entries from the session bank into the durable project bank."""
 
 from __future__ import annotations
 

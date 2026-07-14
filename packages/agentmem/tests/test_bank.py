@@ -1,9 +1,4 @@
-"""Golden + property tests for the bank reducer.
-
-`apply_tool_calls` is the function everything else trusts to be pure and
-deterministic, so this file leans on it: exact expected banks for known inputs, plus
-the invariants (purity, no id reuse, capped growth).
-"""
+"""Golden + property tests for the bank reducer."""
 
 from __future__ import annotations
 

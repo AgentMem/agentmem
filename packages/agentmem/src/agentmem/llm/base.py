@@ -1,12 +1,4 @@
-"""The provider interface.
-
-Everything the memory agent needs from an LLM goes through one method, `complete`.
-Phase 1 passes `tools`; Phase 2 doesn't. A small surface keeps the provider swappable
-(Anthropic today, others later).
-
-Messages are Anthropic-native content-block dicts, since the Phase 1 tool loop needs
-tool_use / tool_result blocks. A non-Anthropic provider would translate at its edge.
-"""
+"""The provider interface."""
 
 from __future__ import annotations
 

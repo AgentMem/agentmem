@@ -1,9 +1,4 @@
-"""AgentMem: a proactive memory layer for long-horizon coding agents.
-
-The public surface is small: construct a `MemorySession`, read `pending_context()`
-before each agent turn, feed new events to `observe()`. Everything else may change
-before 0.1.0.
-"""
+"""AgentMem: a proactive memory layer for long-horizon coding agents."""
 
 from __future__ import annotations
 

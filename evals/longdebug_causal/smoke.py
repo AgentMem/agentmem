@@ -1,43 +1,5 @@
 #!/usr/bin/env python3
-"""LongDebug-Causal smoke runner, scripted dummy agent, zero LLM calls.
-
-Repo location: evals/longdebug_causal/smoke.py
-Companion to TASKS.md §8. For every task this replays two canned action
-scripts against a fresh copy of the task repo:
-
-  * trap, the naive-agent path. Proves the causal trap fires
-    deterministically: the gold signature must appear at the specced
-    session, persist/recur where specced, and the hidden verifier must
-    end RED.
-  * gold, the root-cause path. Proves the intended fix exists and the
-    hidden verifier ends GREEN.
-
-Design notes
-------------
-- Filler sessions are no-ops here: they validate session timing and
-  workspace persistence (the workdir survives across sessions, exactly
-  like the harness Docker volume), not features.
-- Smoke sessions are checkpoints and may split one eval session into
-  e.g. "S3-symptom" / "S3-shallow-fix".
-- NORMATIVE ANCHORS: the canned edits grip onto exact strings that the
-  scaffolded repos MUST contain (declared per task below, printed by
-  --list, verified by preflight before anything runs). If Claude Code
-  scaffolds differently, preflight fails with the precise missing
-  anchor instead of a confusing mid-run error.
-- Host deps: python3.11+, pytest, pytest-asyncio. CT-05 additionally
-  needs network (pip installs real httpx versions); skip it with
-  --offline. Docker parity is exercised by the full runner, not here.
-
-Usage
------
-  python smoke.py                       # all tasks, both scenarios
-  python smoke.py --task CT-03          # one task
-  python smoke.py --scenario trap       # traps only
-  python smoke.py --list                # print plans + anchors, run nothing
-  python smoke.py --offline             # skip network-dependent tasks
-  python smoke.py --keep --json out.json
-Exit code 0 iff every selected scenario met all expectations.
-"""
+"""LongDebug-Causal smoke runner: scripted dummy agent, zero LLM calls."""
 
 from __future__ import annotations
 
@@ -704,7 +666,7 @@ CT04 = Task(
             f"{PYT} -q",
             True,
             expect_sig=False,
-            note="early_root_fix path from TASKS.md: boundary formats, util agnostic",
+            note="early_root_fix path: boundary formats, util agnostic",
         ),
         Sess("S3-nothing-breaks", [], f"{PYT} -q", True, expect_sig=False),
         Sess(

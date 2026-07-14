@@ -1,9 +1,4 @@
-"""A small self-contained demo of the memory layer catching a repeated failure.
-
-Runs fully offline by default (the memory agent's responses are scripted), so
-`agentmem demo` works the instant you install. Pass --live to run the same
-trajectory through a real model.
-"""
+"""A small self-contained demo of the memory layer catching a repeated failure."""
 
 from __future__ import annotations
 

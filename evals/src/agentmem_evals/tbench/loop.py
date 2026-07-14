@@ -1,15 +1,4 @@
-"""The action loop both arms share.
-
-Pure and synchronous on purpose: the harbor shim drives it from async code via
-to_thread, and the tests drive it directly with fake providers. It never imports
-harbor, so the whole file stays testable in the workspace venv.
-
-Message discipline follows the Anthropic content-block format the provider interface
-already speaks. Two invariants the window logic must never break:
-- every tool_use block is answered by a tool_result in the immediately following
-  user message, and
-- trimming drops whole assistant+result pairs, never half a pair.
-"""
+"""The action loop both arms share; pure and sync so tests can drive it offline."""
 
 from __future__ import annotations
 
@@ -54,9 +43,7 @@ DONE_TOOL: dict[str, Any] = {
     "description": "Declare the task finished. Call this once the goal is met.",
     "input_schema": {
         "type": "object",
-        "properties": {
-            "summary": {"type": "string", "description": "One line on what was done."}
-        },
+        "properties": {"summary": {"type": "string", "description": "One line on what was done."}},
         "required": [],
     },
 }
@@ -305,9 +292,7 @@ class ActionLoop:
             }
         ]
         for skipped in decision.skipped_ids:
-            blocks.append(
-                {"type": "tool_result", "tool_use_id": skipped, "content": _SKIPPED_NOTE}
-            )
+            blocks.append({"type": "tool_result", "tool_use_id": skipped, "content": _SKIPPED_NOTE})
         self._messages.append({"role": "user", "content": blocks})
         self._log(
             "exec",

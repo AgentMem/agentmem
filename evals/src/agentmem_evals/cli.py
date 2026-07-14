@@ -1,8 +1,4 @@
-"""agentmem-evals: run the ablation and write a report.
-
-Offline by default (scripted agent, no key, no cost). `--live` uses a real model and
-should always be paired with `--max-usd`.
-"""
+"""agentmem-evals: run the ablation and write a report."""
 
 from __future__ import annotations
 

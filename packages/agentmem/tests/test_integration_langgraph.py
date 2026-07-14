@@ -1,8 +1,4 @@
-"""Tests for the LangGraph node.
-
-Driven with a recording stand-in for the session, so this checks the node's own job:
-converting messages to events, only observing new ones, and returning the context.
-"""
+"""Tests for the LangGraph node."""
 
 from __future__ import annotations
 

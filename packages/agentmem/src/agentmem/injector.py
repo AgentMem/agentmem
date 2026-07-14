@@ -1,9 +1,4 @@
-"""Turn Phase 2's chosen bullets into the reminder the agent sees.
-
-Phase 2 decides what to say; the injector decides how much and how often: at most
-`max_bullets` within a token budget, and a per-entry cooldown so we don't repeat the
-same reminder every few steps. It also updates the bank's injection bookkeeping.
-"""
+"""Turn Phase 2's chosen bullets into the reminder the agent sees."""
 
 from __future__ import annotations
 

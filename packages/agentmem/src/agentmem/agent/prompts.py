@@ -1,8 +1,4 @@
-"""System prompts and prompt assembly for the two phases.
-
-All prompt text lives here, so a behavior change is a diff in one file. Expect these
-to get tuned against the eval suite.
-"""
+"""System prompts and prompt assembly for the two phases."""
 
 from __future__ import annotations
 

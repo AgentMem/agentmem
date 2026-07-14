@@ -1,23 +1,4 @@
-"""LongRun-sim live runner: a capabilities dashboard for AgentMem's differentiators.
-
-One agent works three repos over 30 interleaved sessions (A, B, C, ...), each a real
-open -> observe -> close `MemorySession` lifecycle sharing one state dir, so the bank and
-the learned policy persist and grow across sessions. Early sessions state each repo's hard
-requirements and the lesson from its main failure; one later session re-surfaces that
-failure. From the accumulated telemetry and the final bank it measures the four things that
-set AgentMem apart, plus the long-horizon retention / interference / bank-growth numbers:
-
-  1. Structured procedural memory  - a tool-maintained, typed store, not a blob
-  2. Causal memory                 - caused_by / fixed_by / rules_out edges across sessions
-  3. Proactive intervention        - injects when a known failure recurs, silent on routine
-  4. Learned policy (advantage)    - the advantage layer records + grades outcomes and gates
-
-No expensive task-solve loop, so it runs on Haiku with a hard cost cap. `--dry-run`
-validates the plumbing offline (fake provider, zero cost).
-
-    python evals/longrun_sim/run_live.py --dry-run
-    ANTHROPIC_API_KEY=... python evals/longrun_sim/run_live.py --max-usd 1.0
-"""
+"""LongRun-sim live runner: a capabilities dashboard for AgentMem's differentiators."""
 
 from __future__ import annotations
 
@@ -77,14 +58,27 @@ def events_for(repo: str, appearance: int) -> list[Event]:
     if appearance == 1:
         return [
             Event(kind="message", role="assistant", text=c["lesson"]),
-            Event(kind="tool_result", tool_name="pytest", ok=True, text="tests green after the fix"),
+            Event(
+                kind="tool_result", tool_name="pytest", ok=True, text="tests green after the fix"
+            ),
         ]
     if appearance == TRAP_APPEARANCE:
         return [
             Event(kind="message", role="user", text=c["trap"]),
-            Event(kind="tool_result", tool_name="pytest", ok=False, text="FAILED (same symptom as before)"),
+            Event(
+                kind="tool_result",
+                tool_name="pytest",
+                ok=False,
+                text="FAILED (same symptom as before)",
+            ),
         ]
-    return [Event(kind="message", role="user", text=f"Routine work on repo {repo.upper()} (touch {appearance}).")]
+    return [
+        Event(
+            kind="message",
+            role="user",
+            text=f"Routine work on repo {repo.upper()} (touch {appearance}).",
+        )
+    ]
 
 
 def grade(answer: str, probe: S.Probe) -> bool:
@@ -100,11 +94,19 @@ class _Fake:
     model = "fake"
     _n = 0
 
-    def complete(self, *, system: str, messages: list, tools: list | None = None, max_tokens: int = 1024) -> LLMResponse:
+    def complete(
+        self, *, system: str, messages: list, tools: list | None = None, max_tokens: int = 1024
+    ) -> LLMResponse:
         if tools:
             _Fake._n += 1
             return LLMResponse(
-                tool_calls=[ToolCall(name=SAVE_PROCEDURAL, args={"tag": "fix", "content": "a lesson"}, block_id=f"t{_Fake._n}")],
+                tool_calls=[
+                    ToolCall(
+                        name=SAVE_PROCEDURAL,
+                        args={"tag": "fix", "content": "a lesson"},
+                        block_id=f"t{_Fake._n}",
+                    )
+                ],
                 usage=TokenUsage(input_tokens=50, output_tokens=10),
             )
         return LLMResponse(
@@ -168,7 +170,9 @@ def _ask(provider: Counting, question: str, memory: str | None) -> str:
     ctx = f"Project notes you remember:\n{memory}\n\n" if memory else ""
     return provider.complete(
         system="You answer questions about projects you have worked on. If you do not know, say so.",
-        messages=[{"role": "user", "content": f"{ctx}Question: {question}\nAnswer in one sentence."}],
+        messages=[
+            {"role": "user", "content": f"{ctx}Question: {question}\nAnswer in one sentence."}
+        ],
         max_tokens=1024,  # room for adaptive thinking ahead of the one-sentence answer
     ).text
 
@@ -217,12 +221,25 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
             rows.extend(new)
 
             cited = [created_repo.get(i, repo) for r in new for i in r.get("cited_ids", [])]
-            records.append(M.SessionRecord(repo=repo, index=sched.index, passed=False, repeated_failures=0, bank_size=bank_size, cited_repos=cited))
+            records.append(
+                M.SessionRecord(
+                    repo=repo,
+                    index=sched.index,
+                    passed=False,
+                    repeated_failures=0,
+                    bank_size=bank_size,
+                    cited_repos=cited,
+                )
+            )
             if provider.cost > max_usd:
-                print(f"[budget] stopping at session {sched.index}, ~${provider.cost:.2f}", flush=True)
+                print(
+                    f"[budget] stopping at session {sched.index}, ~${provider.cost:.2f}", flush=True
+                )
                 break
 
-        final = MemorySession(task="inspect", provider=provider, session_id="longrun", config=_config(state_dir))
+        final = MemorySession(
+            task="inspect", provider=provider, session_id="longrun", config=_config(state_dir)
+        )
         entries, edges = final.bank.all_entries(), final.bank.edges
         # Same recall surface production uses at SessionStart: project tier included.
         digest = bank_digest(final.bank, project=final.project_bank) or ""
@@ -238,8 +255,13 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
             mem_probes.append(M.ProbeResult(probe.repo, 30, mem_ok))
             base_probes.append(M.ProbeResult(probe.repo, 30, base_ok))
             probe_rows.append(
-                {"id": probe.id, "in_digest": in_digest, "mem_ok": mem_ok, "base_ok": base_ok,
-                 "answer": " ".join(answer.split())[:80]}
+                {
+                    "id": probe.id,
+                    "in_digest": in_digest,
+                    "mem_ok": mem_ok,
+                    "base_ok": base_ok,
+                    "answer": " ".join(answer.split())[:80],
+                }
             )
 
     injects = [r for r in rows if r.get("decision") == "inject"]
@@ -257,7 +279,13 @@ def run(model: str, max_usd: float, dry_run: bool) -> dict:
 
 
 def report(res: dict) -> str:
-    entries, edges, injects, rows, records = res["entries"], res["edges"], res["injects"], res["rows"], res["records"]
+    entries, edges, injects, rows, records = (
+        res["entries"],
+        res["edges"],
+        res["injects"],
+        res["rows"],
+        res["records"],
+    )
     provider = res["provider"]
     kinds = Counter(e.kind for e in entries)
     ptags = Counter(e.tag for e in entries if e.kind == "procedural")
@@ -312,7 +340,9 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--model", default="claude-haiku-4-5", help="memory + probe model")
     ap.add_argument("--max-usd", type=float, default=1.0, help="hard spend cap")
-    ap.add_argument("--dry-run", action="store_true", help="offline plumbing check, no key, no cost")
+    ap.add_argument(
+        "--dry-run", action="store_true", help="offline plumbing check, no key, no cost"
+    )
     ap.add_argument("--out", default="evals/report/longrun", help="report directory")
     args = ap.parse_args(argv)
 

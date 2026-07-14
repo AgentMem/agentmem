@@ -1,9 +1,4 @@
-"""One memory-step, end to end: render the window, manage the bank (Phase 1), decide
-whether to speak (Phase 2), and let the injector shape the result.
-
-The window is where privacy and budget get enforced before anything reaches the
-model: recent events only, each clipped, secrets redacted.
-"""
+"""One memory-step, end to end: Phase 1 bank upkeep, then the Phase 2 speak-or-stay-silent call."""
 
 from __future__ import annotations
 

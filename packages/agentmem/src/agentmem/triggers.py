@@ -1,13 +1,4 @@
-"""When to run a memory-step.
-
-Triggers are composable predicates over the recent trajectory. A trigger returns a
-short reason string when it wants a step, or None to stay quiet. The reason flows
-into telemetry; for tool failures it also tells the injector it may bypass the
-cooldown.
-
-The shipped default is `default()`: run on an interval or on any tool failure.
-`paper_faithful()` runs every step, for eval comparisons.
-"""
+"""When to run a memory-step."""
 
 from __future__ import annotations
 

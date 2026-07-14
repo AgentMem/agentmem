@@ -1,9 +1,4 @@
-"""The bank reducer: apply a batch of tool calls, get a new bank back.
-
-Pure and total: it never mutates its input, never raises on bad input (a
-memory-step must not crash the action loop), and caps growth by evicting the
-least-useful entries when the bank is full.
-"""
+"""The bank reducer: apply a batch of tool calls, get a new bank back."""
 
 from __future__ import annotations
 

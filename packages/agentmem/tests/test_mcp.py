@@ -10,7 +10,9 @@ from agentmem.store import SqliteStore, open_store
 
 
 def _entry(id_: str, content: str, tag: str = "task") -> MemoryEntry:
-    return MemoryEntry(id=id_, kind="knowledge", tag=tag, content=content, created_step=1, updated_step=1)
+    return MemoryEntry(
+        id=id_, kind="knowledge", tag=tag, content=content, created_step=1, updated_step=1
+    )
 
 
 def _seed_project(state_dir: Path, *entries: MemoryEntry) -> None:
@@ -72,7 +74,9 @@ def test_checkpoint_stays_silent_when_nothing_relevant(tmp_path: Path) -> None:
 
 
 def test_checkpoint_always_surfaces_policy_rules(tmp_path: Path) -> None:
-    _seed_project(tmp_path, _entry("PK-001", "never touch the generated protobuf files", tag="policy"))
+    _seed_project(
+        tmp_path, _entry("PK-001", "never touch the generated protobuf files", tag="policy")
+    )
     out = mcp.checkpoint(str(tmp_path), context="working on the frontend styles")
     assert "PK-001" in out  # a policy rule applies even without keyword overlap
 

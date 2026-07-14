@@ -1,10 +1,4 @@
-"""Configuration.
-
-Every tunable lives here. Precedence, highest first: constructor kwargs, `AGENTMEM_*`
-env vars, a `.env` file, then a committable `agentmem.toml` at the project root. The
-TOML file is the one meant to travel with the repo (unlike `.env`), so a team can pin
-the model and store choices next to their `.claude/settings.json`.
-"""
+"""Configuration."""
 
 from __future__ import annotations
 

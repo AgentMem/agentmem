@@ -1,13 +1,4 @@
-"""litellm provider: the path to non-Anthropic models (Gemini, OpenAI, vLLM, Ollama).
-
-Our messages are Anthropic-native content blocks while litellm speaks OpenAI's format, so
-this adapter translates at the edge: Anthropic tool_use / tool_result blocks become OpenAI
-tool_calls and tool-role messages on the way in, and the OpenAI response becomes an
-`LLMResponse` on the way out. litellm handles OpenAI to the actual backend.
-
-Set `model="litellm/<backend>"`, e.g. `litellm/gemini/gemini-2.5-flash` with `GEMINI_API_KEY`
-set. Optional extra: `pip install 'agentmem-core[litellm]'`.
-"""
+"""litellm provider: the path to non-Anthropic models (Gemini, OpenAI, vLLM, Ollama)."""
 
 from __future__ import annotations
 

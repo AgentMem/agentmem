@@ -1,19 +1,4 @@
-"""Daemon-less command-hook runtime.
-
-Each Claude Code hook runs as its own short-lived process, so there's no warm bank in
-RAM. State lives on disk between calls: a small per-session file holds the task, a few
-counters, and a recent event window; a separate file holds the pending reminder. The
-fast hooks (session start, prompt, tool use) only touch those files and return in
-milliseconds. The heavy part, a memory-step's LLM call, is spawned as a detached
-process that writes the reminder to disk for the next hook to pick up.
-
-Two files, one writer each, so there's no clobber:
-- `<session>.json`  counters + event window + task. Hooks write it; the step reads it.
-- `<session>.pending`  the reminder. The step writes it; the next hook reads and deletes it.
-
-The injector's per-entry cooldown rides in the bank itself (`last_injected_step`), which
-the step owns, so counters never need to be shared between the two writers.
-"""
+"""Daemon-less command-hook runtime."""
 
 from __future__ import annotations
 

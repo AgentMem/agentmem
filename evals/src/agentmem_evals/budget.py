@@ -1,9 +1,4 @@
-"""A hard USD cap so a live eval can't run away.
-
-Prices are approximate and per million tokens; update them from the current pricing
-page before trusting a live estimate. Offline runs spend nothing (scripted providers
-report zero tokens), so the cap only ever bites on real API runs.
-"""
+"""A hard USD cap so a live eval can't run away."""
 
 from __future__ import annotations
 

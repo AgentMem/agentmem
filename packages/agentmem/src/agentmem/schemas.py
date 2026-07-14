@@ -1,8 +1,4 @@
-"""Shared data models: the memory bank, its entries, events, and step results.
-
-The bank has three parts: `status` (private notes only the memory agent sees),
-`knowledge` (stable facts), and `procedural` (what was tried and how it went).
-"""
+"""Shared data models: the memory bank, its entries, events, and step results."""
 
 from __future__ import annotations
 

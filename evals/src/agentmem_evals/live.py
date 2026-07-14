@@ -1,10 +1,4 @@
-"""A real terminal agent for live eval runs.
-
-Deliberately simple: the model replies with exactly one shell command per turn (or
-DONE), we run it, and feed the output back as plain text. No tool-use protocol to get
-subtly wrong. Needs ANTHROPIC_API_KEY; it is not exercised by the offline test suite,
-so treat it as the part to validate first on a real run.
-"""
+"""A real terminal agent for live eval runs."""
 
 from __future__ import annotations
 

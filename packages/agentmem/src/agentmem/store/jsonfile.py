@@ -1,8 +1,4 @@
-"""JSON-file store: one file per session under <state_dir>/banks/.
-
-Zero config, and each file is self-contained (task + bank + timestamp), so listing
-sessions is just a directory glob. Writes are atomic (temp file + os.replace).
-"""
+"""JSON-file store: one file per session under <state_dir>/banks/."""
 
 from __future__ import annotations
 

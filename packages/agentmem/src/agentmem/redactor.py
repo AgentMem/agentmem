@@ -1,9 +1,4 @@
-"""Scrub obvious secrets out of the trajectory before the LLM or telemetry sees it.
-
-Coding transcripts leak keys: a printed env var, an Authorization header, a pasted
-token. This runs on every windowed event by default. It's a safety net, not a
-guarantee, and it leans conservative to avoid mangling ordinary code.
-"""
+"""Scrub obvious secrets out of the trajectory before the LLM or telemetry sees it."""
 
 from __future__ import annotations
 

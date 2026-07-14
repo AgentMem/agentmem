@@ -1,20 +1,4 @@
-"""Adapter for Aider (the terminal coding agent).
-
-Aider has no formal hook API, so this does two things around Aider's own loop, without
-touching its prompts or tools:
-
-- INJECT (transient): a thin `Coder` subclass overrides `format_chat_chunks` and appends
-  the pending reminder to the fresh `chunks.reminder` list. That list (and `chunks.cur`)
-  is a per-request copy, so the reminder reaches the model but is never written back into
-  Aider's history: consumed once, exactly matching AgentMem's contract.
-- OBSERVE: `AiderMemory.run()` drives one `coder.run(with_message=...)` turn and reads the
-  stable, public-ish attributes it leaves behind (the reply, edited files, test/lint
-  outcome) to feed the trajectory back.
-
-Verified against `aider-chat` 0.86.2. The message-assembly internals are unsupported, so
-keep the subclass to the single `format_chat_chunks` override; `test_adapter_smoke`
-fails loudly if the shape changes.
-"""
+"""Adapter for Aider (the terminal coding agent)."""
 
 from __future__ import annotations
 
@@ -40,7 +24,9 @@ def _append_reminder(chunks: Any, reminder: str) -> Any:
 def make_memory_coder(main_model: Any, io: Any, *, edit_format: str = "diff", **kwargs: Any) -> Any:
     """Build an Aider coder of the given edit format, subclassed to carry a one-shot
     reminder. Set `coder.agentmem_reminder` before a turn; it's injected and cleared."""
-    module_name, class_name = _EDIT_FORMAT_TO_MODULE.get(edit_format, _EDIT_FORMAT_TO_MODULE["diff"])
+    module_name, class_name = _EDIT_FORMAT_TO_MODULE.get(
+        edit_format, _EDIT_FORMAT_TO_MODULE["diff"]
+    )
     try:
         import importlib
 

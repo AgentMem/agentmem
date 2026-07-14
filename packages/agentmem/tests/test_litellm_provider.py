@@ -11,12 +11,18 @@ from agentmem.llm.base import LLMResponse
 
 
 def test_tools_translate_to_openai_function_shape() -> None:
-    anthropic = [{"name": "memory_write", "description": "save", "input_schema": {"type": "object"}}]
+    anthropic = [
+        {"name": "memory_write", "description": "save", "input_schema": {"type": "object"}}
+    ]
     out = lp._to_openai_tools(anthropic)
     assert out == [
         {
             "type": "function",
-            "function": {"name": "memory_write", "description": "save", "parameters": {"type": "object"}},
+            "function": {
+                "name": "memory_write",
+                "description": "save",
+                "parameters": {"type": "object"},
+            },
         }
     ]
 
@@ -75,13 +81,17 @@ def _fake_response(content: str | None, tool_calls: list[dict] | None = None) ->
             for tc in (tool_calls or [])
         ],
     )
-    choice = types.SimpleNamespace(message=message, finish_reason="tool_calls" if tool_calls else "stop")
+    choice = types.SimpleNamespace(
+        message=message, finish_reason="tool_calls" if tool_calls else "stop"
+    )
     usage = types.SimpleNamespace(prompt_tokens=12, completion_tokens=7)
     return types.SimpleNamespace(choices=[choice], usage=usage)
 
 
 def test_response_translates_text_tool_calls_and_usage() -> None:
-    resp = _fake_response("done", [{"id": "tc_9", "name": "memory_write", "arguments": '{"content": "y"}'}])
+    resp = _fake_response(
+        "done", [{"id": "tc_9", "name": "memory_write", "arguments": '{"content": "y"}'}]
+    )
     out = lp._from_openai_response(resp, model="gemini/gemini-2.5-flash", latency_ms=1.0)
     assert isinstance(out, LLMResponse)
     assert out.text == "done"
@@ -99,7 +109,9 @@ def test_complete_wires_translation_through_a_fake_litellm(monkeypatch: pytest.M
         seen.update(kwargs)
         return _fake_response("all set")
 
-    monkeypatch.setitem(__import__("sys").modules, "litellm", types.SimpleNamespace(completion=fake_completion))
+    monkeypatch.setitem(
+        __import__("sys").modules, "litellm", types.SimpleNamespace(completion=fake_completion)
+    )
 
     provider = lp.LiteLLMProvider(model="gemini/gemini-2.5-flash")
     out = provider.complete(
@@ -179,7 +191,9 @@ def test_complete_reraises_a_non_retryable_error(monkeypatch: pytest.MonkeyPatch
     def boom(**_: object) -> object:
         raise BadRequestError("bad tool schema")
 
-    monkeypatch.setitem(__import__("sys").modules, "litellm", types.SimpleNamespace(completion=boom))
+    monkeypatch.setitem(
+        __import__("sys").modules, "litellm", types.SimpleNamespace(completion=boom)
+    )
     provider = lp.LiteLLMProvider(model="gemini/gemini-2.5-flash", max_retries=3)
     with pytest.raises(BadRequestError):
         provider.complete(system="s", messages=[{"role": "user", "content": "hi"}])

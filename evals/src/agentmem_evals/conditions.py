@@ -1,18 +1,4 @@
-"""The five conditions we compare, as strategy objects.
-
-They all wrap the same action agent; only how (and whether) memory reaches it each
-turn varies:
-
-  baseline         no memory at all
-  agentmem         the real thing: maintain a bank, intervene selectively
-  full_bank        maintain a bank, but dump the whole thing every turn
-  always_inject    maintain a bank, always surface its latest entry (no silence)
-  injection_only   no bank; a generic nudge after a failure
-
-Offline (scripted agent) cleanly shows memory-vs-baseline. Separating the memory
-conditions from each other needs a real model that can get distracted or over-nagged,
-so those are wired and ready for live runs but won't spread out offline.
-"""
+"""The five conditions we compare, as strategy objects."""
 
 from __future__ import annotations
 

@@ -1,14 +1,4 @@
-"""Estimate whether injecting or staying silent tends to pay off in a state like this
-one, from the graded history.
-
-The recipe is JitRL's, without any gradient step: pull the nearest past decisions by
-signature overlap, average their returns to get a baseline V, average within each
-action to get Q, and the advantage is Q - V. An action we've never tried here gets an
-optimism bonus so the layer doesn't quietly rule out exploring it.
-
-With too few neighbors it returns None, and the caller falls back to plain Phase 2,
-a thin slice of history should never override the model.
-"""
+"""Estimate whether injecting or staying silent tends to pay off in states like this one."""
 
 from __future__ import annotations
 

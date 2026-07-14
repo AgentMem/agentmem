@@ -1,9 +1,4 @@
-"""AnthropicProvider tests against a mocked Messages endpoint.
-
-respx intercepts the HTTP call, so this checks we parse the real response shape (text
-+ tool_use blocks + usage) without a key or a network. This is the pattern for any
-future "does the wire format still match" test.
-"""
+"""AnthropicProvider tests against a mocked Messages endpoint."""
 
 from __future__ import annotations
 

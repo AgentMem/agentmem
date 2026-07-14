@@ -1,8 +1,4 @@
-"""Result rows and their aggregation.
-
-One TaskResult per (task, condition, seed). Aggregation groups by condition and
-reports pass rate with a mean/std spread across seeds.
-"""
+"""Result rows and their aggregation."""
 
 from __future__ import annotations
 

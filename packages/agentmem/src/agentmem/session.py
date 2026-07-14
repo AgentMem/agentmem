@@ -1,17 +1,4 @@
-"""MemorySession: the class most users touch.
-
-Read `pending_context()` before each agent turn (cheap, just a cache read); pass new
-events to `observe()` after (non-blocking). When a trigger fires, a memory-step runs
-on a background worker so the LLM latency never lands on the agent's hot path. The
-reminder applies to the next turn, so there's time to compute it.
-
-Threading: a short-held data lock guards the cached bank, pending reminder, and
-counters; a step lock serializes step execution so two steps never race to commit.
-The LLM calls happen with no lock held.
-
-Pass async_worker=False to run steps inline on observe(), which is what tests, the
-CLI demo, and scripts want.
-"""
+"""MemorySession: the class most users touch."""
 
 from __future__ import annotations
 

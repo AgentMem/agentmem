@@ -1,9 +1,4 @@
-"""Run one (task, condition, seed) and produce a TaskResult.
-
-The environment is real: a temp copy of the repo, commands run in a subprocess, tests
-scored by an actual pytest run. Across a task's sessions the agent's history resets
-but the workdir and the memory bank persist.
-"""
+"""Run one (task, condition, seed) and produce a TaskResult."""
 
 from __future__ import annotations
 

@@ -1,15 +1,4 @@
-"""Adapter for the Claude Agent SDK (in-process hooks).
-
-AgentMem rides on the SDK's **PostToolUse** hook. That hook sees each tool call and its
-result, and it can return `additionalContext`, which is exactly the injection point: a
-reminder lands on the tool result, right before the agent's next action. The SDK's
-UserPromptSubmit hook can do neither (it carries no prompt text and can't add context),
-so this adapter doesn't use it.
-
-Verified against `claude-agent-sdk` 0.2.x, whose `ClaudeAgentOptions.hooks` is
-`dict[HookEvent, list[HookMatcher]]`. `MemoryHooks` holds the callback and is what the
-tests exercise; `attach_memory` wraps it in a `HookMatcher` on the options.
-"""
+"""Adapter for the Claude Agent SDK (in-process hooks)."""
 
 from __future__ import annotations
 

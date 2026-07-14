@@ -166,7 +166,9 @@ def test_edge_endpoints_share_the_active_floor() -> None:
     bank = MemoryBank(
         sessions_seen=30,
         procedural={e.id: e for e in (linked, lonely, witness)},
-        edges=[MemoryEdge(src="P-013", dst="P-001", rel="verifies", confidence=0.9, evidence_step=9)],
+        edges=[
+            MemoryEdge(src="P-013", dst="P-001", rel="verifies", confidence=0.9, evidence_step=9)
+        ],
     )
 
     out = recompute_lifecycle(bank)

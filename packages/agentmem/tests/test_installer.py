@@ -87,7 +87,9 @@ def test_has_our_hooks_detects_both_modes() -> None:
 def test_plugin_hooks_stay_in_sync_with_the_installer() -> None:
     import pytest
 
-    plugin = Path(__file__).parents[3] / "integrations" / "claude-code-plugin" / "hooks" / "hooks.json"
+    plugin = (
+        Path(__file__).parents[3] / "integrations" / "claude-code-plugin" / "hooks" / "hooks.json"
+    )
     if not plugin.exists():
         pytest.skip("plugin not present (running outside the repo checkout)")
     assert json.loads(plugin.read_text()) == {"hooks": daemonless_hooks()}

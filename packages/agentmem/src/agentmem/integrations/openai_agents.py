@@ -1,19 +1,4 @@
-"""Adapter for the OpenAI Agents SDK (`openai-agents`).
-
-The SDK is fully hook-instrumented, so this leaves the developer's Agent, tools, and
-instructions untouched and works through the two documented seams:
-
-- OBSERVE: a `RunHooks` subclass reads the trajectory as it happens (new input messages
-  at each model call, tool results, the final output) and feeds it back.
-- INJECT (transient): `RunConfig.call_model_input_filter` runs right before every model
-  call and edits the input in-flight. What it returns is used for that one call and is
-  never written back to session history, so a reminder is consumed once, matching
-  AgentMem's contract. The base `instructions` are passed through unchanged.
-
-Both seams share one object you pass as `Runner.run(..., context=...)`: the hooks stash a
-pending reminder on it, the filter reads and clears it. Verified against `openai-agents`
-0.18.2.
-"""
+"""Adapter for the OpenAI Agents SDK (`openai-agents`)."""
 
 from __future__ import annotations
 

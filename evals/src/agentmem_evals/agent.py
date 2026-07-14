@@ -1,13 +1,4 @@
-"""The action agent: the thing being helped (or not) by memory.
-
-The harness runs the same agent under every condition, so any difference in the
-numbers comes from the memory wiring, not the agent.
-
-  - ScriptedActionAgent: deterministic, no model. Runs the tests, and on failure
-    either applies the real fix (if a reminder points at it) or repeats the wrong
-    attempt. Makes the offline eval reproducible and free.
-  - AnthropicActionAgent (live.py): a real terminal agent for live runs.
-"""
+"""The action agent: the thing being helped (or not) by memory."""
 
 from __future__ import annotations
 

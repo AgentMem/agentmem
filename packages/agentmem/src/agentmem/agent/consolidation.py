@@ -1,17 +1,4 @@
-"""Fold near-duplicate entries together, and turn a recurring cluster of procedural
-entries into one abstract rule, so the bank doesn't just grow forever.
-
-Two rungs:
-- local merge: a same-kind pair whose content overlaps enough that they're probably
-  saying the same thing.
-- cluster fusion: three or more procedural entries from the same place (same
-  `source`), usually repeated attempts at one underlying issue, worth abstracting
-  into a single rule instead of keeping N verbatim attempts.
-
-The system picks the candidates and decides what happens to the losing side; the
-model only writes content. One LLM call handles both rungs, and a parse failure just
-means nothing changes this pass, so it can't corrupt the bank.
-"""
+"""Fold near-duplicate entries together and compress recurring clusters into one rule."""
 
 from __future__ import annotations
 

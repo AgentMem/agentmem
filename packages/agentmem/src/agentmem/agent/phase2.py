@@ -1,9 +1,4 @@
-"""Phase 2: decide whether to say anything.
-
-One LLM call, no tools. The model answers with either `<no_intervention/>` or a
-`<context_for_action>` block of id-cited bullets. The parser is strict and fails to
-silence: if it can't read a clean, grounded reminder, the agent hears nothing.
-"""
+"""Phase 2: decide whether to say anything."""
 
 from __future__ import annotations
 
