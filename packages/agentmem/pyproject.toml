@@ -9,7 +9,12 @@ description = "A proactive memory layer for long-horizon coding agents, it knows
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
-license-files = ["../../LICENSE", "../../NOTICE"]
+# Copies of the repo-root LICENSE/NOTICE. PyPI's metadata validator rejects
+# license-files entries with a parent-directory component ("../../LICENSE"), which
+# is what pointing straight at the workspace root produced: hatchling wrote that
+# literal path as the sdist's tar entry name, an invalid and slightly unsafe archive
+# path. Keep these in sync with the root files if either ever changes.
+license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "The AgentMem Authors" }]
 keywords = ["llm", "agents", "memory", "claude-code", "long-horizon", "coding-agents"]
 classifiers = [

@@ -1,0 +1,13 @@
+AgentMem
+Copyright 2026 The AgentMem Authors
+
+This product includes software developed by the AgentMem project.
+
+The proactive two-phase memory architecture implemented here is a clean-room
+reimplementation based on the publicly described method in:
+
+  "Remember When It Matters: Proactive Memory Agent for Long-Horizon Agents"
+  arXiv:2607.08716
+
+The design was implemented from the paper's published specification. No source
+code from the paper authors' reference repository was copied or adapted.
