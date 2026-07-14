@@ -1,0 +1,16 @@
+# Commit this as `agentmem.toml` at your project root to pin AgentMem's settings for
+# the whole team, alongside .claude/settings.json. Env vars (AGENTMEM_*) and code still
+# override it. Only the keys you set here are changed; everything else keeps its default.
+
+# The model the memory agent uses (not your action agent's model).
+model = "claude-haiku-4-5"
+
+# Where the bank lives: "json" (one file per session) or "sqlite:///.agentmem/run.db".
+store = "json"
+
+# Fire a memory-step every N action turns (event triggers still fire in between).
+trigger_every_n = 3
+
+# Opt-in learning layers.
+# continual_enabled = true    # salience-based forgetting (on by default)
+# advantage_enabled = false   # learn when intervening pays off

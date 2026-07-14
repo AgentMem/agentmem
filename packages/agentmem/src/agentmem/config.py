@@ -1,11 +1,19 @@
 """Configuration.
 
-Every tunable lives here, overridable by AGENTMEM_* env vars or a .env file.
+Every tunable lives here. Precedence, highest first: constructor kwargs, `AGENTMEM_*`
+env vars, a `.env` file, then a committable `agentmem.toml` at the project root. The
+TOML file is the one meant to travel with the repo (unlike `.env`), so a team can pin
+the model and store choices next to their `.claude/settings.json`.
 """
 
 from __future__ import annotations
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    TomlConfigSettingsSource,
+)
 
 
 class AgentMemConfig(BaseSettings):
@@ -13,8 +21,27 @@ class AgentMemConfig(BaseSettings):
         env_prefix="AGENTMEM_",
         env_file=".env",
         env_file_encoding="utf-8",
+        toml_file="agentmem.toml",
         extra="ignore",
     )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        # Slot agentmem.toml in below env/.env: it's the committed baseline, overridable.
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            TomlConfigSettingsSource(settings_cls),
+            file_secret_settings,
+        )
 
     # model / provider
     # Haiku is the cheap default; the string is validated by the provider, not here.
