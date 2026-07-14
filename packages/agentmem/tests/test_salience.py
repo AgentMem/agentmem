@@ -137,3 +137,54 @@ def test_recompute_lifecycle_uses_the_busiest_entry_in_the_bank_as_the_frequency
     out = recompute_lifecycle(bank)
     # K-001 is the busiest entry in its own bank, so its frequency term hits 1.0.
     assert out.knowledge["K-001"].lifecycle.salience > out.knowledge["K-002"].lifecycle.salience
+
+
+def test_edge_endpoints_share_the_active_floor() -> None:
+    # The long-run analysis shape: a verified fix last touched 14 sessions back scores
+    # ~0.32 on its own and would sit dormant, invisible to Phase 2. As a causal-edge
+    # endpoint it holds the same floor as policy/task instead.
+    from agentmem.schemas import MemoryEdge
+
+    linked = _entry(
+        id="P-001",
+        kind="procedural",
+        tag="fix",
+        lifecycle=EntryLifecycle(last_touched_session=16, reinforcement=0.3),
+    )
+    lonely = _entry(
+        id="P-002",
+        kind="procedural",
+        tag="fix",
+        lifecycle=EntryLifecycle(last_touched_session=16, reinforcement=0.3),
+    )
+    witness = _entry(
+        id="P-013",
+        kind="procedural",
+        tag="diagnosis",
+        lifecycle=EntryLifecycle(last_touched_session=30),
+    )
+    bank = MemoryBank(
+        sessions_seen=30,
+        procedural={e.id: e for e in (linked, lonely, witness)},
+        edges=[MemoryEdge(src="P-013", dst="P-001", rel="verifies", confidence=0.9, evidence_step=9)],
+    )
+
+    out = recompute_lifecycle(bank)
+
+    assert out.procedural["P-001"].lifecycle.state == "active"
+    assert out.procedural["P-001"].lifecycle.salience == FLOOR_SALIENCE
+    assert out.procedural["P-013"].lifecycle.state == "active"  # src end holds it too
+    assert out.procedural["P-002"].lifecycle.state == "dormant"  # same score, no edge
+
+
+def test_unlinked_stale_entries_still_decay_out() -> None:
+    # The floor must not leak: forgetting still archives what nothing points at.
+    stale = _entry(
+        id="P-009",
+        kind="procedural",
+        tag="attempt",
+        lifecycle=EntryLifecycle(last_touched_session=1),
+    )
+    bank = MemoryBank(sessions_seen=40, procedural={"P-009": stale})
+    out = recompute_lifecycle(bank)
+    assert "P-009" in out.archive

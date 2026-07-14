@@ -19,7 +19,7 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..schemas import Event, MemoryBank
+from ..schemas import Event, MemoryBank, MemoryEntry
 
 
 def project_key(cwd: str) -> str:
@@ -85,12 +85,15 @@ def bank_digest(
     if bank.is_empty() and (project is None or project.is_empty()):
         return None
 
+    # Highest salience first, so the cap trims the faded tail, not the newest lessons.
+    def by_salience(b: MemoryBank) -> list[MemoryEntry]:
+        return sorted(b.all_entries(), key=lambda e: e.lifecycle.salience, reverse=True)
+
     lines = ["[AgentMem] Memory from earlier sessions on this project:"]
     if project is not None and not project.is_empty():
-        for entry in islice([*project.knowledge.values(), *project.procedural.values()], max_items):
+        for entry in islice(by_salience(project), max_items):
             lines.append(f"- ({entry.id}) {entry.content}")
-    entries = [*bank.knowledge.values(), *bank.procedural.values()]
-    for entry in islice(entries, max_items):
+    for entry in islice(by_salience(bank), max_items):
         lines.append(f"- ({entry.id}) {entry.content}")
     # Surface a few high-confidence causal links; they're the cross-session payoff.
     strong = [e for e in bank.edges if e.confidence >= 0.7]

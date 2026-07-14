@@ -26,6 +26,9 @@ from .schemas import (
 from .tools import DELETE, LINK, SAVE_KNOWLEDGE, SAVE_PROCEDURAL, UPDATE_STATUS, ToolCall
 from .util import clip_to_tokens
 
+# What linking an entry is worth, same size as the evaluator's good-outcome grade.
+_LINK_REINFORCE = 0.3
+
 
 @dataclass(frozen=True)
 class BankLimits:
@@ -221,6 +224,17 @@ def _apply_link(new: MemoryBank, call: ToolCall, limits: BankLimits) -> AppliedC
     new.edges.append(
         MemoryEdge(src=src, dst=dst, rel=rel, confidence=confidence, evidence_step=evidence_step)  # type: ignore[arg-type]
     )
+    # A fresh edge is evidence both ends still matter: wake them and give them the
+    # same credit a good outcome grade would, so a linked lesson doesn't stay buried.
+    for endpoint in (src, dst):
+        entry = new.entry(endpoint)
+        if entry is None:  # can't happen past validation, but stay safe
+            continue
+        lc = entry.lifecycle
+        lc.last_touched_session = new.sessions_seen
+        lc.reinforcement = min(1.0, lc.reinforcement + _LINK_REINFORCE)
+        lc.state = "active"
+        lc.salience = max(lc.salience, ACTIVE_MIN)
     return AppliedCall(tool=call.name, effect="linked", entry_id=src, note=f"{src} {rel} {dst}")
 
 

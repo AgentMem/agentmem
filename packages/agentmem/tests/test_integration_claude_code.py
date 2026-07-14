@@ -95,3 +95,20 @@ def test_hook_output_shape() -> None:
     out = cc.hook_output("UserPromptSubmit", "remember X")
     assert out["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
     assert out["hookSpecificOutput"]["additionalContext"] == "remember X"
+
+
+def test_bank_digest_prefers_salience_over_insertion_order() -> None:
+    # A digest capped at N should drop the faded tail, not the newest lessons.
+    bank = MemoryBank()
+    for i in range(1, 9):
+        entry = MemoryEntry(
+            id=f"K-00{i}", kind="knowledge", content=f"fact {i}", created_step=i, updated_step=i
+        )
+        entry.lifecycle.salience = i / 10  # later entries matter more here
+        bank.knowledge[entry.id] = entry
+
+    digest = cc.bank_digest(bank, max_items=2)
+
+    assert digest is not None
+    assert "fact 8" in digest and "fact 7" in digest
+    assert "fact 1" not in digest

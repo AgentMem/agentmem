@@ -64,10 +64,13 @@ def compute_salience(
     sessions_seen: int,
     max_access_count: int,
     weights: SalienceWeights | None = None,
+    *,
+    load_bearing: bool = False,
 ) -> float:
     """S(e): time decay + usage frequency + tag importance + reinforcement, clamped
     to [0, 1]. `policy`/`task` entries are floored at ACTIVE_MIN so decay alone can
-    never push them into `dormant`."""
+    never push them into `dormant`; `load_bearing` (an endpoint of a causal edge)
+    grants the same floor, since the graph vouches for the entry."""
     weights = weights or SalienceWeights()
     lc = entry.lifecycle
 
@@ -86,7 +89,7 @@ def compute_salience(
         + weights.importance * importance
         + weights.reinforcement * lc.reinforcement
     )
-    if entry.tag in FLOOR_TAGS:
+    if load_bearing or entry.tag in FLOOR_TAGS:
         score = max(score, FLOOR_SALIENCE)
     return max(0.0, min(1.0, score))
 
@@ -110,9 +113,14 @@ def recompute_lifecycle(bank: MemoryBank, weights: SalienceWeights | None = None
     new = bank.model_copy(deep=True)
     live = [*new.knowledge.values(), *new.procedural.values()]
     max_access = max((e.access_count for e in live), default=0)
+    # Entries the causal graph hangs on keep the active floor; a verified lesson
+    # shouldn't fade out from under its own edges.
+    linked = {end for e in new.edges for end in (e.src, e.dst)}
 
     for entry in live:
-        entry.lifecycle.salience = compute_salience(entry, new.sessions_seen, max_access, weights)
+        entry.lifecycle.salience = compute_salience(
+            entry, new.sessions_seen, max_access, weights, load_bearing=entry.id in linked
+        )
         entry.lifecycle.state = classify(entry.lifecycle.salience)
         if entry.lifecycle.state == "archived":
             table = new.knowledge if entry.kind == "knowledge" else new.procedural

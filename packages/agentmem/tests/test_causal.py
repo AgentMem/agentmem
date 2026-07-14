@@ -257,3 +257,66 @@ def test_causal_chain_reaches_the_reminder(tmp_path) -> None:  # noqa: ANN001
     assert reminder is not None
     assert "P-001" in reminder
     assert "caused_by K-001" in reminder  # the chain rode along on the bullet
+
+
+def test_link_revives_and_reinforces_both_endpoints() -> None:
+    # The long-run failure shape: a lesson went dormant, then a later entry linked to
+    # it. The link is evidence it still matters, so it comes back and earns credit.
+    bank = _seed()
+    bank.sessions_seen = 16
+    for eid, rf in (("P-001", 0.9), ("K-001", 0.0)):
+        entry = bank.entry(eid)
+        assert entry is not None
+        entry.lifecycle.state = "dormant"
+        entry.lifecycle.salience = 0.22
+        entry.lifecycle.last_touched_session = 4
+        entry.lifecycle.reinforcement = rf
+
+    out = apply_tool_calls(bank, [_link()], step=2)
+
+    for eid in ("P-001", "K-001"):
+        entry = out.bank.entry(eid)
+        assert entry is not None
+        lc = entry.lifecycle
+        assert lc.state == "active"
+        assert lc.salience >= 0.5
+        assert lc.last_touched_session == 16
+    p = out.bank.entry("P-001")
+    k = out.bank.entry("K-001")
+    assert p is not None and k is not None
+    assert p.lifecycle.reinforcement == 1.0  # capped, not 1.2
+    assert k.lifecycle.reinforcement == 0.3
+
+
+def test_link_remove_leaves_lifecycles_alone() -> None:
+    linked = apply_tool_calls(_seed(), [_link()], step=2).bank
+    for eid in ("P-001", "K-001"):
+        entry = linked.entry(eid)
+        assert entry is not None
+        entry.lifecycle.state = "dormant"
+        entry.lifecycle.reinforcement = 0.0
+
+    out = apply_tool_calls(linked, [_link(remove=True)], step=3)
+
+    assert out.applied[0].effect == "unlinked"
+    for eid in ("P-001", "K-001"):
+        entry = out.bank.entry(eid)
+        assert entry is not None
+        assert entry.lifecycle.state == "dormant"
+        assert entry.lifecycle.reinforcement == 0.0
+
+
+def test_rejected_link_touches_nothing() -> None:
+    bank = _seed()
+    p = bank.entry("P-001")
+    assert p is not None
+    p.lifecycle.state = "dormant"
+    p.lifecycle.salience = 0.22
+
+    out = apply_tool_calls(bank, [_link(dst="K-999")], step=2)  # endpoint missing
+
+    assert out.applied[0].effect == "rejected"
+    p2 = out.bank.entry("P-001")
+    assert p2 is not None
+    assert p2.lifecycle.state == "dormant"
+    assert p2.lifecycle.reinforcement == 0.0
