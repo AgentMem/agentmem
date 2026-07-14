@@ -1,0 +1,290 @@
+"""LongRun-sim live runner: a capabilities dashboard for AgentMem's differentiators.
+
+One agent works three repos over 30 interleaved sessions (A, B, C, ...), each a real
+open -> observe -> close `MemorySession` lifecycle sharing one state dir, so the bank and
+the learned policy persist and grow across sessions. Early sessions state each repo's hard
+requirements and the lesson from its main failure; one later session re-surfaces that
+failure. From the accumulated telemetry and the final bank it measures the four things that
+set AgentMem apart, plus the long-horizon retention / interference / bank-growth numbers:
+
+  1. Structured procedural memory  - a tool-maintained, typed store, not a blob
+  2. Causal memory                 - caused_by / fixed_by / rules_out edges across sessions
+  3. Proactive intervention        - injects when a known failure recurs, silent on routine
+  4. Learned policy (advantage)    - the advantage layer records + grades outcomes and gates
+
+No expensive task-solve loop, so it runs on Haiku with a hard cost cap. `--dry-run`
+validates the plumbing offline (fake provider, zero cost).
+
+    python evals/longrun_sim/run_live.py --dry-run
+    ANTHROPIC_API_KEY=... python evals/longrun_sim/run_live.py --max-usd 1.0
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import tempfile
+from collections import Counter
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+sys.path.insert(0, str(ROOT))
+import metrics as M  # noqa: E402
+import scenario as S  # noqa: E402
+from agentmem import MemorySession, triggers  # noqa: E402
+from agentmem.config import AgentMemConfig  # noqa: E402
+from agentmem.integrations.claude_code import bank_digest  # noqa: E402
+from agentmem.llm.base import LLMResponse  # noqa: E402
+from agentmem.schemas import Event, TokenUsage  # noqa: E402
+from agentmem.tools import SAVE_PROCEDURAL, ToolCall  # noqa: E402
+
+TRAP_APPEARANCE = 5  # the session where each repo's known failure recurs
+
+# What each repo's sessions surface: hard requirements, then the lesson from its main
+# failure (with the ruled-out lead and the root cause), then a recurrence.
+REPO_CONTENT = {
+    "a": {
+        "req": "Hard requirement for repo A (HTTP service): the public API signatures in "
+        "api.py are frozen and must never change; all request timeouts must come from "
+        "config.py, never hardcoded at the call site.",
+        "lesson": "Fixed the token-expiry test failures in repo A. Ruled out the call site "
+        "in make_token; the real root cause was DEFAULT_TTL in config.py, and raising it fixed it.",
+        "trap": "The token-expiry test in repo A is failing again.",
+    },
+    "b": {
+        "req": "Hard requirement for repo B (data pipeline): cache keys must include the "
+        "normalize.py version, and city and country names must be casefolded.",
+        "lesson": "The nightly aggregate numbers went wrong for some cities in repo B. Ruled "
+        "out the database; the cause was a stale cache whose keys were missing the normalize version.",
+        "trap": "Some repo B cities show wrong nightly totals again.",
+    },
+    "c": {
+        "req": "Hard requirement for repo C (async worker): the job queue is serialized by "
+        "one shared asyncio lock; httpx stays pinned and the client uses proxies=, not "
+        "proxy=; retries are bounded by RETRIES.",
+        "lesson": "Fixed a repo C job-queue race with a single shared asyncio lock. Ruled out "
+        "adding threads; a later httpx upgrade broke it because proxy= replaced proxies=.",
+        "trap": "Repo C jobs are racing on the queue again.",
+    },
+}
+
+
+def events_for(repo: str, appearance: int) -> list[Event]:
+    c = REPO_CONTENT[repo]
+    if appearance == 0:
+        return [Event(kind="message", role="user", text=c["req"])]
+    if appearance == 1:
+        return [
+            Event(kind="message", role="assistant", text=c["lesson"]),
+            Event(kind="tool_result", tool_name="pytest", ok=True, text="tests green after the fix"),
+        ]
+    if appearance == TRAP_APPEARANCE:
+        return [
+            Event(kind="message", role="user", text=c["trap"]),
+            Event(kind="tool_result", tool_name="pytest", ok=False, text="FAILED (same symptom as before)"),
+        ]
+    return [Event(kind="message", role="user", text=f"Routine work on repo {repo.upper()} (touch {appearance}).")]
+
+
+def grade(answer: str, probe: S.Probe) -> bool:
+    low = answer.lower()
+    return all(t.lower() in low for t in probe.answer_contains) and not any(
+        f.lower() in low for f in probe.forbidden
+    )
+
+
+class _Fake:
+    """Offline stand-in: Phase 1 saves a typed entry, everything else echoes."""
+
+    model = "fake"
+    _n = 0
+
+    def complete(self, *, system: str, messages: list, tools: list | None = None, max_tokens: int = 1024) -> LLMResponse:
+        if tools:
+            _Fake._n += 1
+            return LLMResponse(
+                tool_calls=[ToolCall(name=SAVE_PROCEDURAL, args={"tag": "fix", "content": "a lesson"}, block_id=f"t{_Fake._n}")],
+                usage=TokenUsage(input_tokens=50, output_tokens=10),
+            )
+        return LLMResponse(
+            text="<context_for_action>\n- recall the prior fix (P-001)\n</context_for_action>",
+            usage=TokenUsage(input_tokens=40, output_tokens=8),
+        )
+
+
+class Counting:
+    """Wrap the provider to sum tokens across every call and estimate cost."""
+
+    def __init__(self, model: str, dry_run: bool) -> None:
+        if dry_run:
+            self.inner: object = _Fake()
+        else:
+            from agentmem.llm.anthropic import AnthropicProvider
+
+            self.inner = AnthropicProvider(model=model)
+        self.model = model
+        self.tin = self.tout = self.calls = 0
+
+    def complete(self, **kw: object) -> LLMResponse:
+        r = self.inner.complete(**kw)  # type: ignore[attr-defined]
+        self.tin += r.usage.input_tokens
+        self.tout += r.usage.output_tokens
+        self.calls += 1
+        return r
+
+    @property
+    def cost(self) -> float:
+        # Assumed Haiku list price ($1 / $5 per Mtok in / out); verify on the billing page.
+        return self.tin / 1e6 * 1.0 + self.tout / 1e6 * 5.0
+
+
+def _config(state_dir: str) -> AgentMemConfig:
+    return AgentMemConfig(
+        state_dir=state_dir,
+        max_tool_rounds=2,  # a second round lets Phase 1 add causal links
+        advantage_enabled=True,  # learned policy on
+        advantage_gate=True,  # let it gate (a learned-to-stay-silent signal)
+    )
+
+
+def _ask(provider: Counting, question: str, memory: str | None) -> str:
+    ctx = f"Project notes you remember:\n{memory}\n\n" if memory else ""
+    return provider.complete(
+        system="You answer questions about projects you have worked on. If you do not know, say so.",
+        messages=[{"role": "user", "content": f"{ctx}Question: {question}\nAnswer in one sentence."}],
+        max_tokens=120,
+    ).text
+
+
+def run(model: str, max_usd: float, dry_run: bool) -> dict:
+    provider = Counting(model, dry_run)
+    with tempfile.TemporaryDirectory(prefix="agentmem-longrun-") as tmp:
+        state_dir = f"{tmp}/mem"
+        tele = Path(state_dir) / "telemetry.jsonl"
+        created_repo: dict[str, str] = {}
+        rows: list[dict] = []
+        read = 0
+        records: list[M.SessionRecord] = []
+        seen = dict.fromkeys(S.REPOS, 0)
+
+        for sched in S.schedule():
+            repo, appearance = sched.repo, seen[sched.repo]
+            mem = MemorySession(
+                task="Maintain three projects across many sessions",
+                provider=provider,
+                trigger=triggers.default(),
+                async_worker=False,
+                session_id="longrun",
+                config=_config(state_dir),
+            )
+            mem.observe(events_for(repo, appearance))
+            bank_size = len(mem.bank.all_entries())
+            mem.close(task_reward=0.0)
+            seen[repo] += 1
+
+            new = []
+            if tele.exists():
+                lines = tele.read_text().splitlines()
+                for ln in lines[read:]:
+                    try:
+                        row = json.loads(ln)
+                    except json.JSONDecodeError:
+                        continue
+                    row["_repo"], row["_trap"] = repo, appearance == TRAP_APPEARANCE
+                    for tc in row.get("tool_calls", []):
+                        for effect, val in tc.items():
+                            if effect == "created" and isinstance(val, str):
+                                created_repo[val] = repo
+                    new.append(row)
+                read = len(lines)
+            rows.extend(new)
+
+            cited = [created_repo.get(i, repo) for r in new for i in r.get("cited_ids", [])]
+            records.append(M.SessionRecord(repo=repo, index=sched.index, passed=False, repeated_failures=0, bank_size=bank_size, cited_repos=cited))
+            if provider.cost > max_usd:
+                print(f"[budget] stopping at session {sched.index}, ~${provider.cost:.2f}", flush=True)
+                break
+
+        final = MemorySession(task="inspect", provider=provider, session_id="longrun", config=_config(state_dir))
+        entries, edges = final.bank.all_entries(), final.bank.edges
+        digest = bank_digest(final.bank) or ""
+        mem_probes, base_probes = [], []
+        for probe in S.all_probes():
+            mem_probes.append(M.ProbeResult(probe.repo, 30, grade(_ask(provider, probe.question, digest), probe)))
+            base_probes.append(M.ProbeResult(probe.repo, 30, grade(_ask(provider, probe.question, None), probe)))
+
+    injects = [r for r in rows if r.get("decision") == "inject"]
+    return {
+        "entries": entries,
+        "edges": edges,
+        "injects": injects,
+        "rows": rows,
+        "records": records,
+        "mem_probes": mem_probes,
+        "base_probes": base_probes,
+        "provider": provider,
+    }
+
+
+def report(res: dict) -> str:
+    entries, edges, injects, rows, records = res["entries"], res["edges"], res["injects"], res["rows"], res["records"]
+    provider = res["provider"]
+    kinds = Counter(e.kind for e in entries)
+    ptags = Counter(e.tag for e in entries if e.kind == "procedural")
+    erels = Counter(e.rel for e in edges)
+    trap_injects = sum(1 for r in injects if r.get("_trap"))
+    adv_rows = sum(1 for r in rows if "advantage" in r)
+    gated = sum(1 for r in rows if r.get("gate_applied"))
+
+    lines = [
+        "# LongRun-sim capabilities dashboard",
+        "",
+        f"Model `{provider.model}` · {len(records)} sessions · est ~${provider.cost:.3f} "
+        f"({provider.calls} calls, {provider.tin} in / {provider.tout} out)",
+        "",
+        "## The four differentiators",
+        f"1. **Structured procedural memory** — {len(entries)} entries {dict(kinds)}; "
+        f"procedural tags {dict(ptags) or '(none)'}.",
+        f"2. **Causal memory** — {len(edges)} edges {dict(erels) or '(none)'}.",
+        f"3. **Proactive intervention** — {len(injects)} injects over {len(rows)} steps; "
+        f"{trap_injects} on recurring-failure sessions, {len(injects) - trap_injects} on routine.",
+        f"4. **Learned policy (advantage)** — {adv_rows} steps carried an advantage estimate, "
+        f"{gated} gated to silence.",
+        "",
+        "## Long-horizon numbers",
+        "",
+        "| Metric | Result | Bar |",
+        "|---|---|---|",
+        f"| Retention (no-memory baseline) | {M.retention_rate(res['base_probes']):.0%} | - |",
+        f"| Retention (AgentMem) | {M.retention_rate(res['mem_probes']):.0%} | ≥ {M.RETENTION_MIN:.0%} |",
+        f"| Interference (cross-repo) | {M.interference_rate(records):.1%} | < {M.INTERFERENCE_MAX:.0%} |",
+        f"| Bank-growth ratio | {M.bank_growth_ratio(records):.2f} | < {M.BANK_GROWTH_MAX} |",
+        "",
+        "Interference is measured on one shared bank across all three repos (the hard case); "
+        "in production AgentMem scopes memory per project, so cross-repo citation is structurally "
+        "near zero.",
+    ]
+    return "\n".join(lines)
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--model", default="claude-haiku-4-5", help="memory + probe model")
+    ap.add_argument("--max-usd", type=float, default=1.0, help="hard spend cap")
+    ap.add_argument("--dry-run", action="store_true", help="offline plumbing check, no key, no cost")
+    ap.add_argument("--out", default="evals/report/longrun", help="report directory")
+    args = ap.parse_args(argv)
+
+    res = run(args.model, args.max_usd, args.dry_run)
+    md = report(res)
+    print("\n" + md)
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "REPORT.md").write_text(md + "\n")
+    print(f"\nReport written to {out / 'REPORT.md'}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

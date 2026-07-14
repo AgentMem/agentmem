@@ -37,8 +37,24 @@ python scenario.py --print          # see the schedule
 
 ## Live run
 
-The full run needs an action agent and a real model, so it's gated behind a key and a
-budget. It drives 30 sessions through `MemorySession` (continual memory on, advantage
-layer on so the reinforcement signal is live), fires the retention probes at the end,
-and feeds the records to `metrics.py`. Retention and interference are the numbers that
-prove forgetting works the way it should.
+`run_live.py` drives 30 interleaved sessions through real `MemorySession` lifecycles
+(continual memory on, advantage layer on), then reads the accumulated telemetry and the
+final bank to print a capabilities dashboard: the four things that set AgentMem apart plus
+the long-horizon numbers. It needs no task-solve loop, so it runs on Haiku with a hard
+cost cap.
+
+```
+python evals/longrun_sim/run_live.py --dry-run           # offline plumbing check, no key
+ANTHROPIC_API_KEY=... python evals/longrun_sim/run_live.py --max-usd 1.0
+```
+
+It reports, with numbers from the run:
+
+1. **Structured procedural memory** - entries by kind and tag (a typed store, not a blob).
+2. **Causal memory** - the `caused_by` / `fixed_by` / `rules_out` edges built across sessions.
+3. **Proactive intervention** - injects on recurring-failure sessions vs silence on routine.
+4. **Learned policy** - advantage estimates recorded and graded over the 30 sessions.
+
+Plus retention (against a no-memory baseline), interference, and bank growth. Interference
+is measured on one shared bank across all three repos (the hard case); in production
+AgentMem scopes memory per project, so cross-repo citation is structurally near zero.
