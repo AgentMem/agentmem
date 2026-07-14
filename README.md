@@ -60,6 +60,10 @@ agentmem demo               # offline, no key needed: watch memory stop a repeat
 export ANTHROPIC_API_KEY=sk-ant-...   # then point it at your own agent (see below)
 ```
 
+Prefer a different backend? The memory agent runs on anything litellm supports. For a free
+Gemini key, `pip install 'agentmem[litellm]'`, set `GEMINI_API_KEY`, and use
+`model="litellm/gemini/gemini-2.5-flash"`.
+
 Wrap your own loop in five lines:
 
 ```python
@@ -145,8 +149,8 @@ Two design decisions do most of the work:
   the *next* turn, so there's time to compute it.
 - **The core imports nothing from the integrations.** Claude Code, the Agent SDK, LangGraph, Aider,
   the OpenAI Agents SDK, and the MCP server all sit on top of the same public API, and the LLM
-  provider is one adapter (Anthropic today; a litellm adapter for OpenAI, vLLM, or local models is
-  planned).
+  provider is one adapter (Anthropic by default; a litellm adapter routes the memory agent to
+  Gemini, OpenAI, vLLM, or local models).
 
 ## Why not just... Mem0 / Letta / a `memory.md` file?
 

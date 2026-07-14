@@ -53,9 +53,8 @@ openai-agents = ["openai-agents>=0.18,<0.19"]
 # environment can't hold both. They're independent adapters, install whichever you use;
 # this tells uv to resolve them in separate forks instead of failing the lockfile.
 conflicts = [[{ extra = "aider" }, { extra = "openai-agents" }]]
-# Planned: route the memory agent through any provider litellm supports (OpenAI,
-# vLLM, Ollama). The adapter is a stub today (Anthropic is the only working provider);
-# this extra just pins the dep so the work can start.
+# Route the memory agent through any backend litellm supports (Gemini, OpenAI, vLLM,
+# Ollama) by setting model="litellm/<backend>", e.g. litellm/gemini/gemini-2.5-flash.
 litellm = ["litellm>=1.40"]
 
 [project.urls]

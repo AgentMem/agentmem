@@ -102,5 +102,9 @@ contract we version against. Breaking it means a note here.
   - An OpenAI Agents SDK adapter (`agentmem[openai-agents]`): observe through `RunHooks`,
     inject through `RunConfig.call_model_input_filter` right before each model call, so
     the reminder is consumed once and the base instructions are left alone.
+- The litellm provider is now implemented (`agentmem[litellm]`), so the memory agent can
+  run on any backend litellm supports (Gemini, OpenAI, vLLM, Ollama) by setting
+  `model="litellm/<backend>"`. It translates our Anthropic-native content blocks, including
+  the Phase 1 tool loop, to and from OpenAI's format at the edge.
 
 [Unreleased]: https://github.com/agentmem/agentmem/commits/main
