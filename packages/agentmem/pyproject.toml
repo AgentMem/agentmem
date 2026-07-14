@@ -40,6 +40,19 @@ dependencies = [
 daemon = ["agentmem-daemon"]
 # The Claude Agent SDK adapter needs the SDK's HookMatcher.
 agent-sdk = ["claude-agent-sdk>=0.2"]
+# MCP server: expose read-only memory to any MCP host (Cursor, Copilot, Codex, Gemini
+# CLI). The official SDK bundles FastMCP; v2 renames it, so stay below it.
+mcp = ["mcp>=1.28,<2"]
+# Aider adapter: subclass its coder for a transient reminder, drive its run loop.
+aider = ["aider-chat>=0.86,<0.87"]
+# OpenAI Agents SDK adapter: observe via RunHooks, inject via call_model_input_filter.
+openai-agents = ["openai-agents>=0.18,<0.19"]
+
+[tool.uv]
+# aider-chat pins openai==2.20 while openai-agents needs openai>=2.45, so a single
+# environment can't hold both. They're independent adapters, install whichever you use;
+# this tells uv to resolve them in separate forks instead of failing the lockfile.
+conflicts = [[{ extra = "aider" }, { extra = "openai-agents" }]]
 # Planned: route the memory agent through any provider litellm supports (OpenAI,
 # vLLM, Ollama). The adapter is a stub today (Anthropic is the only working provider);
 # this extra just pins the dep so the work can start.
@@ -53,6 +66,7 @@ Changelog = "https://github.com/agentmem/agentmem/blob/main/CHANGELOG.md"
 
 [project.scripts]
 agentmem = "agentmem.cli:main"
+agentmem-mcp = "agentmem.mcp:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentmem"]

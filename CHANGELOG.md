@@ -88,5 +88,19 @@ contract we version against. Breaking it means a note here.
   with a clear "pip install 'agentmem[agent-sdk]'" error when the SDK is missing. The
   LangGraph node documents (and makes configurable) the `memory_context` state key a
   graph must declare.
+- Three more integrations, each on the same public API and leaving the action agent
+  untouched:
+  - An MCP server (`agentmem[mcp]`, the `agentmem-mcp` command) exposing `recap`,
+    `search`, and `bank` as read-only tools, so any MCP host (Cursor, Copilot, Codex,
+    Gemini CLI, Continue, Windsurf) can pull project memory on demand. Standard MCP has
+    no way to push a reminder mid-turn, so this is a pull surface by design; proactive
+    injection stays with the hook-based hosts.
+  - An Aider adapter (`agentmem[aider]`): a thin `Coder` subclass injects a transient
+    reminder through `format_chat_chunks` (never persisted to Aider's history), while
+    `AiderMemory.run()` drives the turn and observes the reply, edited files, and
+    test/lint outcome.
+  - An OpenAI Agents SDK adapter (`agentmem[openai-agents]`): observe through `RunHooks`,
+    inject through `RunConfig.call_model_input_filter` right before each model call, so
+    the reminder is consumed once and the base instructions are left alone.
 
 [Unreleased]: https://github.com/agentmem/agentmem/commits/main

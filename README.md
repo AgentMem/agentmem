@@ -8,8 +8,8 @@
 **Memory that doesn't just store. It knows *when* to remind.**
 
 A proactive memory layer for long-horizon coding agents.
-Runs alongside Claude Code, the Claude Agent SDK, LangGraph, Aider, or your own loop,
-without changing how they work.
+Runs alongside Claude Code, Cursor, Aider, the Claude Agent SDK, LangGraph, the OpenAI
+Agents SDK, or your own loop, without changing how they work.
 
 [![CI](https://github.com/agentmem/agentmem/actions/workflows/ci.yml/badge.svg)](https://github.com/agentmem/agentmem/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
@@ -78,6 +78,59 @@ while not done:
     mem.observe(reply.new_messages)      # non-blocking; runs a memory-step if a trigger fires
 ```
 
+## Integrations
+
+Every integration sits on the same public API and leaves the action agent's prompt, tools, and
+decoding untouched. What differs is how the reminder gets in, which is dictated by what the host
+allows.
+
+| Host | Install | How memory arrives |
+|---|---|---|
+| **Claude Code** | `agentmem init claude-code` | Proactive, via hooks (no daemon) |
+| **Claude Agent SDK** | `pip install 'agentmem[agent-sdk]'` | Proactive, a PostToolUse hook |
+| **LangGraph** | built in | Proactive, a graph node |
+| **Aider** | `pip install 'agentmem[aider]'` | Proactive, drives the coder loop |
+| **OpenAI Agents SDK** | `pip install 'agentmem[openai-agents]'` | Proactive, run hooks + input filter |
+| **Your own loop** | built in | Proactive, `wrap()` or two calls |
+| **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem[mcp]'` | On demand, an MCP server it can query |
+
+**Proactive** hosts get the full two-phase behavior: AgentMem decides *when* to speak and pushes a
+transient, once-consumed reminder into the next turn. The OpenAI Agents SDK, for example, wires in
+through the SDK's own hooks and input filter, so your Agent and its tools are unchanged:
+
+```python
+from agents import Runner
+from agentmem.integrations.openai_agents import attach_memory
+
+mem = attach_memory(task="Fix the failing auth tests without changing the public API")
+result = await Runner.run(
+    agent, "start on the ticket",
+    context=mem.context, hooks=mem.hooks, run_config=mem.run_config,
+)
+```
+
+Aider, in a few lines, injecting a reminder before each turn and learning from the edits and test
+results after:
+
+```python
+from aider.models import Model
+from aider.io import InputOutput
+from agentmem.integrations.aider import attach_memory
+
+mem = attach_memory(Model("claude-3-7-sonnet"), InputOutput(yes=True),
+                    task="Fix the failing auth tests", fnames=["app.py"])
+mem.run("the token expiry test is red, take a look")
+```
+
+**MCP** hosts (Cursor, GitHub Copilot, Codex CLI, Gemini CLI, Continue, Windsurf) can't be handed a
+reminder mid-turn, so there AgentMem is a *pull* surface instead: a small server exposing `recap`,
+`search`, and `bank` as read-only tools the agent calls when it wants project context.
+
+```bash
+pip install 'agentmem[mcp]'
+claude mcp add --scope project agentmem -- agentmem-mcp   # or add to .cursor/mcp.json, .vscode/mcp.json, ...
+```
+
 ## How it fits in
 
 <div align="center">
@@ -90,9 +143,10 @@ Two design decisions do most of the work:
   each event. Hooks and `pending_context()` only ever read a cache, so they return in well under a
   hundred milliseconds and never stall the agent. This is sound because a reminder always applies to
   the *next* turn, so there's time to compute it.
-- **The core imports nothing from the integrations.** Claude Code, the Agent SDK, and LangGraph all
-  sit on top of the same public API, and the LLM provider is one adapter (Anthropic today; a litellm
-  adapter for OpenAI, vLLM, or local models is planned).
+- **The core imports nothing from the integrations.** Claude Code, the Agent SDK, LangGraph, Aider,
+  the OpenAI Agents SDK, and the MCP server all sit on top of the same public API, and the LLM
+  provider is one adapter (Anthropic today; a litellm adapter for OpenAI, vLLM, or local models is
+  planned).
 
 ## Why not just... Mem0 / Letta / a `memory.md` file?
 
@@ -115,8 +169,9 @@ benchmark numbers land with the first release. See [`evals/`](./evals).
 **Built**
 
 - Core two-phase memory agent, event triggers, JSONL telemetry, and the `agentmem demo`.
-- Integrations: the Claude Code daemon + hooks, the Claude Agent SDK adapter, and a LangGraph
-  node, each leaving the action agent's prompt, tools, and decoding untouched.
+- Integrations: Claude Code (daemon-less hooks), the Claude Agent SDK adapter, a LangGraph node,
+  Aider, the OpenAI Agents SDK, your own loop (`wrap()`), and an MCP server for pull-style hosts
+  like Cursor and Copilot. Each leaves the action agent's prompt, tools, and decoding untouched.
 - **Causal memory:** link entries (`caused_by`, `fixed_by`, `rules_out`, and more) so a reminder
   can carry the cause → fix chain across sessions.
 - **Continual memory:** salience-based forgetting (active → dormant → archived, nothing
