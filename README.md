@@ -9,7 +9,6 @@
 
 *It doesn't just store. It knows when to remind.*
 
-A proactive memory layer for long-horizon coding agents.
 Runs alongside Claude Code, Cursor, Aider, the Claude Agent SDK, LangGraph, the OpenAI
 Agents SDK, or your own loop, without changing how they work.
 
