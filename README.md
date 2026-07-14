@@ -196,6 +196,13 @@ The eval also paid for itself: the retention gap it exposed drove three lifecycl
 floor, and the session-start digest ranks by salience). Same model, same scenario:
 retention went from 56% to 78%.
 
+There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
+harbor with the same action loop bare vs memory-attached, hard USD caps on both arms.
+The first budget-capped pilot (6 tasks, Haiku both roles) came out flat on pass rate and
+is written up honestly, including what the memory calls cost, in
+[`evals/tbench/RESULTS.md`](./evals/tbench/RESULTS.md); the interesting part is that the
+reminders were correct and the harness prices them, which the original paper never does.
+
 ## Status
 
 Early and moving fast. The public API (`MemorySession`, `triggers.*`) is the part we keep stable.
