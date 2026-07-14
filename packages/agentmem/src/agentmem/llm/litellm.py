@@ -108,14 +108,6 @@ def _parse_args(raw: Any) -> dict[str, Any]:
 
 
 def _from_openai_response(resp: Any, model: str, latency_ms: float) -> LLMResponse:
-    choice = resp.choices[0]
-    message = choice.message
-    tool_calls: list[ToolCall] = []
-    for tc in getattr(message, "tool_calls", None) or []:
-        tool_calls.append(
-            ToolCall(name=tc.function.name, args=_parse_args(tc.function.arguments), block_id=tc.id)
-        )
-
     usage_obj = getattr(resp, "usage", None)
     usage = TokenUsage(
         input_tokens=getattr(usage_obj, "prompt_tokens", 0) or 0,
@@ -123,11 +115,26 @@ def _from_openai_response(resp: Any, model: str, latency_ms: float) -> LLMRespon
         latency_ms=latency_ms,
         model=model,
     )
+
+    choices = getattr(resp, "choices", None) or []
+    if not choices:
+        # Some backends (Gemini on a safety or recitation block) return no choices at all.
+        # Treat it as an empty turn: Phase 1 sees no tool calls and stops, Phase 2 falls
+        # back to silence. Better a skipped memory-step than a crashed one.
+        return LLMResponse(usage=usage, stop_reason="empty")
+
+    choice = choices[0]
+    message = choice.message
+    tool_calls: list[ToolCall] = []
+    for tc in getattr(message, "tool_calls", None) or []:
+        tool_calls.append(
+            ToolCall(name=tc.function.name, args=_parse_args(tc.function.arguments), block_id=tc.id)
+        )
     return LLMResponse(
         text=(message.content or "").strip(),
         tool_calls=tool_calls,
         usage=usage,
-        stop_reason=choice.finish_reason or "",
+        stop_reason=getattr(choice, "finish_reason", "") or "",
         raw_assistant_content=message,
     )
 

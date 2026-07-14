@@ -113,3 +113,13 @@ def test_complete_wires_translation_through_a_fake_litellm(monkeypatch: pytest.M
     assert seen["max_tokens"] == 256
     assert seen["messages"][0] == {"role": "system", "content": "SYS"}
     assert seen["tools"][0]["type"] == "function"
+
+
+def test_response_with_no_choices_is_an_empty_turn() -> None:
+    # Gemini returns an empty choices list on a safety/recitation block; don't crash.
+    resp = types.SimpleNamespace(
+        choices=[], usage=types.SimpleNamespace(prompt_tokens=5, completion_tokens=0)
+    )
+    out = lp._from_openai_response(resp, model="gemini/gemini-2.5-flash", latency_ms=1.0)
+    assert out.text == "" and out.tool_calls == [] and out.stop_reason == "empty"
+    assert out.usage.input_tokens == 5
