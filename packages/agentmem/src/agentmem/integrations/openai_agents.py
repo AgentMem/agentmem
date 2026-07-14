@@ -124,7 +124,7 @@ def attach_memory(
         from agents.run_config import ModelInputData
     except ImportError as exc:  # pragma: no cover - only without the SDK installed
         raise ImportError(
-            "The OpenAI Agents SDK isn't installed. Run: pip install 'agentmem[openai-agents]'"
+            "The OpenAI Agents SDK isn't installed. Run: pip install 'agentmem-core[openai-agents]'"
         ) from exc
 
     session = session or MemorySession(task=task, **(session_kwargs or {}))

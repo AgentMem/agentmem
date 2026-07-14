@@ -39,7 +39,7 @@ def test_apply_reminder_appends_a_transient_developer_message() -> None:
 
 
 def test_attach_memory_points_at_the_extra_without_the_sdk() -> None:
-    with pytest.raises(ImportError, match=r"agentmem\[openai-agents\]"):
+    with pytest.raises(ImportError, match=r"agentmem-core\[openai-agents\]"):
         oa.attach_memory(task="t")
 
 

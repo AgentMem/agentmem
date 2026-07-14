@@ -62,7 +62,7 @@ def test_events_from_turn_maps_reply_edits_and_outcomes() -> None:
 
 
 def test_make_memory_coder_points_at_the_extra_without_aider() -> None:
-    with pytest.raises(ImportError, match=r"agentmem\[aider\]"):
+    with pytest.raises(ImportError, match=r"agentmem-core\[aider\]"):
         aider.make_memory_coder(main_model=object(), io=object())
 
 

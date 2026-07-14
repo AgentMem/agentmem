@@ -4,7 +4,7 @@ In-process hooks for the [Claude Agent SDK](https://pypi.org/project/claude-agen
 No edits to your tools or system prompt, just an added hook.
 
 ```bash
-pip install "agentmem[agent-sdk]"
+pip install "agentmem-core[agent-sdk]"
 ```
 
 ```python

@@ -10,6 +10,13 @@ contract we version against. Breaking it means a note here.
 
 ## [Unreleased]
 
+### Changed
+- The core package publishes to PyPI as `agentmem-core`: the name `agentmem` was
+  already registered by an unrelated project. Nothing else moves, `import agentmem`,
+  the `agentmem` CLI, and `agentmem-mcp` are all unchanged, `pip install agentmem-core`
+  is the only new spelling. `agentmem-daemon` bumps to 0.1.1 to correct its dependency,
+  its published 0.1.0 pointed at the wrong `agentmem` on PyPI.
+
 ## [0.1.0] - 2026-07-14
 
 First release on PyPI. Measured on the 30-session LongRun-sim harness: retention 0%
@@ -84,33 +91,33 @@ repeat, bank growth held to 1.08x. See `evals/longrun_sim/`.
   detached (`python -m agentmem _step`) so a hook returns in milliseconds. Ships as a
   Claude Code plugin (`integrations/claude-code-plugin/`) for one-command install, with
   a `/agentmem:status` skill. The long-running daemon is still available as opt-in warm
-  mode via `agentmem init claude-code --daemon` and `pip install "agentmem[daemon]"`.
+  mode via `agentmem init claude-code --daemon` and `pip install "agentmem-core[daemon]"`.
 - `agentmem.wrap(action_fn)`: the one-liner for a hand-written loop. It injects the
   pending reminder as a `memory_context` keyword and observes what the turn returns.
 - A committable `agentmem.toml` at the project root pins model/store/trigger settings
   for the whole team (env vars and code still override); see `agentmem.toml.example`.
 - Integration correctness: the Claude Agent SDK adapter now wraps its callback in the
   SDK's `HookMatcher` and rides on PostToolUse (the SDK's UserPromptSubmit can't inject),
-  with a clear "pip install 'agentmem[agent-sdk]'" error when the SDK is missing. The
+  with a clear "pip install 'agentmem-core[agent-sdk]'" error when the SDK is missing. The
   LangGraph node documents (and makes configurable) the `memory_context` state key a
   graph must declare.
 - Three more integrations, each on the same public API and leaving the action agent
   untouched:
-  - An MCP server (`agentmem[mcp]`, the `agentmem-mcp` command) exposing `recap`,
+  - An MCP server (`agentmem-core[mcp]`, the `agentmem-mcp` command) exposing `recap`,
     `search`, `bank`, and `checkpoint` as tools, so any MCP host (Cursor, Copilot, Codex,
     Gemini CLI, Continue, Windsurf) can reach project memory. Standard MCP can't push a
     reminder mid-turn, so `checkpoint` is the portable substitute: the server's own
     instructions tell the agent to call it before an edit or after a failure, and it
     returns a silence-gated, id-cited Phase-2-style decision computed on demand against
     the project's salient memory. True mid-turn injection stays with the hook-based hosts.
-  - An Aider adapter (`agentmem[aider]`): a thin `Coder` subclass injects a transient
+  - An Aider adapter (`agentmem-core[aider]`): a thin `Coder` subclass injects a transient
     reminder through `format_chat_chunks` (never persisted to Aider's history), while
     `AiderMemory.run()` drives the turn and observes the reply, edited files, and
     test/lint outcome.
-  - An OpenAI Agents SDK adapter (`agentmem[openai-agents]`): observe through `RunHooks`,
+  - An OpenAI Agents SDK adapter (`agentmem-core[openai-agents]`): observe through `RunHooks`,
     inject through `RunConfig.call_model_input_filter` right before each model call, so
     the reminder is consumed once and the base instructions are left alone.
-- The litellm provider is now implemented (`agentmem[litellm]`), so the memory agent can
+- The litellm provider is now implemented (`agentmem-core[litellm]`), so the memory agent can
   run on any backend litellm supports (Gemini, OpenAI, vLLM, Ollama) by setting
   `model="litellm/<backend>"`. It translates our Anthropic-native content blocks, including
   the Phase 1 tool loop, to and from OpenAI's format at the edge.

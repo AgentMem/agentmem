@@ -4,18 +4,24 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentmem-daemon"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local daemon that bridges Claude Code hooks to AgentMem."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [{ name = "The AgentMem Authors" }]
 # The daemon is a FastAPI app served by uvicorn, so both are real dependencies. The
-# core `agentmem` package stays lean; you only pull these in if you run the daemon.
-dependencies = ["agentmem>=0.1.0,<0.2", "fastapi>=0.110", "uvicorn>=0.29"]
+# core package (published as agentmem-core; `import agentmem` either way) stays lean,
+# you only pull these in if you run the daemon.
+#
+# Bumped straight to 0.1.1: the published 0.1.0 depended on "agentmem", which turned
+# out to be someone else's unrelated PyPI project (ours had to be renamed to
+# agentmem-core after the fact). That dependency is baked into 0.1.0's metadata forever
+# since PyPI releases are immutable, so the fix has to ship as a new version.
+dependencies = ["agentmem-core>=0.1.0,<0.2", "fastapi>=0.110", "uvicorn>=0.29"]
 
 [tool.uv.sources]
-agentmem = { workspace = true }
+agentmem-core = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentmem_daemon"]

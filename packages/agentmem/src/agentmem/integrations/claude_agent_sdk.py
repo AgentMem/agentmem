@@ -56,7 +56,7 @@ def attach_memory(
         from claude_agent_sdk import HookMatcher  # type: ignore[import-not-found]
     except ImportError as exc:  # pragma: no cover - exercised only without the SDK
         raise ImportError(
-            "The Claude Agent SDK isn't installed. Run: pip install 'agentmem[agent-sdk]'"
+            "The Claude Agent SDK isn't installed. Run: pip install 'agentmem-core[agent-sdk]'"
         ) from exc
 
     session = session or MemorySession(task=task, **session_kwargs)

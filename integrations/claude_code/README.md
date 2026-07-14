@@ -8,7 +8,7 @@ agent's prompt or tools.
 Command hooks that call `agentmem hook <event>` directly. No process to keep running.
 
 ```bash
-pip install agentmem
+pip install agentmem-core
 cd your-project
 agentmem init claude-code           # writes daemon-less hooks into .claude/settings.json
 export ANTHROPIC_API_KEY=sk-ant-...
@@ -19,7 +19,7 @@ Or install the whole thing as a plugin (see
 [`../claude-code-plugin/`](../claude-code-plugin)):
 
 ```bash
-pip install agentmem
+pip install agentmem-core
 claude plugin install agentmem
 ```
 
@@ -32,7 +32,7 @@ call is spawned detached, so the hook itself returns in milliseconds.
 For high-volume use, a long-running daemon keeps the bank in memory:
 
 ```bash
-pip install "agentmem[daemon]"
+pip install "agentmem-core[daemon]"
 agentmem init claude-code --daemon
 agentmem serve                      # 127.0.0.1:8642
 ```

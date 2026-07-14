@@ -6,7 +6,7 @@ and there's no daemon to run.
 ## Install
 
 ```bash
-pip install agentmem            # the engine the hooks call
+pip install agentmem-core       # the engine the hooks call
 claude plugin install agentmem  # the hooks (this plugin)
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
@@ -30,7 +30,7 @@ Run `agentmem doctor` to check the setup.
 |---|---|
 | `.claude-plugin/plugin.json` | Plugin manifest. |
 | `hooks/hooks.json` | The five command hooks (no daemon). |
-| `skills/status/` | `/agentmem:status` — show what's remembered. |
+| `skills/status/` | `/agentmem:status`, show what's remembered. |
 
 ## Prefer a long-running daemon?
 
@@ -38,7 +38,7 @@ The daemon-less hooks fit most setups. If you run at high volume and want the ba
 warm in memory, use the daemon variant instead of this plugin:
 
 ```bash
-pip install "agentmem[daemon]"
+pip install "agentmem-core[daemon]"
 agentmem init claude-code --daemon
 agentmem serve
 ```

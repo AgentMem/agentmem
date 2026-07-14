@@ -21,7 +21,7 @@ def preflight(config: AgentMemConfig) -> list[str]:
         except ImportError:
             return [
                 "model uses a litellm/ backend but litellm isn't installed; "
-                "run: pip install 'agentmem[litellm]'"
+                "run: pip install 'agentmem-core[litellm]'"
             ]
         # The backend's own key (GEMINI_API_KEY, OPENAI_API_KEY, ...) is litellm's to
         # read and validate; we can't tell which one this model needs from here.

@@ -1,12 +1,15 @@
-# agentmem
+# agentmem-core
 
 The core of [AgentMem](https://github.com/agentmem/agentmem): a proactive memory layer
 for long-horizon coding agents. It maintains a structured memory bank and decides *when*
 to remind your agent, instead of dumping everything or retrieving on similarity.
 
 ```bash
-pip install agentmem
+pip install agentmem-core
 ```
+
+Published as `agentmem-core` (the name `agentmem` was already taken on PyPI by an
+unrelated project); everything you import and run is still `agentmem`.
 
 ```python
 from agentmem import MemorySession, triggers

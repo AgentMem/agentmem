@@ -6,7 +6,7 @@ tool_calls and tool-role messages on the way in, and the OpenAI response becomes
 `LLMResponse` on the way out. litellm handles OpenAI to the actual backend.
 
 Set `model="litellm/<backend>"`, e.g. `litellm/gemini/gemini-2.5-flash` with `GEMINI_API_KEY`
-set. Optional extra: `pip install 'agentmem[litellm]'`.
+set. Optional extra: `pip install 'agentmem-core[litellm]'`.
 """
 
 from __future__ import annotations
@@ -192,7 +192,7 @@ class LiteLLMProvider:
             from litellm import completion
         except ImportError as exc:  # pragma: no cover - only without litellm installed
             raise ImportError(
-                "litellm isn't installed. Run: pip install 'agentmem[litellm]'"
+                "litellm isn't installed. Run: pip install 'agentmem-core[litellm]'"
             ) from exc
 
         kwargs: dict[str, Any] = {

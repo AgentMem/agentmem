@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentmem"
+name = "agentmem-core"
 dynamic = ["version"]
 description = "A proactive memory layer for long-horizon coding agents, it knows when to remind."
 readme = "README.md"
@@ -23,7 +23,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-# Kept intentionally small so `pip install agentmem` is quick and boring:
+# Kept intentionally small so `pip install agentmem-core` is quick and boring:
 #   - pydantic       : the schemas every module shares
 #   - pydantic-settings : env-var config (AGENTMEM_*)
 #   - anthropic      : the default (and only, for now) LLM provider

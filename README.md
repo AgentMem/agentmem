@@ -54,14 +54,14 @@ when to stay quiet is a feature, not an omission.
 ## Quickstart
 
 ```bash
-pip install agentmem        # or: uv add agentmem
+pip install agentmem-core   # or: uv add agentmem-core (import path stays `agentmem`)
 agentmem demo               # offline, no key needed: watch memory stop a repeated failure
 
 export ANTHROPIC_API_KEY=sk-ant-...   # then point it at your own agent (see below)
 ```
 
 Prefer a different backend? The memory agent runs on anything litellm supports. For a free
-Gemini key, `pip install 'agentmem[litellm]'`, set `GEMINI_API_KEY`, and use
+Gemini key, `pip install 'agentmem-core[litellm]'`, set `GEMINI_API_KEY`, and use
 `model="litellm/gemini/gemini-2.5-flash"`.
 
 Wrap your own loop in five lines:
@@ -91,12 +91,12 @@ allows.
 | Host | Install | How memory arrives |
 |---|---|---|
 | **Claude Code** | `agentmem init claude-code` | Proactive, via hooks (no daemon) |
-| **Claude Agent SDK** | `pip install 'agentmem[agent-sdk]'` | Proactive, a PostToolUse hook |
+| **Claude Agent SDK** | `pip install 'agentmem-core[agent-sdk]'` | Proactive, a PostToolUse hook |
 | **LangGraph** | built in | Proactive, a graph node |
-| **Aider** | `pip install 'agentmem[aider]'` | Proactive, drives the coder loop |
-| **OpenAI Agents SDK** | `pip install 'agentmem[openai-agents]'` | Proactive, run hooks + input filter |
+| **Aider** | `pip install 'agentmem-core[aider]'` | Proactive, drives the coder loop |
+| **OpenAI Agents SDK** | `pip install 'agentmem-core[openai-agents]'` | Proactive, run hooks + input filter |
 | **Your own loop** | built in | Proactive, `wrap()` or two calls |
-| **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem[mcp]'` | On demand via MCP, plus a `checkpoint` nudge |
+| **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem-core[mcp]'` | On demand via MCP, plus a `checkpoint` nudge |
 
 **Proactive** hosts get the full two-phase behavior: AgentMem decides *when* to speak and pushes a
 transient, once-consumed reminder into the next turn. The OpenAI Agents SDK, for example, wires in
@@ -134,7 +134,7 @@ failure, and it answers with the same silence-gated, id-cited Phase-2 decision, 
 against the project's salient memory, rather than a raw list of matches.
 
 ```bash
-pip install 'agentmem[mcp]'
+pip install 'agentmem-core[mcp]'
 claude mcp add --scope project agentmem -- agentmem-mcp   # or add to .cursor/mcp.json, .vscode/mcp.json, ...
 ```
 

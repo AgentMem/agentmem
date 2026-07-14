@@ -46,7 +46,7 @@ def make_memory_coder(main_model: Any, io: Any, *, edit_format: str = "diff", **
 
         base = getattr(importlib.import_module(f"aider.coders.{module_name}"), class_name)
     except ImportError as exc:  # pragma: no cover - only without aider installed
-        raise ImportError("Aider isn't installed. Run: pip install 'agentmem[aider]'") from exc
+        raise ImportError("Aider isn't installed. Run: pip install 'agentmem-core[aider]'") from exc
 
     class MemoryCoder(base):  # type: ignore[valid-type, misc]  # base resolved at runtime
         agentmem_reminder: str | None = None

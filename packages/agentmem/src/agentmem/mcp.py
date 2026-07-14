@@ -169,7 +169,7 @@ def build_server(state_dir: str | None = None) -> Any:
     try:
         from mcp.server.fastmcp import FastMCP
     except ImportError as exc:  # pragma: no cover - only without the mcp SDK installed
-        raise ImportError("The MCP SDK isn't installed. Run: pip install 'agentmem[mcp]'") from exc
+        raise ImportError("The MCP SDK isn't installed. Run: pip install 'agentmem-core[mcp]'") from exc
 
     resolved = state_dir or AgentMemConfig().state_dir
     server = FastMCP("agentmem", instructions=_INSTRUCTIONS)

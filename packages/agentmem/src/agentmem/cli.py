@@ -199,7 +199,7 @@ def _cmd_init(args: argparse.Namespace) -> int:
     if args.daemon:
         port_flag = f" --port {args.port}" if args.port != 8642 else ""
         print(f"Wired warm-mode hooks to a daemon on http://127.0.0.1:{args.port}.")
-        print(f"\nNext:  agentmem serve{port_flag}   (needs: pip install 'agentmem[daemon]')")
+        print(f"\nNext:  agentmem serve{port_flag}   (needs: pip install 'agentmem-core[daemon]')")
     else:
         print("Wired daemon-less hooks (they call `agentmem hook`). Nothing to keep running.")
         print("\nJust make sure ANTHROPIC_API_KEY is set.")

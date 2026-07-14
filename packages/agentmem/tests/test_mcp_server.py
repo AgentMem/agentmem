@@ -17,7 +17,7 @@ def _installed(module: str) -> bool:
 
 @pytest.mark.skipif(_installed("mcp.server.fastmcp"), reason="the MCP SDK is installed")
 def test_build_server_points_at_the_extra_when_the_sdk_is_missing() -> None:
-    with pytest.raises(ImportError, match=r"agentmem\[mcp\]"):
+    with pytest.raises(ImportError, match=r"agentmem-core\[mcp\]"):
         mcp.build_server()
 
 

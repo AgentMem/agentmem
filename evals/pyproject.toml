@@ -11,7 +11,7 @@ license = "Apache-2.0"
 authors = [{ name = "The AgentMem Authors" }]
 # LongDebug-mini task configs are TOML (stdlib tomllib). The LongDebug-causal gold
 # specs are YAML, so the judge needs PyYAML to load them.
-dependencies = ["agentmem", "pyyaml>=6.0"]
+dependencies = ["agentmem-core", "pyyaml>=6.0"]
 
 [project.optional-dependencies]
 # Plots are optional: the report always writes markdown + a results.json; add this
@@ -22,7 +22,7 @@ plots = ["matplotlib>=3.8"]
 agentmem-evals = "agentmem_evals.cli:main"
 
 [tool.uv.sources]
-agentmem = { workspace = true }
+agentmem-core = { workspace = true }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentmem_evals"]
