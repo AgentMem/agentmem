@@ -216,6 +216,13 @@ Details, including the miss, in [RESULTS.md](./evals/longdebug_causal/RESULTS.md
 mirror image of the Terminal-Bench result below: memory earns its keep across sessions, not
 inside a single short task.
 
+Those tasks are ours, so the same probe was run on code that isn't: four ordinary chores on
+[pallets/click](https://github.com/pallets/click), no gold answer and no planted trap. Asked
+what it had just done, the no-memory agent described a file-upload pipeline across four files
+click does not contain, brought down by a race condition in a database it does not have. With
+memory: `src/click/core.py`, `process_value`, `tests/test_options.py`, all real, all touched
+([RESULTS.md](./evals/realworld/RESULTS.md)). The failure is not an artifact of tasks we wrote.
+
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
 that count the memory calls too. Three budget-capped runs (23 paired tasks, Haiku and
