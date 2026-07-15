@@ -118,7 +118,9 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         mem_provider: CountingProvider | None = None
         if self._arm == "memory":
             mem_provider = CountingProvider(
-                build_provider(self._memory_model, api_base=self._api_base)
+                build_provider(
+                    self._memory_model, api_base=self._api_base, no_thinking=self._no_thinking
+                )
             )
             memory = MemorySession(
                 task=instruction[:400],
