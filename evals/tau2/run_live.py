@@ -79,13 +79,56 @@ def _refuse_a_warm_bank(state_dir: Path, resume: bool) -> None:
     raise SystemExit(2)
 
 
+def _llm_args(args: argparse.Namespace) -> dict:
+    """What tau2 hands to litellm for the agent and the user simulator.
+
+    no_thinking has to be in here, not only on our own provider. Qwen3.6 reasons by
+    default, and tau2 caps output tokens per turn, so the whole budget goes to a
+    reasoning trace and the turn comes back empty. Both arms are affected equally, so
+    it does not bend the comparison; it just makes every number meaningless.
+    """
+    out: dict = {"temperature": 0.0}
+    if args.api_base:
+        out["api_base"] = args.api_base
+    if args.no_thinking:
+        out["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+    return out
+
+
+def _preflight_through_tau2(model: str, llm_args: dict) -> None:
+    """Make one real call the way tau2 makes them, before starting anything long.
+
+    Our own check_endpoint proves the server works, but it goes through our provider,
+    which strips the `litellm/` prefix this repo puts on model names. tau2 does not:
+    it hands the string to litellm as-is. So a model name that passes every check we
+    own can still be an unknown provider to tau2, and the failure arrives once per
+    turn, quietly, on a GPU that is billing.
+    """
+    from tau2.data_model.message import UserMessage
+    from tau2.utils.llm_utils import generate
+
+    print(f"preflight: one call as tau2 makes it, model={model!r}")
+    reply = generate(
+        model=model,
+        messages=[UserMessage(role="user", content="Reply with the word ok.")],
+        max_tokens=64,
+        **llm_args,
+    )
+    text = (getattr(reply, "content", "") or "").strip()
+    print(f"  reply: {text[:60]!r}")
+    if not text:
+        raise SystemExit(
+            "preflight got an empty reply. A reasoning model with a small token budget\n"
+            "spends all of it thinking and says nothing. Pass --no-thinking, or raise\n"
+            "--max-steps' token budget, before letting this run for hours."
+        )
+
+
 def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     from tau2.data_model.simulation import TextRunConfig
     from tau2.runner.batch import run_tasks
 
-    llm_args = {"temperature": 0.0}
-    if args.api_base:
-        llm_args["api_base"] = args.api_base
+    llm_args = _llm_args(args)
 
     run, counters = (None, [])
     agent_name = BASELINE_AGENT
@@ -105,10 +148,13 @@ def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     config = TextRunConfig(
         domain=args.domain,
         agent=agent_name,
-        llm_agent=args.action_model,
+        # tau2 hands the model string straight to litellm, and the `litellm/` prefix is
+        # this repo's own convention for "route this through litellm", not something
+        # litellm knows. Leave it on and every call comes back as an unknown provider.
+        llm_agent=args.action_model.removeprefix("litellm/"),
         llm_args_agent=dict(llm_args),
         user="user_simulator",
-        llm_user=args.user_model,
+        llm_user=args.user_model.removeprefix("litellm/"),
         llm_args_user=dict(llm_args),
         task_split_name=args.task_split,
         num_trials=args.num_trials,
@@ -235,6 +281,7 @@ def main() -> int:
         num_tasks=args.num_tasks or None,
     )
     print(f"domain {args.domain}, split {args.task_split}: {len(tasks)} tasks")
+    _preflight_through_tau2(args.action_model.removeprefix("litellm/"), _llm_args(args))
     print(f"action={args.action_model}  user={args.user_model}  memory={args.memory_model}")
 
     out = []

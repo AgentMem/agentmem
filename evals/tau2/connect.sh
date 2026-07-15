@@ -71,6 +71,10 @@ done
 
 say "prove tool calling works before spending an hour on it"
 cd "$REPO"
+# litellm reads the key from the environment for a hosted_vllm route; without these
+# the check fails with Unauthorized against a server that is working perfectly.
+export HOSTED_VLLM_API_KEY="$KEY"
+export OPENAI_API_KEY="$KEY"
 uv run python evals/tbench/check_endpoint.py \
     --model "litellm/hosted_vllm/$MODEL" \
     --api-base "http://localhost:$PORT/v1" --no-thinking
