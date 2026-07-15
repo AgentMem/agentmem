@@ -224,11 +224,15 @@ mirror image of the Terminal-Bench result below: memory earns its keep across se
 inside a single short task.
 
 Those tasks are ours, so the same probe was run on code that isn't: four ordinary chores on
-[pallets/click](https://github.com/pallets/click), no gold answer and no planted trap. Asked
-what it had just done, the no-memory agent described a file-upload pipeline across four files
-click does not contain, brought down by a race condition in a database it does not have. With
-memory: `src/click/core.py`, `process_value`, `tests/test_options.py`, all real, all touched
-([RESULTS.md](./evals/realworld/RESULTS.md)). The failure is not an artifact of tasks we wrote.
+[pallets/click](https://github.com/pallets/click), then on
+[python-attrs/attrs](https://github.com/python-attrs/attrs), no gold answer and no planted
+trap. Across three runs the no-memory agent invented a file-upload pipeline, a JWT auth
+middleware written in TypeScript, and an authentication service, in two pure-Python libraries
+that have none of those things, and cited nothing real in any run. With memory, on click it
+recalled that the suite had died at collection on pytest 9.1.1 against the pinned 7.4.0, a
+real piece of upstream bit-rot it had hit and fixed three sessions earlier, with its context
+wiped in between ([RESULTS.md](./evals/realworld/RESULTS.md)). The failure is not an artifact
+of tasks we wrote or a repo we picked.
 
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms

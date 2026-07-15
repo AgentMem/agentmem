@@ -29,6 +29,7 @@ _SELF_HOSTED_ROUTES = ("hosted_vllm/", "vllm/", "ollama/", "ollama_chat/", "lm_s
 def is_self_hosted(model: str) -> bool:
     return model.removeprefix("litellm/").startswith(_SELF_HOSTED_ROUTES)
 
+
 BASH_TOOL: dict[str, Any] = {
     "name": "bash",
     "description": (

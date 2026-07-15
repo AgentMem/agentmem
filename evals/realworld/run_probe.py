@@ -21,17 +21,10 @@ from agentmem.session import MemorySession  # noqa: E402
 from agentmem.triggers import default as default_trigger  # noqa: E402
 from agentmem_evals.tbench.loop import ActionLoop, CountingProvider, is_self_hosted  # noqa: E402
 
-# Nothing here is authored to be memorable. They are ordinary maintenance chores on
-# somebody else's code, and the probe simply asks what happened while doing them.
-SESSIONS = [
-    "Run the test suite and report how many tests pass. Do not change any code.",
-    "Find where the CLI decides that an option is required, and add a short comment "
-    "above that code explaining the rule in your own words.",
-    "Add a test that asserts a required option produces a non-zero exit code when "
-    "it is omitted. Put it in a new file tests/test_required_probe.py.",
-    "Run the full suite again. If anything you added fails, fix your own test.",
-]
-
+# The tickets live in a per-repo spec file, not here. They have to name something the
+# repo actually has, so they cannot be shared, but nothing about their shape is tuned
+# to a result: run the suite, find a decision point, add a test, run it again. Ordinary
+# maintenance chores on somebody else's code. See tickets/*.json.
 PROBE = (
     "Before the next ticket: in 2-3 sentences, what did you work on in this project "
     "across the earlier sessions, and did anything fail along the way? Be specific "
@@ -49,11 +42,12 @@ def sh(cmd: list[str], timeout: int = 900) -> tuple[int, str]:
 class Box:
     """A container holding a real upstream checkout, nothing of ours inside it."""
 
-    def __init__(self, repo_url: str, ref: str, workdir: Path) -> None:
+    def __init__(self, repo_url: str, ref: str, workdir: Path, test_deps: str = "") -> None:
         self.name = f"agentmem-rw-{int(time.time())}"
         self.workdir = workdir
         self.repo_url = repo_url
         self.ref = ref
+        self.test_deps = test_deps
         self.wd = "/work"
 
     def up(self) -> None:
@@ -62,10 +56,17 @@ class Box:
             raise RuntimeError(f"clone failed: {out[-400:]}")
         sh(["git", "-C", str(self.workdir), "checkout", "-q", self.ref])
         df = self.workdir / "Dockerfile.agentmem"
+        deps = f"pytest {self.test_deps}".strip()
+        # git, because a project that versions itself from its tags cannot report a
+        # version without it, and pip then fails on metadata rather than on the code.
         df.write_text(
-            "FROM python:3.11-slim\nWORKDIR /work\nCOPY . /work\n"
-            "RUN pip install --no-cache-dir -q -e . pytest 2>/dev/null || "
-            "pip install --no-cache-dir -q . pytest\n"
+            "FROM python:3.11-slim\n"
+            "RUN apt-get update && apt-get install -y --no-install-recommends git "
+            "&& rm -rf /var/lib/apt/lists/*\n"
+            "WORKDIR /work\nCOPY . /work\n"
+            "RUN git config --global --add safe.directory /work\n"
+            f"RUN pip install --no-cache-dir -q -e . {deps} || "
+            f"pip install --no-cache-dir -q . {deps}\n"
         )
         code, out = sh(["docker", "build", "-q", "-f", str(df), "-t", self.name, str(self.workdir)])
         if code != 0:
@@ -111,12 +112,12 @@ def build_provider(model: str, api_base: str):  # noqa: ANN201
 
 def run_condition(cond: str, args: argparse.Namespace, root: Path) -> dict:
     workdir = root / f"repo-{cond}"
-    box = Box(args.repo, args.ref, workdir)
+    box = Box(args.repo, args.ref, workdir, args.test_deps)
     box.up()
     mem_state = root / f"mem-{cond}"
     sessions_log, probe = [], ""
     try:
-        for i, ticket in enumerate(SESSIONS, start=1):
+        for i, ticket in enumerate(args.sessions, start=1):
             memory = None
             if cond == "memory":
                 memory = MemorySession(
@@ -129,7 +130,7 @@ def run_condition(cond: str, args: argparse.Namespace, root: Path) -> dict:
                         state_dir=str(mem_state), advantage_enabled=True, advantage_gate=False
                     ),
                 )
-            if i == len(SESSIONS):
+            if i == len(args.sessions):
                 probe = ask_probe(args, memory)
 
             loop = ActionLoop(
@@ -180,8 +181,10 @@ def ask_probe(args: argparse.Namespace, memory: MemorySession | None) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--repo", default="https://github.com/pallets/click")
-    ap.add_argument("--ref", default="8.1.7")
+    ap.add_argument("--tickets", default=str(HERE / "tickets" / "click.json"))
+    ap.add_argument("--repo", default="", help="overrides the tickets file")
+    ap.add_argument("--ref", default="")
+    ap.add_argument("--test-deps", default="", help="extra pip packages the suite needs")
     ap.add_argument("--conditions", default="none,memory")
     ap.add_argument("--action-model", required=True)
     ap.add_argument("--memory-model", default="")
@@ -193,12 +196,19 @@ def main() -> int:
     args = ap.parse_args()
     args.memory_model = args.memory_model or args.action_model
 
+    spec = json.loads(Path(args.tickets).read_text())
+    args.sessions = spec["sessions"]
+    args.repo = args.repo or spec["repo"]
+    args.ref = args.ref or spec["ref"]
+    args.test_deps = args.test_deps or spec.get("test_deps", "")
+
     if not all(is_self_hosted(m) for m in (args.action_model, args.memory_model)):
         print("note: a hosted model is in the mix, this run will be billed per token")
 
     root = Path(args.keep_dir)
     root.mkdir(parents=True, exist_ok=True)
     print(f"upstream: {args.repo}@{args.ref} (not ours, no gold answer, no planted trap)")
+    print(f"tickets:  {Path(args.tickets).name} ({len(args.sessions)} sessions)")
 
     out = []
     for cond in [c.strip() for c in args.conditions.split(",") if c.strip()]:

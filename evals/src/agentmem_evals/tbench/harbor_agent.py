@@ -43,6 +43,7 @@ def build_provider(
 
     return AnthropicProvider(model=model, timeout=timeout)
 
+
 try:
     from harbor.agents.base import BaseAgent
 

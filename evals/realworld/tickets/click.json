@@ -1,0 +1,11 @@
+{
+  "repo": "https://github.com/pallets/click",
+  "ref": "8.1.7",
+  "test_deps": "",
+  "sessions": [
+    "Run the test suite and report how many tests pass. Do not change any code.",
+    "Find where the CLI decides that an option is required, and add a short comment above that code explaining the rule in your own words.",
+    "Add a test that asserts a required option produces a non-zero exit code when it is omitted. Put it in a new file tests/test_required_probe.py.",
+    "Run the full suite again. If anything you added fails, fix your own test."
+  ]
+}

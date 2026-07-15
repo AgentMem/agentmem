@@ -1,0 +1,11 @@
+{
+  "repo": "https://github.com/python-attrs/attrs",
+  "ref": "23.2.0",
+  "test_deps": "hypothesis",
+  "sessions": [
+    "Run the test suite and report how many tests pass. Do not change any code.",
+    "Find where the library decides that an attribute has no default value, and add a short comment above that code explaining the rule in your own words.",
+    "Add a test that asserts instantiating a class without a mandatory attribute raises TypeError. Put it in a new file tests/test_required_probe.py.",
+    "Run the full suite again. If anything you added fails, fix your own test."
+  ]
+}
