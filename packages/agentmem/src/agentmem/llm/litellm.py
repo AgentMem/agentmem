@@ -164,8 +164,20 @@ def _from_openai_response(resp: Any, model: str, latency_ms: float) -> LLMRespon
 
 
 class LiteLLMProvider:
-    def __init__(self, model: str, *, max_retries: int = 2, **_: Any) -> None:
+    def __init__(
+        self,
+        model: str,
+        *,
+        api_base: str | None = None,
+        timeout: float | None = None,
+        max_retries: int = 2,
+        **_: Any,
+    ) -> None:
         self.model = model
+        # Points at a server you run yourself (vLLM, Ollama). Leave it None for hosted
+        # backends, where litellm resolves the endpoint from the model prefix.
+        self.api_base = api_base
+        self.timeout = timeout
         # Free tiers rate-limit hard (Gemini's is 5 requests/minute) and 5xx under load,
         # so unlike the Anthropic provider this one retries transient errors rather than
         # losing the whole memory-step. Non-transient errors still propagate.
@@ -193,6 +205,10 @@ class LiteLLMProvider:
         }
         if tools:
             kwargs["tools"] = _to_openai_tools(tools)
+        if self.api_base:
+            kwargs["api_base"] = self.api_base
+        if self.timeout is not None:
+            kwargs["timeout"] = self.timeout
 
         started = time.perf_counter()
         resp = None

@@ -127,6 +127,46 @@ def test_complete_wires_translation_through_a_fake_litellm(monkeypatch: pytest.M
     assert seen["tools"][0]["type"] == "function"
 
 
+def test_api_base_and_timeout_reach_litellm(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Without api_base a hosted_vllm model would resolve to litellm's default endpoint
+    # rather than the server you started, so this has to arrive on the call.
+    seen: dict = {}
+
+    def fake_completion(**kwargs: object) -> object:
+        seen.update(kwargs)
+        return _fake_response("local")
+
+    monkeypatch.setitem(
+        __import__("sys").modules, "litellm", types.SimpleNamespace(completion=fake_completion)
+    )
+
+    provider = lp.LiteLLMProvider(
+        model="hosted_vllm/Qwen/Qwen3.6-27B",
+        api_base="http://10.0.0.5:8000/v1",
+        timeout=300.0,
+    )
+    provider.complete(system="SYS", messages=[{"role": "user", "content": "go"}])
+    assert seen["api_base"] == "http://10.0.0.5:8000/v1"
+    assert seen["timeout"] == 300.0
+
+
+def test_omitted_api_base_is_not_sent(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict = {}
+
+    def fake_completion(**kwargs: object) -> object:
+        seen.update(kwargs)
+        return _fake_response("hosted")
+
+    monkeypatch.setitem(
+        __import__("sys").modules, "litellm", types.SimpleNamespace(completion=fake_completion)
+    )
+
+    lp.LiteLLMProvider(model="gemini/gemini-2.5-flash").complete(
+        system="SYS", messages=[{"role": "user", "content": "go"}]
+    )
+    assert "api_base" not in seen and "timeout" not in seen
+
+
 def test_response_with_no_choices_is_an_empty_turn() -> None:
     # Gemini returns an empty choices list on a safety/recitation block; don't crash.
     resp = types.SimpleNamespace(

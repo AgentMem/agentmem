@@ -19,6 +19,16 @@ PRICES: dict[str, tuple[float, float]] = {
 # When the model isn't in the table, assume Sonnet-tier prices rather than undercounting.
 _FALLBACK_PRICE = (3.0, 15.0)
 
+# litellm routes to a server you run yourself. That bills by the GPU hour, not the
+# token, so per-token cost is zero and the per-trial cap stops binding: a run on your
+# own hardware ends on turns or on the task, never on money. Pricing these at the
+# fallback rate would kill trials on the first turn.
+_SELF_HOSTED_ROUTES = ("hosted_vllm/", "vllm/", "ollama/", "ollama_chat/", "lm_studio/")
+
+
+def is_self_hosted(model: str) -> bool:
+    return model.removeprefix("litellm/").startswith(_SELF_HOSTED_ROUTES)
+
 BASH_TOOL: dict[str, Any] = {
     "name": "bash",
     "description": (
@@ -104,6 +114,8 @@ class CountingProvider:
 
 
 def cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+    if is_self_hosted(model):
+        return 0.0
     inp, out = PRICES.get(model, _FALLBACK_PRICE)
     return (input_tokens * inp + output_tokens * out) / 1_000_000
 

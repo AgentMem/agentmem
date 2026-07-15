@@ -10,6 +10,10 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from agentmem_evals.tbench.loop import is_self_hosted  # noqa: E402
+
 AGENT_PATH = "agentmem_evals.tbench.harbor_agent:AgentMemTerminalAgent"
 
 
@@ -24,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--run-usd-cap", type=float, required=True)
     p.add_argument("--exec-timeout-sec", type=int, default=120)
     p.add_argument("--max-tokens", type=int, default=1024)
+    p.add_argument("--api-base", default="", help="endpoint for a litellm/ self-hosted model")
     p.add_argument("--tb-dir", required=True, help="downloaded terminal-bench task dir")
     p.add_argument("--jobs-dir", required=True)
     p.add_argument("--harbor-bin", default="harbor")
@@ -33,7 +38,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def preflight(args: argparse.Namespace, tasks: list[str], arms: list[str]) -> None:
-    if not os.environ.get("ANTHROPIC_API_KEY") and not args.dry_run:
+    needs_key = not is_self_hosted(args.action_model) or (
+        "memory" in arms and not is_self_hosted(args.memory_model or args.action_model)
+    )
+    if needs_key and not os.environ.get("ANTHROPIC_API_KEY") and not args.dry_run:
         sys.exit("ANTHROPIC_API_KEY is not set; refusing to start a paid run.")
     tb = Path(args.tb_dir)
     missing = [t for t in tasks if not (tb / t / "task.toml").exists()]
@@ -41,8 +49,14 @@ def preflight(args: argparse.Namespace, tasks: list[str], arms: list[str]) -> No
         sys.exit(f"tasks not found under {tb}: {', '.join(missing)}")
     # Worst case: every trial burns its full per-task cap. The cap covers the whole
     # trial including memory-step calls (the loop counts both against it), so no
-    # extra headroom factor is needed.
-    worst = args.task_usd_cap * len(tasks) * len(arms)
+    # extra headroom factor is needed. A model you host yourself costs nothing per
+    # token, so those runs are bounded by turns and by the task, not by money.
+    free = is_self_hosted(args.action_model) and (
+        "memory" not in arms or is_self_hosted(args.memory_model or args.action_model)
+    )
+    worst = 0.0 if free else args.task_usd_cap * len(tasks) * len(arms)
+    if free:
+        print("self-hosted models: no token cost, trials end on turns or on the task")
     print(f"worst-case spend: ${worst:.2f} (cap ${args.run_usd_cap:.2f})")
     if worst > args.run_usd_cap:
         sys.exit(
@@ -82,6 +96,8 @@ def harbor_cmd(args: argparse.Namespace, arm: str, tasks: list[str], job: str) -
     ]
     if args.memory_model:
         cmd += ["--ak", f"memory_model={args.memory_model}"]
+    if args.api_base:
+        cmd += ["--ak", f"api_base={args.api_base}"]
     for t in tasks:
         cmd += ["-i", t]
     return cmd

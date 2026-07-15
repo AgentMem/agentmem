@@ -10,11 +10,31 @@ from typing import TYPE_CHECKING, Any
 
 from agentmem import __version__ as agentmem_version
 from agentmem.config import AgentMemConfig
-from agentmem.llm.anthropic import AnthropicProvider
+from agentmem.llm.base import LLMProvider
 from agentmem.session import MemorySession
 from agentmem.triggers import default
 
 from .loop import ActionLoop, CountingProvider, Decision
+
+
+def build_provider(model: str, *, api_base: str = "", timeout: float = 300.0) -> LLMProvider:
+    """Anthropic by default; a `litellm/` prefix routes anywhere else, including a
+    vLLM or Ollama server you run yourself.
+
+    The 300s timeout is deliberate: the library default is 30s, sized for quick
+    memory-step calls, and a thinking model working a long task instruction blows
+    past it on the first request and kills the trial at turn zero."""
+    if model.startswith("litellm/"):
+        from agentmem.llm.litellm import LiteLLMProvider
+
+        return LiteLLMProvider(
+            model=model.removeprefix("litellm/"),
+            api_base=api_base or None,
+            timeout=timeout,
+        )
+    from agentmem.llm.anthropic import AnthropicProvider
+
+    return AnthropicProvider(model=model, timeout=timeout)
 
 try:
     from harbor.agents.base import BaseAgent
@@ -43,6 +63,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         task_usd_cap: str = "0.25",
         exec_timeout_sec: str = "120",
         max_tokens: str = "1024",
+        api_base: str = "",
         **kwargs: Any,
     ) -> None:
         if not _HAVE_HARBOR:
@@ -61,6 +82,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         self._exec_timeout_sec = int(exec_timeout_sec)
         # Models with adaptive thinking (Sonnet 5 and up) need real output headroom.
         self._max_tokens = int(max_tokens)
+        self._api_base = api_base
 
     @staticmethod
     def name() -> str:
@@ -78,14 +100,12 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        # 300s, not the library's 30s default: a thinking model chewing on a long
-        # task instruction blows well past 30s and the whole trial dies at turn 0.
-        action = CountingProvider(AnthropicProvider(model=self._action_model, timeout=300.0))
+        action = CountingProvider(build_provider(self._action_model, api_base=self._api_base))
         memory: MemorySession | None = None
         mem_provider: CountingProvider | None = None
         if self._arm == "memory":
             mem_provider = CountingProvider(
-                AnthropicProvider(model=self._memory_model, timeout=300.0)
+                build_provider(self._memory_model, api_base=self._api_base)
             )
             memory = MemorySession(
                 task=instruction[:400],

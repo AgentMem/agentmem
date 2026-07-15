@@ -44,6 +44,44 @@ The agent lives at `agentmem_evals.tbench.harbor_agent:AgentMemTerminalAgent`;
 transcript and the memory bank) land in each trial's `agent/` directory,
 verifier verdicts in `results.json`.
 
+## Running against a model you host yourself
+
+Any `litellm/` model works for either role, which makes a full-suite run a GPU
+rental instead of an API bill, and removes the budget cap as a confound: tokens
+cost nothing, so trials end on turns or on the task, never on money.
+
+On the GPU box:
+
+```bash
+MODEL=Qwen/Qwen3.6-27B ./serve_vllm.sh     # vLLM with tool calling on
+```
+
+From here, before spending hours on it:
+
+```bash
+python evals/tbench/check_endpoint.py \
+    --model litellm/hosted_vllm/Qwen/Qwen3.6-27B \
+    --api-base http://<gpu-host>:8000/v1
+```
+
+That issues one real request through the same provider the eval uses and fails
+loudly if the model answers in prose instead of calling `bash`, which is the
+usual symptom of a mismatched `--tool-call-parser`. Then:
+
+```bash
+python evals/tbench/run_live.py \
+    --tasks <...> --action-model litellm/hosted_vllm/Qwen/Qwen3.6-27B \
+    --api-base http://<gpu-host>:8000/v1 --memory-model claude-haiku-4-5 \
+    --max-turns 40 --max-tokens 4096 --run-usd-cap 2.00 \
+    --tb-dir ~/tb2/terminal-bench --harbor-bin ~/harborenv/bin/harbor --jobs-dir ~/tb-jobs
+```
+
+Only the memory calls are billed there; make both models self-hosted and the
+preflight reports a worst case of $0.00 and stops asking for a key. Docker and
+the task containers stay on this machine and only the model calls cross the
+network, so there's no Docker-in-Docker to fight. Local Docker memory is then
+the throughput limit: `-n` above about 2 needs more RAM than the default VM has.
+
 ## Honesty notes
 
 - Both arms share every knob: truncation, window trimming, turn caps, budget.

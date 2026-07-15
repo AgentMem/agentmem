@@ -13,7 +13,7 @@ from agentmem.llm.base import LLMResponse
 from agentmem.schemas import TokenUsage
 from agentmem.session import MemorySession
 from agentmem.tools import ToolCall
-from agentmem_evals.tbench.loop import ActionLoop, CountingProvider, cost_usd
+from agentmem_evals.tbench.loop import ActionLoop, CountingProvider, cost_usd, is_self_hosted
 
 _USAGE = TokenUsage(input_tokens=1000, output_tokens=100, model="claude-haiku-4-5")
 
@@ -199,3 +199,34 @@ def test_task_cap_covers_memory_spend_too() -> None:
     d = loop.next_decision()
     assert (d.kind, d.reason) == ("stop", "budget")
     assert len(fake.windows) == 0  # not a single action call once the cap is gone
+
+
+def test_self_hosted_models_are_free_and_dont_trip_the_cap() -> None:
+    # Priced at the API fallback these tokens would cost ~$4.50 and kill the trial;
+    # a server you run yourself bills by the hour, so the cap must not bind.
+    assert is_self_hosted("litellm/hosted_vllm/Qwen/Qwen3.6-27B")
+    assert is_self_hosted("hosted_vllm/Qwen/Qwen3.6-27B")
+    assert is_self_hosted("ollama/qwen3")
+    assert not is_self_hosted("claude-sonnet-5")
+    assert not is_self_hosted("litellm/gemini/gemini-2.5-flash")
+
+    assert cost_usd("hosted_vllm/Qwen/Qwen3.6-27B", 1_000_000, 200_000) == 0.0
+    assert cost_usd("litellm/gemini/gemini-2.5-flash", 1_000_000, 0) > 0.0
+
+
+def test_a_self_hosted_loop_runs_past_the_cap_on_turns_alone() -> None:
+    class LocalFake(FakeAction):
+        model = "hosted_vllm/Qwen/Qwen3.6-27B"
+
+    fake = LocalFake([_resp(_bash(f"step {i}", f"id_{i}")) for i in range(6)])
+    loop = ActionLoop(fake, "task", usd_cap=0.0001, max_turns=4)  # a cap that would bite
+    turns = 0
+    while True:
+        d = loop.next_decision()
+        if d.kind != "exec":
+            break
+        loop.record_exec(d, "ok", "", 0)
+        turns += 1
+    assert loop.stop_reason == "max_turns"
+    assert loop.spent_usd == 0.0
+    assert turns == 4
