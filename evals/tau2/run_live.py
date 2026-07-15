@@ -56,6 +56,29 @@ def make_run(args: argparse.Namespace, state_dir: Path) -> tuple[MemoryRun, list
     return MemoryRun(session), [provider]
 
 
+def _refuse_a_warm_bank(state_dir: Path, resume: bool) -> None:
+    """Stop rather than quietly start the memory arm with a bank it already filled.
+
+    A state dir is keyed by domain and seed tag, so re-running the same command after
+    a crash, or after a first look at the numbers, hands the memory arm everything it
+    learned last time while the baseline starts from nothing. The run still completes
+    and the report still looks ordinary. Nothing about the output says the two arms
+    were no longer comparable, which is why this is an error and not a warning.
+    """
+    if resume or not state_dir.exists():
+        return
+    leftovers = [p for p in state_dir.rglob("*") if p.is_file()]
+    if not leftovers:
+        return
+    print(f"\nERROR: {state_dir} already holds a bank from an earlier run:")
+    for p in leftovers[:5]:
+        print(f"  {p.relative_to(state_dir)}")
+    print("\nStarting on top of it would give the memory arm a head start the baseline")
+    print("does not get, and the report would not show it. Pick a new --seed-tag, or")
+    print("delete that directory, or pass --resume if continuing is what you meant.")
+    raise SystemExit(2)
+
+
 def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     from tau2.data_model.simulation import TextRunConfig
     from tau2.runner.batch import run_tasks
@@ -69,6 +92,7 @@ def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     concurrency = args.max_concurrency
     if arm == "memory":
         state_dir = Path(args.state_dir) / f"tau2-{args.domain}-{args.seed_tag}"
+        _refuse_a_warm_bank(state_dir, args.resume)
         run, counters = make_run(args, state_dir)
         agent_name = register_agentmem_agent(run, name="agentmem")
         # One bank, one ticket at a time. Two tickets at once would interleave two
@@ -127,6 +151,7 @@ def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: Memo
     """
     from tau2.data_model.simulation import Results
     from tau2.runner.batch import run_single_task
+    from tau2.runner.helpers import get_info
 
     sims = []
     for i, task in enumerate(tasks, start=1):
@@ -140,7 +165,9 @@ def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: Memo
         run.end_ticket(float(reward) if reward is not None else 0.0)
         if i % 10 == 0 or i == len(tasks):
             print(f"  ticket {i}/{len(tasks)}: last reward {reward}")
-    return Results(tasks=tasks, simulations=sims)
+    # tau2's own get_info, because Results requires it and hand-rolling one here would
+    # be a second, worse copy of a struct that records what produced these numbers.
+    return Results(info=get_info(config), tasks=tasks, simulations=sims)
 
 
 def _summarize(results: object) -> dict:
@@ -183,6 +210,7 @@ def main() -> int:
     ap.add_argument("--max-concurrency", type=int, default=4)
     ap.add_argument("--no-thinking", action="store_true")
     ap.add_argument("--seed-tag", default="s1")
+    ap.add_argument("--resume", action="store_true", help="continue on top of an existing bank")
     ap.add_argument("--state-dir", default="")
     ap.add_argument("--out-dir", default="")
     ap.add_argument("--out", default="tau2-report.json")
@@ -231,6 +259,18 @@ def _report_pairs(none_arm: dict, mem_arm: dict) -> None:
     shared = sorted(set(a) & set(b))
     gained = [t for t in shared if a[t] < 1.0 <= b[t]]
     lost = [t for t in shared if b[t] < 1.0 <= a[t]]
+    # The baseline goes through tau2's batch runner, which retries a ticket that
+    # errors; the memory arm runs them one at a time and drops one that raises. A
+    # ticket missing from either arm is dropped from the pairing, so this does not
+    # bend the comparison, but it does cost tickets and the count should be visible
+    # rather than inferred from a smaller n.
+    only_none = sorted(set(a) - set(b))
+    only_mem = sorted(set(b) - set(a))
+    if only_none or only_mem:
+        print(
+            f"\nunpaired and therefore ignored: {len(only_none)} the memory arm lost, "
+            f"{len(only_mem)} the baseline lost"
+        )
     print(f"\npaired on {len(shared)} tasks")
     print(f"  fail -> pass with memory: {len(gained)}  {gained[:6]}")
     print(f"  pass -> fail with memory: {len(lost)}  {lost[:6]}")
