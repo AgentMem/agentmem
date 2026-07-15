@@ -25,7 +25,11 @@ from agentmem.config import AgentMemConfig  # noqa: E402
 from agentmem.llm.anthropic import AnthropicProvider  # noqa: E402
 from agentmem.session import MemorySession  # noqa: E402
 from agentmem.triggers import default as default_trigger  # noqa: E402
-from agentmem_evals.tbench.loop import ActionLoop, CountingProvider  # noqa: E402
+from agentmem_evals.tbench.loop import (  # noqa: E402
+    ActionLoop,
+    CountingProvider,
+    is_self_hosted,
+)
 
 SESSION_TURN_CAP = 15  # per the benchmark spec
 
@@ -397,12 +401,24 @@ def main() -> int:
 
     tasks = [t.strip() for t in args.tasks.split(",") if t.strip()]
     conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
+
+    # A model you host yourself bills by the GPU hour, not the token, so a run with
+    # no hosted model in it costs nothing and needs no key. The judge counts too.
+    paid_roles = [args.action_model]
+    if "memory" in conditions:
+        paid_roles.append(args.memory_model)
+    if not args.no_judge:
+        paid_roles.append(args.judge_model)
+    free = args.fake_action or all(is_self_hosted(m) for m in paid_roles)
+
     n_sessions = sum(len(load_sessions(HERE / SM.task_dir(t))) for t in tasks)
-    worst = n_sessions * len(conditions) * args.session_usd_cap
+    worst = 0.0 if free else n_sessions * len(conditions) * args.session_usd_cap
+    if free:
+        print("self-hosted models: no token cost, runs end on turns or on the task")
     print(f"worst-case spend: ${worst:.2f} (cap ${args.run_usd_cap:.2f})")
     if worst > args.run_usd_cap:
         sys.exit("worst-case exceeds --run-usd-cap")
-    if not os.environ.get("ANTHROPIC_API_KEY") and not args.fake_action:
+    if not free and not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("ANTHROPIC_API_KEY is not set")
 
     judge = None if args.no_judge else HaikuJudge(args.judge_model)
