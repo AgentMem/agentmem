@@ -17,13 +17,17 @@ from agentmem.triggers import default
 from .loop import ActionLoop, CountingProvider, Decision
 
 
-def build_provider(model: str, *, api_base: str = "", timeout: float = 300.0) -> LLMProvider:
+def build_provider(
+    model: str, *, api_base: str = "", timeout: float = 300.0, no_thinking: bool = False
+) -> LLMProvider:
     """Anthropic by default; a `litellm/` prefix routes anywhere else, including a
     vLLM or Ollama server you run yourself.
 
     The 300s timeout is deliberate: the library default is 30s, sized for quick
     memory-step calls, and a thinking model working a long task instruction blows
-    past it on the first request and kills the trial at turn zero."""
+    past it on the first request and kills the trial at turn zero. no_thinking asks
+    a vLLM chat template to drop the reasoning trace, which for a heavy thinker like
+    Qwen3.6 is the difference between a snappy tool call and a per-turn timeout."""
     if model.startswith("litellm/"):
         from agentmem.llm.litellm import LiteLLMProvider
 
@@ -31,6 +35,9 @@ def build_provider(model: str, *, api_base: str = "", timeout: float = 300.0) ->
             model=model.removeprefix("litellm/"),
             api_base=api_base or None,
             timeout=timeout,
+            extra_body=(
+                {"chat_template_kwargs": {"enable_thinking": False}} if no_thinking else None
+            ),
         )
     from agentmem.llm.anthropic import AnthropicProvider
 
@@ -64,6 +71,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         exec_timeout_sec: str = "120",
         max_tokens: str = "1024",
         api_base: str = "",
+        no_thinking: str = "false",
         **kwargs: Any,
     ) -> None:
         if not _HAVE_HARBOR:
@@ -83,6 +91,7 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         # Models with adaptive thinking (Sonnet 5 and up) need real output headroom.
         self._max_tokens = int(max_tokens)
         self._api_base = api_base
+        self._no_thinking = str(no_thinking).lower() in ("1", "true", "yes")
 
     @staticmethod
     def name() -> str:
@@ -100,7 +109,11 @@ class AgentMemTerminalAgent(BaseAgent):  # type: ignore[misc]
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        action = CountingProvider(build_provider(self._action_model, api_base=self._api_base))
+        action = CountingProvider(
+            build_provider(
+                self._action_model, api_base=self._api_base, no_thinking=self._no_thinking
+            )
+        )
         memory: MemorySession | None = None
         mem_provider: CountingProvider | None = None
         if self._arm == "memory":

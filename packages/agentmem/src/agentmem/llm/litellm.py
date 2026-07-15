@@ -170,6 +170,7 @@ class LiteLLMProvider:
         *,
         api_base: str | None = None,
         timeout: float | None = None,
+        extra_body: dict[str, Any] | None = None,
         max_retries: int = 2,
         **_: Any,
     ) -> None:
@@ -178,6 +179,10 @@ class LiteLLMProvider:
         # backends, where litellm resolves the endpoint from the model prefix.
         self.api_base = api_base
         self.timeout = timeout
+        # Passed straight to the server. For a vLLM chat template this is where
+        # {"chat_template_kwargs": {"enable_thinking": False}} goes to turn off a
+        # thinking model's reasoning trace.
+        self.extra_body = extra_body
         # Free tiers rate-limit hard (Gemini's is 5 requests/minute) and 5xx under load,
         # so unlike the Anthropic provider this one retries transient errors rather than
         # losing the whole memory-step. Non-transient errors still propagate.
@@ -209,6 +214,8 @@ class LiteLLMProvider:
             kwargs["api_base"] = self.api_base
         if self.timeout is not None:
             kwargs["timeout"] = self.timeout
+        if self.extra_body:
+            kwargs["extra_body"] = self.extra_body
 
         started = time.perf_counter()
         resp = None

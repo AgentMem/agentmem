@@ -21,14 +21,19 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", required=True, help="e.g. litellm/hosted_vllm/Qwen/Qwen3.6-27B")
     ap.add_argument("--api-base", required=True, help="e.g. http://1.2.3.4:8000/v1")
+    ap.add_argument(
+        "--no-thinking", action="store_true", help="ask vLLM to disable the reasoning trace"
+    )
     args = ap.parse_args()
 
     from agentmem.llm.litellm import LiteLLMProvider
 
+    extra_body = {"chat_template_kwargs": {"enable_thinking": False}} if args.no_thinking else None
     provider = LiteLLMProvider(
         model=args.model.removeprefix("litellm/"),
         api_base=args.api_base,
         timeout=300.0,
+        extra_body=extra_body,
     )
 
     print(f"model:    {provider.model}")

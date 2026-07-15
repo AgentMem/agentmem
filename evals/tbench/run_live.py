@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--exec-timeout-sec", type=int, default=120)
     p.add_argument("--max-tokens", type=int, default=1024)
     p.add_argument("--api-base", default="", help="endpoint for a litellm/ self-hosted model")
+    p.add_argument("--no-thinking", action="store_true", help="disable a thinking model's reasoning trace")
     p.add_argument("--tb-dir", required=True, help="downloaded terminal-bench task dir")
     p.add_argument("--jobs-dir", required=True)
     p.add_argument("--harbor-bin", default="harbor")
@@ -98,6 +99,8 @@ def harbor_cmd(args: argparse.Namespace, arm: str, tasks: list[str], job: str) -
         cmd += ["--ak", f"memory_model={args.memory_model}"]
     if args.api_base:
         cmd += ["--ak", f"api_base={args.api_base}"]
+    if args.no_thinking:
+        cmd += ["--ak", "no_thinking=true"]
     for t in tasks:
         cmd += ["-i", t]
     return cmd
