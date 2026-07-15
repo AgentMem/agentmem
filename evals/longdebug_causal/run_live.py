@@ -30,6 +30,23 @@ from agentmem_evals.tbench.loop import ActionLoop, CountingProvider  # noqa: E40
 SESSION_TURN_CAP = 15  # per the benchmark spec
 
 
+def build_memory_provider(model: str, api_base: str = "", no_thinking: bool = True):
+    """Anthropic unless the model carries a litellm/ prefix, which routes it to a
+    server you run yourself. Mirrors the tbench agent so both evals can run local."""
+    if model.startswith("litellm/"):
+        from agentmem.llm.litellm import LiteLLMProvider
+
+        return LiteLLMProvider(
+            model=model.removeprefix("litellm/"),
+            api_base=api_base or None,
+            timeout=300.0,
+            extra_body=(
+                {"chat_template_kwargs": {"enable_thinking": False}} if no_thinking else None
+            ),
+        )
+    return AnthropicProvider(model=model, timeout=300.0)
+
+
 @dataclass
 class SessionOutcome:
     name: str
@@ -208,11 +225,8 @@ def run_task(
     sessions = load_sessions(task_dir)
 
     keep_root = Path(args.keep_dir) if args.keep_dir else None
-    tmp = (
-        keep_root / f"{tid}-{condition}"
-        if keep_root
-        else Path(tempfile.mkdtemp(prefix=f"ct-{tid}-{condition}-"))
-    )
+    tag = f"{tid}-{condition}" + (f"-{args.seed_tag}" if args.seed_tag else "")
+    tmp = keep_root / tag if keep_root else Path(tempfile.mkdtemp(prefix=f"ct-{tag}-"))
     workdir = tmp / "repo"
     if workdir.exists():
         raise RuntimeError(f"refusing to reuse {workdir}")
@@ -231,22 +245,40 @@ def run_task(
             memory = None
             mem_counter = None
             if condition == "memory":
-                mem_counter = CountingProvider(
-                    AnthropicProvider(model=args.memory_model, timeout=300.0)
-                )
+                # --fake-action means no API calls anywhere; the demo's scripted
+                # provider drives both phases so the plumbing check stays free.
+                if args.fake_action:
+                    from agentmem._demo import ScriptedProvider
+
+                    mem_counter = CountingProvider(ScriptedProvider())
+                else:
+                    mem_counter = CountingProvider(
+                        build_memory_provider(args.memory_model, args.api_base)
+                    )
                 memory = MemorySession(
                     task=f"{tid}: maintain this service across sessions",
                     provider=mem_counter,
                     trigger=default_trigger(),
                     async_worker=False,
                     session_id=f"{tid}-{condition}",
-                    config=AgentMemConfig(state_dir=str(mem_state)),
+                    # Record decisions for offline AUC work. The gate stays off, so
+                    # recording observes rather than steers; these multi-session runs
+                    # are a far richer source than one-shot trials.
+                    config=AgentMemConfig(
+                        state_dir=str(mem_state),
+                        advantage_enabled=True,
+                        advantage_gate=False,
+                    ),
                 )
 
             if is_last:
                 out.wrapup_answer = _wrapup(args, gold, memory)
 
-            action = CountingProvider(AnthropicProvider(model=args.action_model, timeout=300.0))
+            action = CountingProvider(
+                FakeDoneProvider()
+                if args.fake_action
+                else build_memory_provider(args.action_model, args.api_base)
+            )
             instruction = (
                 f"You maintain the project in {box.container_wd} (a Python service). "
                 f"Work this ticket, keep changes minimal, and finish with task_done.\n\n"
@@ -332,7 +364,7 @@ def _wrapup(args: argparse.Namespace, gold: J.GoldSpec, memory: MemorySession | 
         digest = memory.bank.render_full()
         project = memory.project_bank.render_full()
         ctx = f"Notes you keep about this project:\n{project}\n{digest}\n\n"
-    provider = AnthropicProvider(model=args.action_model, timeout=300.0)
+    provider = build_memory_provider(args.action_model, args.api_base)
     return provider.complete(
         system="You are the engineer who worked the previous sessions on this project.",
         messages=[
@@ -357,6 +389,8 @@ def main() -> int:
     ap.add_argument("--max-tokens", type=int, default=4096)
     ap.add_argument("--no-judge", action="store_true")
     ap.add_argument("--fake-action", action="store_true", help="free plumbing check")
+    ap.add_argument("--api-base", default="", help="endpoint for litellm/ self-hosted models")
+    ap.add_argument("--seed-tag", default="", help="label repeat runs, e.g. s2")
     ap.add_argument("--keep-dir", default=None)
     ap.add_argument("--out", default=None, help="report json path")
     args = ap.parse_args()
