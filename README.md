@@ -204,12 +204,12 @@ to code or a measured result in this repo.
 The clearest cross-session result comes from the
 [LongDebug-Causal harness](./evals/longdebug_causal): multi-session debugging tasks where the
 root cause is separated from the symptom by session resets, and the agent is asked at the end
-what originally broke. Run on an open model with no memory, it answered all three tasks by
-blaming a race condition that exists in none of them: **without memory the agent doesn't
-forget, it confabulates.** With the bank attached, the same model stayed on the ground it had
-covered and named the real cause in 2 of 3, including the buried `constraints.txt` pin that a
-stronger model without memory had missed. On the paid stack the no-memory agent instead said
-outright that it had no access to earlier sessions: 0 of 3.
+what originally broke. Run on an open model over six paired runs, the no-memory agent blamed a race condition
+**every single time**, and not one of these tasks contains a race condition: **without memory
+the agent doesn't forget, it confabulates.** With the bank attached the same model did that
+zero times out of six, and on the hardest task it named the buried `constraints.txt` pin that
+a stronger model without memory had missed. On the paid stack the no-memory agent instead said
+outright that it had no access to earlier sessions.
 Details, including the miss, in [RESULTS.md](./evals/longdebug_causal/RESULTS.md). This is the
 mirror image of the Terminal-Bench result below: memory earns its keep across sessions, not
 inside a single short task.

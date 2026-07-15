@@ -12,22 +12,31 @@ could not have.
 ## Run B: an open model on a rented GPU (2026-07-15, $0 in API)
 
 Qwen3.6-27B does both jobs, action and memory, on one rented card. No API bill,
-no budget caps, so trials end on their merits. Graded by the deterministic
-keyword gate (no LLM judge, since the judge would have been the only thing
-costing money).
+no budget caps, so trials end on their merits. Two seeds over the three tasks,
+six paired runs.
 
-| | no memory | memory |
+| over 6 pairs | no memory | memory |
 |---|---|---|
-| root cause: keyword gate | **0 of 3** | **2 of 3** |
-| invented a cause that never existed | **3 of 3** | **0 of 3** |
+| **invented a cause that never existed** | **6 of 6** | **0 of 6** |
+| root cause: keyword gate | 1 of 6 | 3 of 6 |
 
-**Without memory the model does not forget, it confabulates.** All three
-no-memory answers opened by blaming a race condition: an async data
-synchronization layer (CT-01), a fetch resolving after unmount (CT-03),
-background tasks touching shared state (CT-05). None of those tasks involves a
-race condition anywhere. The model, asked about work it could no longer see,
-produced a fluent and entirely fictional root cause, three times, in the same
-shape.
+**Without memory the model does not forget, it confabulates.** Every single
+no-memory answer, across both seeds and all three tasks, blamed a race
+condition: an async synchronization layer, a fetch resolving after unmount,
+background tasks touching shared state, an async event loop. **None of these
+tasks contains a race condition anywhere.** Asked about work it could no longer
+see, the model produced a fluent, confident, entirely fictional cause, six times
+out of six, in the same shape each time. With the bank attached the same model
+did this zero times out of six.
+
+Trust the fabrication row, not the gate row. On seed 3 the no-memory answer for
+CT-03 **passed the keyword gate while fabricating a race condition**: it
+happened to use enough gold vocabulary while its actual claim was invented. The
+gate has now produced false negatives (a correct answer phrased around the
+keywords) and a false positive (a fictional answer sprinkled with them), so a
+1-of-6 versus 3-of-6 split is not a result worth leaning on. Whether the model
+invented its cause is checkable by reading; that is the row that means
+something.
 
 This is a different failure from the one Run A found, and a worse one. Sonnet,
 with no memory, said plainly that it had no access to earlier sessions: blind
@@ -35,17 +44,19 @@ but honest. Qwen invents. A developer can act on "I don't know"; they cannot act
 safely on a confident wrong answer.
 
 With the bank attached, the same model stayed on the ground it had actually
-covered:
+covered. It is not always right, but it is always answering about this project:
 
 - **CT-01** traced `display_name` in `schema/user.yaml` to the missing entry in
-  `tools/codegen.py`'s list, and named regeneration as the fix (gate passed on
-  `make generate`, `codegen`, `regenerate`, `fixtures`, `schema`).
-- **CT-05** pinned the httpx version conflict to `constraints.txt` specifically,
-  which is the buried second pin the task is built around, **and which the
-  Sonnet run in Run A missed**. A cheaper model with a good bank beat a stronger
-  model without one, on the hardest task in the set.
-- **CT-03** described the real CI JobTimeout accurately but missed the gold
-  vocabulary, so the gate scores it a fail. Counted as a fail here.
+  `tools/codegen.py`'s list and named regeneration as the fix, on both seeds.
+- **CT-05** pinned the httpx conflict to `constraints.txt` specifically, the
+  buried second pin the task is built around, **and which the Sonnet run in Run
+  A missed**. A cheaper model with a good bank beat a stronger model without
+  one, on the hardest task in the set. The second seed reached the version
+  incompatibility but not the file, so it scores a fail.
+- **CT-03** is memory's weakest task: seed 2 described the real CI JobTimeout
+  but missed the gold vocabulary, and seed 3 blamed a broken virtual
+  environment, which is wrong. Both count as fails. The bank kept it inside the
+  project; it did not make it correct.
 
 Recording note: these multi-session runs produce about 27 graded decisions per
 task, roughly six times what a one-shot terminal trial yields, which makes them
