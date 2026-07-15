@@ -225,7 +225,7 @@ def test_reminder_reaches_the_model_and_leaves_no_trace(tau2mod, tmp_path):
     assert "fare rules (K-001)" in tau2mod.sent.last_text, "the reminder never reached the model"
     assert tau2mod.REMINDER_PREFIX in tau2mod.sent.last_text
 
-    left = [m for m in state.messages if type(m).__name__ == "SystemMessage"]
+    left = [m for m in state.messages if tau2mod.REMINDER_PREFIX in (m.content or "")]
     assert left == [], "a reminder was left behind in the trajectory tau2 grades"
     assert agent.reminders_injected == 1
     memory.close()
@@ -241,7 +241,10 @@ def test_reminder_lands_next_to_the_turn_it_is_for(tau2mod, tmp_path):
 
     roles = [getattr(m, "role", "") for m in tau2mod.sent.windows[-1]]
     assert roles[-1] == "user", "the customer's turn must stay last"
-    assert roles[-2] == "system", "the reminder should sit immediately before it"
+    assert roles[-2] == "user", "the reminder should sit immediately before it"
+    # Not a system message: Qwen3.6's template 400s on a system turn anywhere but the
+    # front. Measured, not assumed. The live shape is checked by run_live's preflight.
+    assert "system" not in roles[1:], "a system turn after the first will be rejected"
     memory.close()
 
 
@@ -251,7 +254,7 @@ def test_identical_reminders_do_not_collapse(tau2mod, tmp_path):
     memory = _memory(tmp_path, [])
     agent = tau2mod.AgentMemLLMAgent(tools=[], domain_policy="p", llm="m", memory=memory)
     state = _state(tau2mod)
-    twin = msg.SystemMessage(role="system", content=f"{tau2mod.REMINDER_PREFIX}\n- x (K-001)")
+    twin = msg.UserMessage(role="user", content=f"{tau2mod.REMINDER_PREFIX}\n- x (K-001)")
     state.messages.append(twin)
 
     memory._pending = "- x (K-001)"
@@ -269,7 +272,7 @@ def test_silence_injects_nothing(tau2mod, tmp_path):
 
     assert agent.reminders_injected == 0
     assert tau2mod.REMINDER_PREFIX not in tau2mod.sent.last_text
-    assert [m for m in state.messages if type(m).__name__ == "SystemMessage"] == []
+    assert [m for m in state.messages if tau2mod.REMINDER_PREFIX in (m.content or "")] == []
     memory.close()
 
 

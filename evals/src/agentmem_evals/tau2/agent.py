@@ -17,7 +17,6 @@ try:
     from tau2.agent.llm_agent import LLMAgent
     from tau2.data_model.message import (
         MultiToolMessage,
-        SystemMessage,
         ToolMessage,
         UserMessage,
     )
@@ -25,7 +24,7 @@ try:
     _HAVE_TAU2 = True
 except ModuleNotFoundError:  # importable from our venv, runnable only where tau2 is
     LLMAgent = object  # type: ignore[assignment,misc]
-    SystemMessage = None  # type: ignore[assignment]
+    UserMessage = None  # type: ignore[assignment]
     _HAVE_TAU2 = False
 
 
@@ -85,7 +84,13 @@ class AgentMemLLMAgent(LLMAgent):  # type: ignore[misc]
             self._observe_output(reply)
             return reply
 
-        note = SystemMessage(role="system", content=f"{REMINDER_PREFIX}\n{reminder}")
+        # A user message, not a system one, because Qwen3.6's chat template rejects a
+        # system message anywhere but the front: "System message must be at the
+        # beginning", 400, once per reminder. Measured against the live endpoint, which
+        # also accepts two user turns in a row. Hoisting it into the real system prompt
+        # would pass, but would bury a note about this turn at the top of the context.
+        # The prefix is what carries the provenance instead.
+        note = UserMessage(role="user", content=f"{REMINDER_PREFIX}\n{reminder}")
         state.messages.append(note)
         try:
             reply = super()._generate_next_message(message, state)

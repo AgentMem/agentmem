@@ -56,7 +56,14 @@ REMOTE
 
 say "tunnel localhost:$PORT to the box"
 pkill -f "ssh -fN -p .* -L $PORT:localhost:$PORT" 2>/dev/null || true
-ssh -fN -o StrictHostKeyChecking=accept-new -p "$RPORT" "$RHOST" -i "$HOME/.ssh/id_ed25519" \
+# Keepalives are not optional. A plain -fN tunnel dies quietly under a long run, and
+# every request after that comes back as "Server disconnected without sending a
+# response", which reads like the model failing rather than the pipe closing. It cost
+# five of eight tickets on the first real pilot.
+ssh -fN -o StrictHostKeyChecking=accept-new \
+    -o ServerAliveInterval=20 -o ServerAliveCountMax=3 \
+    -o ExitOnForwardFailure=yes -o TCPKeepAlive=yes \
+    -p "$RPORT" "$RHOST" -i "$HOME/.ssh/id_ed25519" \
     -L "$PORT:localhost:$PORT"
 echo "tunnel up (pid $(pgrep -f "ssh -fN -p $RPORT" | head -1))"
 

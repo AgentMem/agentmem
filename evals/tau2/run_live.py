@@ -14,10 +14,11 @@ from pathlib import Path
 from agentmem.config import AgentMemConfig
 from agentmem.session import MemorySession
 from agentmem.triggers import default as default_trigger
-from agentmem_evals.tau2.agent import MemoryRun, register_agentmem_agent
+from agentmem_evals.tau2.agent import REMINDER_PREFIX, MemoryRun, register_agentmem_agent
 from agentmem_evals.tbench.loop import CountingProvider, is_self_hosted
 
 BASELINE_AGENT = "llm_agent"  # tau2's own, unmodified
+MAX_TICKET_ATTEMPTS = 3  # matches what tau2's batch runner gives the baseline
 
 
 def build_memory_provider(model: str, api_base: str, no_thinking: bool):  # noqa: ANN201
@@ -123,6 +124,28 @@ def _preflight_through_tau2(model: str, llm_args: dict) -> None:
             "--max-steps' token budget, before letting this run for hours."
         )
 
+    # And now the shape the injector actually produces. A chat template can accept
+    # every plain call and still reject the one turn that carries a reminder, which
+    # then fails only on the tickets where memory had something to say: the arm that
+    # is supposed to help is the only one that breaks, and it breaks as a 400 buried
+    # in a log. Qwen3.6 does exactly this to a system turn placed mid-conversation.
+    from tau2.data_model.message import AssistantMessage, SystemMessage
+
+    print("preflight: the shape a reminder makes")
+    reply = generate(
+        model=model,
+        messages=[
+            SystemMessage(role="system", content="You are a support agent."),
+            UserMessage(role="user", content="I need to cancel."),
+            AssistantMessage(role="assistant", content="Let me look."),
+            UserMessage(role="user", content=f"{REMINDER_PREFIX}\n- (K-001) check the fare rules"),
+            UserMessage(role="user", content="Any update?"),
+        ],
+        max_tokens=64,
+        **llm_args,
+    )
+    print(f"  accepted: {((getattr(reply, 'content', '') or '').strip()[:40])!r}")
+
 
 def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     from tau2.data_model.simulation import TextRunConfig
@@ -201,10 +224,22 @@ def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: Memo
 
     sims = []
     for i, task in enumerate(tasks, start=1):
-        try:
-            sim = run_single_task(config, task, save_dir=save_dir)
-        except Exception as exc:  # a ticket that blows up must not end the run
-            print(f"  ticket {i}/{len(tasks)} {task.id}: failed ({type(exc).__name__}: {exc})")
+        sim = None
+        # The baseline goes through tau2's batch runner, which retries a ticket that
+        # errors. Without the same here, a dropped connection costs the memory arm a
+        # ticket the baseline would have kept, and the arm that loses tickets is the
+        # one whose surviving tickets then look suspiciously good.
+        for attempt in range(1, MAX_TICKET_ATTEMPTS + 1):
+            try:
+                sim = run_single_task(config, task, save_dir=save_dir)
+                break
+            except Exception as exc:
+                print(
+                    f"  ticket {i}/{len(tasks)} {task.id}: attempt {attempt}/"
+                    f"{MAX_TICKET_ATTEMPTS} failed ({type(exc).__name__}: {str(exc)[:90]})"
+                )
+        if sim is None:
+            print(f"  ticket {i}/{len(tasks)} {task.id}: gave up, dropped from the pairing")
             continue
         reward = getattr(getattr(sim, "reward_info", None), "reward", None)
         sims.append(sim)

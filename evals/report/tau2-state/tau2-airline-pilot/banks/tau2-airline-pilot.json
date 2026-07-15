@@ -1,0 +1,661 @@
+{
+  "session_id": "tau2-airline-pilot",
+  "task": "Handle customer service tickets in this domain",
+  "updated_at": "2026-07-15T22:58:55.942323+00:00",
+  "bank": {
+    "status": "Sophia Taylor (sophia_taylor_9065). Issue: User claims PEP4E0 should have insurance per their memory. System shows no insurance - verified. User frustrated, insists on system error. Policy: insurance cannot be added post-booking. Reservations without insurance: 6NSXQU, PEP4E0. With insurance: J3SAZF, NABCQ2. User pattern: memory of booking details differs from system records (similar to Mei Brown membership dispute).",
+    "knowledge": {
+      "K-012": {
+        "id": "K-012",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User noah_muller_9847 (Noah Muller): Gold member. Address: Denver, CO. Email: noah.muller2290@example.com. Existing reservations: SDZQKO, 4OG6T3. Saved passenger: Lei Patel.",
+        "created_step": 13,
+        "updated_step": 14,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.57,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-013": {
+        "id": "K-013",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User noah_muller_9847 payment methods: Mastercard 1167, Visa 2076, Visa 2604, Visa 8413, Visa 1798, Visa 2267, Certificate $100.",
+        "created_step": 14,
+        "updated_step": 14,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-015": {
+        "id": "K-015",
+        "kind": "knowledge",
+        "tag": "task",
+        "content": "Reservation SDZQKO: Noah Muller, LAX-MIA round trip, basic economy, 2 passengers (Noah Muller, Lucas Anderson). Outbound: HAT228 (LAX-EWR, May 27), HAT202 (EWR-MIA, May 28). Return: HAT192 (MIA-EWR, May 28), HAT041 (EWR-LAX, May 29). Total ...",
+        "created_step": 17,
+        "updated_step": 17,
+        "access_count": 1,
+        "last_injected_step": 21,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.75,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-016": {
+        "id": "K-016",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User anya_garcia_5901 (Anya Garcia): Reservation JMO1MG, DEN-MIA one-way, economy cabin, 2 passengers (Anya Garcia, Raj Jackson). Payment: gift_card_2550356 ($358). Total bags: 1, non-free bags: 0. Insurance: yes.",
+        "created_step": 22,
+        "updated_step": 22,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-017": {
+        "id": "K-017",
+        "kind": "knowledge",
+        "tag": "policy",
+        "content": "Baggage Policy (Silver Member, Economy): 2 free checked bags per passenger. Additional bags cost $50 each.",
+        "created_step": 23,
+        "updated_step": 23,
+        "access_count": 1,
+        "last_injected_step": 24,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.75,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-018": {
+        "id": "K-018",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User sophia_silva_7557 (Sophia Silva): Claims to have a canceled business class flight earlier this month, missed important meeting, demanding compensation for lost business opportunity and inconvenience.",
+        "created_step": 25,
+        "updated_step": 25,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-019": {
+        "id": "K-019",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User sophia_silva_7557 (Sophia Silva): Regular member. Reservations: NM1VX1, KC18K6, S61CZX, H8Q05L, WUNA5K. Payment: Certificate $500, Certificate $150, Visa 7238, Gift card $274. Saved passengers: Yara Silva, Isabella Moore.",
+        "created_step": 26,
+        "updated_step": 26,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-020": {
+        "id": "K-020",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation NM1VX1: Sophia Silva user, MSP-EWR round trip, basic economy, 1 passenger (Yara Silva). Outbound: HAT300 (MSP-EWR, May 25). Return: HAT208 (EWR-MSP, May 27). Payment: gift_card_5094406 ($183). Insurance: yes. Status: null.",
+        "created_step": 27,
+        "updated_step": 27,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-021": {
+        "id": "K-021",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation S61CZX: Sophia Silva user, LAX-CLT round trip, economy cabin, 1 passenger (Harper Jackson). Flights: HAT228 (LAX-EWR, May 23), HAT043 (EWR-CLT, May 24), HAT157 (CLT-EWR, May 24), HAT041 (EWR-LAX, May 25). Payment: credit_card_41 ...",
+        "created_step": 27,
+        "updated_step": 28,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-022": {
+        "id": "K-022",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation KC18K6: Sophia Silva user, MSP-CLT one-way, basic economy, 1 passenger (Sophia Silva). Flights: HAT300 (MSP-EWR, May 21), HAT215 (EWR-CLT, May 21). Payment: credit_card_4196779 ($136). Status: null. Insurance: yes.",
+        "created_step": 29,
+        "updated_step": 29,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-023": {
+        "id": "K-023",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation H8Q05L: Sophia Silva user, JFK-ATL one-way, basic economy, 1 passenger (Harper Kovacs). Flight: HAT268 (JFK-ATL, May 24). Payment: credit_card_4196779 ($104). Status: null. Insurance: yes.",
+        "created_step": 29,
+        "updated_step": 29,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-024": {
+        "id": "K-024",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation WUNA5K: Sophia Silva user, ORD-PHL round trip, economy, 1 passenger (Sophia Silva). Outbound: HAT271 (ORD-PHL, May 10). Return: HAT197 (PHL-ORD, May 11). Payment: gift_card_5094406 ($260). Status: null. Insurance: no. 1 bag tota ...",
+        "created_step": 29,
+        "updated_step": 29,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.495,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "K-025": {
+        "id": "K-025",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User mei_brown_7075 (Mei Brown): Regular member (user claimed Gold). Reservations: DB1Y70, MUGYUB, 3JA7XV, CYPIDV. Payment methods: Certificate $250, Gift card $130, Visa 1663, Mastercard 9812, Certificate $250, Visa 8764. Saved passenger: ...",
+        "created_step": 31,
+        "updated_step": 32,
+        "access_count": 1,
+        "last_injected_step": 37,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-026": {
+        "id": "K-026",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation DB1Y70: Mei Brown, PHX-CLT one-way, basic economy, 3 passengers (Mei Brown DOB 1986-12-14, Evelyn Anderson DOB 1999-07-28, Yusuf Silva DOB 1972-03-03). Outbound flights: HAT265 (PHX-DTW, May 21), HAT053 (DTW-CLT, May 21). Paymen ...",
+        "created_step": 33,
+        "updated_step": 33,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-027": {
+        "id": "K-027",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation MUGYUB: Mei Brown, MIA-EWR round-trip, business class, 1 passenger (Mei Brown). Outbound: HAT192 (MIA-EWR, May 23), HAT202 (EWR-MIA, May 25). Payment: credit_card_4920843 ($3427). Total bags: 1, non-free: 0. Insurance: no. Creat ...",
+        "created_step": 33,
+        "updated_step": 33,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-028": {
+        "id": "K-028",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation 3JA7XV: Mei Brown, PHX-BOS round-trip, business class, 4 passengers (Mei Brown, Fatima Patel, Mason Garcia, Yusuf Silva). Outbound: HAT045 (PHX-SEA, May 15), HAT194 (SEA-BOS, May 16). Return: HAT182 (BOS-MCO, May 22), HAT153 (MC ...",
+        "created_step": 34,
+        "updated_step": 34,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-029": {
+        "id": "K-029",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "User sophia_taylor_9065 (Sophia Taylor): Silver member. Reservations: 6NSXQU, J3SAZF, PEP4E0, NABCQ2. Payment methods: Visa 9796, Visa 5191, Certificate $100. Saved passengers: Lucas Davis (DOB 1987-10-27), Mason Khan (DOB 1983-09-06). Issu ...",
+        "created_step": 38,
+        "updated_step": 39,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-032": {
+        "id": "K-032",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation 6NSXQU: Sophia Taylor, EWR-MIA one-way, basic economy, 1 passenger. Flight: HAT202 (May 27). Insurance: no. Total bags: 0. Created: May 5.",
+        "created_step": 40,
+        "updated_step": 40,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-033": {
+        "id": "K-033",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation J3SAZF: Sophia Taylor, LGA-PHX round-trip, business class, 3 passengers (Sophia, Lucas, Mason). Flights: HAT002 (May 18), HAT256 (May 19). Insurance: yes. Total bags: 6. Created: May 5.",
+        "created_step": 40,
+        "updated_step": 40,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "K-034": {
+        "id": "K-034",
+        "kind": "knowledge",
+        "tag": "env",
+        "content": "Reservation PEP4E0: Sophia Taylor, CLT-PHX one-way, basic economy, 1 passenger. Flights: HAT176 (CLT-DTW, May 20), HAT097 (DTW-PHX, May 20). Insurance: no. Total bags: 0. Created: May 5.",
+        "created_step": 41,
+        "updated_step": 41,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      }
+    },
+    "procedural": {
+      "P-003": {
+        "id": "P-003",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "User Noah Muller claims reservation SDZQKO has 3 passengers; system data shows only 2 passengers (Noah Muller, Lucas Anderson). User may be confused or mistaken about which reservation they're referring to.",
+        "created_step": 19,
+        "updated_step": 19,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.5349999999999999,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "P-004": {
+        "id": "P-004",
+        "kind": "procedural",
+        "tag": "fix",
+        "content": "User Noah Muller confirmed SDZQKO has 2 passengers, retracting earlier claim of 3 passengers. Fact discrepancy (P-003) resolved - user was mistaken.",
+        "created_step": 20,
+        "updated_step": 20,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.5349999999999999,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "P-005": {
+        "id": "P-005",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "Pattern: Users refuse to change/cancel reservation despite claiming significant delay inconvenience. Policy requires reservation modification/cancellation to trigger delay compensation ($50/passenger). Observed with Noah Muller (SDZQKO) and ...",
+        "created_step": 21,
+        "updated_step": 36,
+        "access_count": 1,
+        "last_injected_step": 21,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.61,
+          "reinforcement": 0.6,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 2
+        }
+      },
+      "P-007": {
+        "id": "P-007",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "User Anya Garcia claims Gold membership; system data consistently shows Silver membership. User insists on certainty about membership tier.",
+        "created_step": 24,
+        "updated_step": 24,
+        "access_count": 1,
+        "last_injected_step": 24,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 0.61,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 2
+        }
+      },
+      "P-008": {
+        "id": "P-008",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "Sophia Silva claims canceled business class flight; first two reservations checked (NM1VX1, KC18K6) are both basic economy with null status (not canceled). User's narrative does not match reservation data so far. Need to check remaining 3 r ...",
+        "created_step": 27,
+        "updated_step": 27,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.45999999999999996,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "P-009": {
+        "id": "P-009",
+        "kind": "procedural",
+        "tag": "attempt",
+        "content": "Sophia Silva refused to accept system records, insisted on unverifiable business class flight claim, and demanded immediate compensation without providing reservation details. Escalation path: transfer to human agent since agent cannot proc ...",
+        "created_step": 30,
+        "updated_step": 30,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "dormant",
+          "salience": 0.355,
+          "reinforcement": 0.0,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 2,
+          "created_session": 2
+        }
+      },
+      "P-010": {
+        "id": "P-010",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "User Mei Brown claims Gold membership; system data shows regular membership. Same pattern as Anya Garcia (P-007) - user insists on higher tier than system records.",
+        "created_step": 32,
+        "updated_step": 32,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.6,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "P-011": {
+        "id": "P-011",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "Flight HAT045 (PHX-SEA) on 2024-05-15 is confirmed delayed. This verifies the user's claim for reservation 3JA7XV.",
+        "created_step": 35,
+        "updated_step": 35,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.6,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "P-012": {
+        "id": "P-012",
+        "kind": "procedural",
+        "tag": "attempt",
+        "content": "Mei Brown now accepts $200 travel voucher for delayed flight HAT045 without modifying reservation. This conflicts with policy (compensation requires change/cancel). Need to verify if system allows goodwill gesture outside standard policy, o ...",
+        "created_step": 37,
+        "updated_step": 37,
+        "access_count": 0,
+        "last_injected_step": null,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      },
+      "P-013": {
+        "id": "P-013",
+        "kind": "procedural",
+        "tag": "diagnosis",
+        "content": "Sophia Taylor insists PEP4E0 has travel insurance based on her memory of booking. System shows no insurance. User claims system error. Pattern matches P-010 (Mei Brown membership tier dispute) - users recall booking details differently than ...",
+        "created_step": 42,
+        "updated_step": 42,
+        "access_count": 1,
+        "last_injected_step": 42,
+        "source": null,
+        "lifecycle": {
+          "state": "active",
+          "salience": 1.0,
+          "reinforcement": 0.3,
+          "tier": "session",
+          "promoted_from": [],
+          "last_touched_session": 3,
+          "created_session": 3
+        }
+      }
+    },
+    "edges": [
+      {
+        "src": "P-004",
+        "dst": "P-003",
+        "rel": "supersedes",
+        "confidence": 1.0,
+        "evidence_step": 7
+      },
+      {
+        "src": "P-010",
+        "dst": "P-007",
+        "rel": "verifies",
+        "confidence": 0.8,
+        "evidence_step": 6
+      },
+      {
+        "src": "P-011",
+        "dst": "K-028",
+        "rel": "verifies",
+        "confidence": 1.0,
+        "evidence_step": 5
+      },
+      {
+        "src": "P-011",
+        "dst": "P-005",
+        "rel": "verifies",
+        "confidence": 0.9,
+        "evidence_step": 4
+      },
+      {
+        "src": "P-012",
+        "dst": "P-005",
+        "rel": "supersedes",
+        "confidence": 0.8,
+        "evidence_step": 13
+      },
+      {
+        "src": "P-013",
+        "dst": "P-010",
+        "rel": "verifies",
+        "confidence": 0.8,
+        "evidence_step": 4
+      }
+    ],
+    "archive": {},
+    "version": 61,
+    "sessions_seen": 3,
+    "seq_knowledge": 34,
+    "seq_procedural": 13
+  }
+}

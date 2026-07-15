@@ -1,0 +1,606 @@
+2026-07-16 06:00:20.985 | WARNING  | tau2.utils.utils:<module>:15 - No .env file found
+2026-07-16 06:00:20.986 | INFO     | tau2.utils.utils:<module>:28 - Using data directory from source: /Users/nguyenson/AgentMem/tau2-bench/data
+2026-07-16 06:00:23.642 | INFO     | tau2.utils.llm_utils:<module>:102 - LiteLLM: Cache is disabled
+2026-07-16 06:00:23.682 | DEBUG    | tau2.registry:<module>:281 - Registering default components...
+2026-07-16 06:00:23.684 | DEBUG    | tau2.registry:<module>:292 - Voice dependencies not installed, skipping voice user registration
+2026-07-16 06:00:23.684 | DEBUG    | tau2.registry:<module>:350 - Default components registered successfully. Registry info: {
+  "domains": [
+    "mock",
+    "airline",
+    "retail",
+    "telecom",
+    "telecom-workflow",
+    "banking_knowledge"
+  ],
+  "agents": [
+    "llm_agent",
+    "llm_agent_gt",
+    "llm_agent_solo",
+    "discrete_time_audio_native_agent"
+  ],
+  "users": [
+    "user_simulator",
+    "dummy_user"
+  ],
+  "task_sets": [
+    "mock",
+    "airline",
+    "retail",
+    "telecom_full",
+    "telecom_small",
+    "telecom",
+    "telecom-workflow",
+    "banking_knowledge"
+  ]
+}
+2026-07-16 06:00:24.122 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+2026-07-16 06:00:26.462 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+2026-07-16 06:00:26.463 | WARNING  | tau2.utils.llm_utils:generate:427 - Output might be incomplete due to token limit!
+action, user simulator and memory are all self-hosted: $0 in API spend
+domain airline, split base: 8 tasks
+preflight: one call as tau2 makes it, model='hosted_vllm/Qwen/Qwen3.6-27B'
+  reply: 'ok'
+preflight: the shape a reminder makes
+  accepted: 'I have checked the fare rules as noted i'
+action=litellm/hosted_vllm/Qwen/Qwen3.6-27B  user=litellm/hosted_vllm/Qwen/Qwen3.6-27B  memory=litellm/hosted_vllm/Qwen/Qwen3.6-27B
+== none
+0/8 (trial 1/1). Running task 0, trial 1
+1/8 (trial 1/1). Running task 1, trial 1
+3/8 (trial 1/1). Running task 3, trial 1
+2/8 (trial 1/1). Running task 2, trial 1
+2026-07-16 06:00:28.075 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:28.194 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:30.917 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:32.161 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:32.493 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:33.865 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:33.944 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:34.114 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:35.840 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:35.950 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:36.536 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:39.556 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:41.560 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:41.647 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:44.510 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:45.769 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:46.416 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:48.489 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:50.829 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:50.938 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:54.668 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:00:54.810 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 0/8 complete. Avg reward: N/A. 4 running: 0.0(30s), 1.0(30s), 3.0(30s), 
+2.0(30s)
+2026-07-16 06:00:57.542 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:00.014 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:01.538 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:04.207 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:04.398 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:05.841 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:09.300 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:11.613 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:13.496 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:13.583 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:17.002 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:19.269 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:19.379 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:20.850 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:21.048 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:21.125 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+4/8 (trial 1/1). Running task 4, trial 1
+2026-07-16 06:01:24.928 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:26.128 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+5/8 (trial 1/1). Running task 5, trial 1
+Status: 2/8 complete. Avg reward: 1.00 (N=2). 4 running: 1.0(60s), 2.0(60s), 
+4.0(5s), 5.0(0s)
+2026-07-16 06:01:27.651 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:29.018 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:31.702 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:32.412 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:34.251 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:36.576 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:37.009 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:38.961 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:39.649 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:39.760 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:39.852 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:44.278 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:45.284 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:45.297 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:45.494 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:49.958 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:52.338 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:52.428 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:56.208 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 2/8 complete. Avg reward: 1.00 (N=2). 4 running: 1.0(90s), 2.0(90s), 
+4.0(35s), 5.0(30s)
+2026-07-16 06:01:56.734 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:01:56.820 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:00.312 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+6/8 (trial 1/1). Running task 6, trial 1
+2026-07-16 06:02:00.994 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:01.006 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:01.090 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:06.870 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:08.858 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:11.153 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:13.230 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:15.620 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:16.596 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:19.190 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:21.699 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:21.714 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:21.788 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:24.276 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:25.405 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 3/8 complete. Avg reward: 0.67 (N=3). 4 running: 2.0(120s), 4.0(65s), 
+5.0(60s), 6.0(26s)
+2026-07-16 06:02:27.299 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:30.421 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:30.509 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:35.637 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:37.387 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:38.496 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:38.584 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:40.786 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:45.121 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:49.450 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:51.216 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:52.950 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:53.666 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:02:55.632 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 3/8 complete. Avg reward: 0.67 (N=3). 4 running: 2.0(150s), 4.0(95s), 
+5.0(90s), 6.0(56s)
+2026-07-16 06:02:58.084 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:00.477 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:02.763 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:05.064 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:06.299 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+7/8 (trial 1/1). Running task 7, trial 1
+2026-07-16 06:03:07.576 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:08.158 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:08.275 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:10.533 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:11.190 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:13.627 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:13.715 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:16.320 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:17.312 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:20.206 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:23.582 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 5/8 complete. Avg reward: 0.80 (N=5). 3 running: 2.0(180s), 6.0(86s), 
+7.0(20s)
+2026-07-16 06:03:26.876 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:29.045 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:37.150 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:39.535 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:41.087 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:41.338 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:41.664 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:44.164 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:47.558 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:53.935 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:54.022 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:03:54.708 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 6/8 complete. Avg reward: 0.83 (N=6). 2 running: 6.0(116s), 7.0(50s)
+2026-07-16 06:03:59.196 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:03.147 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:08.009 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:08.488 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:11.011 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:11.823 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:16.194 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:17.059 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:17.335 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:20.260 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:24.896 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 7/8 complete. Avg reward: 0.86 (N=7). 1 running: 7.0(80s)
+2026-07-16 06:04:27.982 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:31.169 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:34.386 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:53.567 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:04:54.392 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 7/8 complete. Avg reward: 0.86 (N=7). 1 running: 7.0(110s)
+2026-07-16 06:04:58.779 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:06.852 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:07.503 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+Successfully completed all simulations!
+To review the simulations, run: tau2 view
+  none: 6/8 pass_rate=0.75
+== memory
+  memory arm: forcing max_concurrency 1 (asked for 4)
+2026-07-16 06:05:08.918 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:17.847 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:18.524 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:20.782 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:28.598 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:30.033 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:50.565 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:52.312 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:05:59.674 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:12.117 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:18.392 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:25.322 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:25.765 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:38.437 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:40.951 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:52.049 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:06:54.434 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:07:10.556 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:07:13.072 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:07:26.948 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:07:41.488 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:07:44.244 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:08:28.615 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:08:29.948 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:15.648 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:17.363 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:25.203 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:33.808 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:52.778 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:55.379 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:09:56.138 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:10:22.620 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:10:31.960 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:10:46.375 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:10:51.657 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:11:09.618 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.
+
+  ticket 3/8 2: failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.)
+2026-07-16 06:11:11.979 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:11:14.196 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:11:39.042 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:11:45.916 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:11:50.314 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:11:52.961 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:14.528 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:16.354 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:22.068 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:34.540 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:34.934 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:12:58.028 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:12.578 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:13.910 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:16.432 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:29.607 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:34.245 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:13:36.802 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:14:23.049 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.
+
+  ticket 5/8 4: failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.)
+2026-07-16 06:14:26.317 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:14:29.224 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:14:33.877 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:14:36.268 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:14:55.411 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.
+
+  ticket 6/8 5: failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.)
+2026-07-16 06:14:58.115 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:15:00.790 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:15:01.595 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:15:18.901 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:15:21.291 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:15:44.309 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:16:10.630 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:16:13.224 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:16:47.057 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:16:49.777 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:17:28.570 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.
+
+  ticket 7/8 6: failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - Server disconnected without sending a response.)
+2026-07-16 06:17:29.872 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:17:31.914 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:17:32.473 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:18:10.885 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:18:13.226 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:19:02.374 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:19:03.641 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:19:21.863 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.BadRequestError: Hosted_vllmException - {"error":{"message":"System message must be at the beginning.","type":"BadRequestError","param":null,"code":400}}
+
+  ticket 8/8 7: failed (BadRequestError: litellm.BadRequestError: Hosted_vllmException - {"error":{"message":"System message must be at the beginning.","type":"BadRequestError","param":null,"code":400}})
+  memory: 3/3 pass_rate=1.0
+
+report: /Users/nguyenson/AgentMem/evals/report/tau2-airline-p2.json
+
+unpaired and therefore ignored: 5 the memory arm lost, 0 the baseline lost
+
+paired on 3 tasks
+  fail -> pass with memory: 1  ['1']
+  pass -> fail with memory: 0  []
+  net: +1
+  agent spend: none $0.0000 vs memory $0.0000 + $0.0000 on the memory layer itself
+  too few tasks moved either way to call this anything but noise
