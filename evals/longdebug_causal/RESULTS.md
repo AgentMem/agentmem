@@ -1,10 +1,60 @@
 # LongDebug-Causal live: memory vs no memory across sessions
 
-2026-07-14. Three causal-debugging tasks, each 5-6 sessions in one Docker
-container whose workspace survives while the agent's context resets between
-sessions. Claude Sonnet 5 works the tickets, Claude Haiku 4.5 runs the memory
-agent, Haiku judges the root-cause probe. Two conditions per task, one seed,
-about $5.82 including the judge. Small n, read it as a directional signal, not a
+Three causal-debugging tasks, each 5-6 sessions in one Docker container whose
+workspace survives while the agent's context resets between sessions. At the
+start of the final session the agent is asked what originally broke. That probe
+is the whole experiment: the work happened, the transcript is gone, and only a
+memory layer carries the cause forward.
+
+Run twice on different stacks, and the second run found something the first
+could not have.
+
+## Run B: an open model on a rented GPU (2026-07-15, $0 in API)
+
+Qwen3.6-27B does both jobs, action and memory, on one rented card. No API bill,
+no budget caps, so trials end on their merits. Graded by the deterministic
+keyword gate (no LLM judge, since the judge would have been the only thing
+costing money).
+
+| | no memory | memory |
+|---|---|---|
+| root cause: keyword gate | **0 of 3** | **2 of 3** |
+| invented a cause that never existed | **3 of 3** | **0 of 3** |
+
+**Without memory the model does not forget, it confabulates.** All three
+no-memory answers opened by blaming a race condition: an async data
+synchronization layer (CT-01), a fetch resolving after unmount (CT-03),
+background tasks touching shared state (CT-05). None of those tasks involves a
+race condition anywhere. The model, asked about work it could no longer see,
+produced a fluent and entirely fictional root cause, three times, in the same
+shape.
+
+This is a different failure from the one Run A found, and a worse one. Sonnet,
+with no memory, said plainly that it had no access to earlier sessions: blind
+but honest. Qwen invents. A developer can act on "I don't know"; they cannot act
+safely on a confident wrong answer.
+
+With the bank attached, the same model stayed on the ground it had actually
+covered:
+
+- **CT-01** traced `display_name` in `schema/user.yaml` to the missing entry in
+  `tools/codegen.py`'s list, and named regeneration as the fix (gate passed on
+  `make generate`, `codegen`, `regenerate`, `fixtures`, `schema`).
+- **CT-05** pinned the httpx version conflict to `constraints.txt` specifically,
+  which is the buried second pin the task is built around, **and which the
+  Sonnet run in Run A missed**. A cheaper model with a good bank beat a stronger
+  model without one, on the hardest task in the set.
+- **CT-03** described the real CI JobTimeout accurately but missed the gold
+  vocabulary, so the gate scores it a fail. Counted as a fail here.
+
+Recording note: these multi-session runs produce about 27 graded decisions per
+task, roughly six times what a one-shot terminal trial yields, which makes them
+the better feedstock for the advantage layer as well as the better experiment.
+
+## Run A: frontier action model, paid (2026-07-14, $5.82 including the judge)
+
+Claude Sonnet 5 works the tickets, Claude Haiku 4.5 runs the memory agent, Haiku
+judges the probe. One seed. Small n, read it as a directional signal, not a
 p-value. But the direction is unambiguous and it is the opposite of the
 Terminal-Bench result, for a reason that matters.
 
@@ -60,6 +110,20 @@ product line follows: turn it on for the project that spans days, not the task
 that spans minutes.
 
 ## Reproduce
+
+Run B, on a model you host yourself. Nothing here is billed per token, so the
+preflight reports a worst case of zero and never asks for a key:
+
+```bash
+python evals/longdebug_causal/run_live.py \
+    --tasks CT-01,CT-03,CT-05 --conditions none,memory \
+    --action-model litellm/hosted_vllm/Qwen/Qwen3.6-27B \
+    --memory-model litellm/hosted_vllm/Qwen/Qwen3.6-27B \
+    --api-base http://localhost:8011/v1 --no-judge --seed-tag s2 \
+    --session-usd-cap 5.0 --run-usd-cap 0.01
+```
+
+Run A, on the paid stack:
 
 ```bash
 python evals/longdebug_causal/run_live.py \
