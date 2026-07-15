@@ -55,3 +55,6 @@ docs/agentmem-landing.html
 # Raw per-trial dumps from partial runs; the small report JSONs next to them are
 # the evidence behind the writeups and stay tracked.
 evals/report/selfhost-partial/
+
+# tau2-bench is vendored per-machine (needs its own python 3.12 venv)
+/tau2-bench/

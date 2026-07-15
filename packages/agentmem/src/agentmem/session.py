@@ -97,6 +97,7 @@ class MemorySession:
 
         self._data_lock = threading.Lock()
         self._step_lock = threading.Lock()
+        self._closed = False
 
         self._async = async_worker
         self._queue: queue.Queue[Any] = queue.Queue()
@@ -210,7 +211,17 @@ class MemorySession:
 
         `task_reward` (+1 pass / -1 fail) lets the eval runner tell the advantage layer
         how the whole task turned out; a plain session leaves it neutral.
+
+        The guard is what makes the second call free rather than merely harmless.
+        Without it, closing twice re-ran end_session against stores that were already
+        shut, and promotion failed into a warning that read exactly like the bank
+        having lost everything. Two owners closing the same session is ordinary: a
+        harness with a per-task teardown hook and a pool that also cleans up after
+        itself both have a fair claim to it.
         """
+        if self._closed:
+            return
+        self._closed = True
         self.end_session(task_reward)
         if self._async and self._worker is not None:
             self._queue.put(_STOP)
