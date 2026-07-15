@@ -107,3 +107,28 @@ def test_bullet_citing_dead_entry_is_dropped() -> None:
     bank = _bank_with("K-001")  # note: K-777 does not exist
     out = inj.build([_bullet("K-777")], bank, step=1)
     assert out is None
+
+
+def test_a_reminder_carries_what_its_entries_said_at_the_time() -> None:
+    # Ids alone go stale: consolidation and eviction retire entries, and a citation to
+    # a retired id resolves to nothing when someone later asks why the agent did that.
+    bank = MemoryBank(
+        knowledge={
+            "K-001": MemoryEntry(
+                id="K-001",
+                kind="knowledge",
+                content="do not touch api.py",
+                created_step=1,
+                updated_step=1,
+            )
+        }
+    )
+    inj = Injector(AgentMemConfig())
+    out = inj.build([Bullet(line="(K-001) do not touch api.py", cited_ids=["K-001"])], bank, step=1)
+    assert out is not None
+    assert out.cited_snapshot == {"K-001": "do not touch api.py"}
+
+    # The entry is gone a few steps later; the snapshot still explains the reminder.
+    del bank.knowledge["K-001"]
+    assert bank.entry("K-001") is None
+    assert out.cited_snapshot["K-001"] == "do not touch api.py"

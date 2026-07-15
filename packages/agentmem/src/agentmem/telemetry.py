@@ -56,6 +56,9 @@ class Telemetry:
             "decision": result.decision,
             "intervention_text": intervention.text if intervention else None,
             "cited_ids": intervention.cited_ids if intervention else [],
+            # The cited entries as they read when shown, so a reminder stays auditable
+            # after consolidation or eviction retires the ids it points at.
+            "cited_snapshot": intervention.cited_snapshot if intervention else {},
             "reason": intervention.reason if intervention else "",
             "tokens_in": result.usage.input_tokens,
             "tokens_out": result.usage.output_tokens,

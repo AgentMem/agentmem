@@ -242,6 +242,10 @@ class Intervention(BaseModel):
     text: str
     cited_ids: list[str] = Field(default_factory=list)
     reason: str = ""
+    # What each cited entry said at the moment it was shown to the agent. Ids alone
+    # aren't enough to answer "why did it say that?" later: consolidation and capacity
+    # eviction retire entries, and a citation to a retired id resolves to nothing.
+    cited_snapshot: dict[str, str] = Field(default_factory=dict)
 
 
 class TokenUsage(BaseModel):

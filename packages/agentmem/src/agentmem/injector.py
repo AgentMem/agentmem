@@ -60,7 +60,17 @@ class Injector:
 
         cited = self._record_injection(kept, bank, project_bank, step)
         text = "\n".join([HEADER, *(f"- {b.line}" for b in kept)])
-        return Intervention(text=text, cited_ids=cited, reason=f"cited {', '.join(cited)}")
+        snapshot = {}
+        for cid in cited:
+            entry = self._find(cid, bank, project_bank)
+            if entry is not None:
+                snapshot[cid] = entry.content
+        return Intervention(
+            text=text,
+            cited_ids=cited,
+            reason=f"cited {', '.join(cited)}",
+            cited_snapshot=snapshot,
+        )
 
     def _find(
         self, cid: str, bank: MemoryBank, project_bank: MemoryBank | None

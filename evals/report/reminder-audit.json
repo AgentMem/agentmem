@@ -1,0 +1,367 @@
+{
+  "citation_integrity": {
+    "n": 31,
+    "consistent": 31,
+    "uncited": 0
+  },
+  "verdicts": [
+    {
+      "run": "CT-01-memory-s2",
+      "step": 5,
+      "cited": [
+        "K-008",
+        "P-005"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder correctly synthesizes the requirement to use `make generate` and the previous failure of the direct script to update fixtures."
+    },
+    {
+      "run": "CT-03-memory-s2",
+      "step": 5,
+      "cited": [
+        "P-002"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-002']"
+    },
+    {
+      "run": "CT-03-memory-s2",
+      "step": 6,
+      "cited": [
+        "P-003",
+        "K-007"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-003', 'K-007']"
+    },
+    {
+      "run": "CT-03-memory-s2",
+      "step": 7,
+      "cited": [
+        "P-004"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-004']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 3,
+      "cited": [
+        "K-001",
+        "P-001"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-001']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 5,
+      "cited": [
+        "P-001"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-001']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 6,
+      "cited": [
+        "P-004"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-004']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 5,
+      "cited": [
+        "P-006"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-006']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 5,
+      "cited": [
+        "P-007"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-007']"
+    },
+    {
+      "run": "CT-05-memory-s2",
+      "step": 5,
+      "cited": [
+        "K-014"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately summarizes the cited memory entry regarding the scope of the httpx 0.28 migration."
+    },
+    {
+      "run": "CT-01-memory-s3",
+      "step": 6,
+      "cited": [
+        "P-002",
+        "K-004"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-002']"
+    },
+    {
+      "run": "CT-01-memory-s3",
+      "step": 2,
+      "cited": [
+        "P-005",
+        "K-010"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-005', 'K-010']"
+    },
+    {
+      "run": "CT-01-memory-s3",
+      "step": 5,
+      "cited": [
+        "P-007",
+        "K-011"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['K-011']"
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 5,
+      "cited": [
+        "P-001"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-001']"
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 2,
+      "cited": [
+        "P-004",
+        "K-005"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-004', 'K-005']"
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 6,
+      "cited": [
+        "K-011",
+        "P-008"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately summarizes the specific technical issue (broken symlinks) and the recommended workaround from the cited entries."
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 7,
+      "cited": [
+        "K-011",
+        "P-009"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately synthesizes the specific technical details (broken symlinks/macos paths) and observed failures from the cited memory entries."
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 1,
+      "cited": [
+        "P-011",
+        "K-007"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-011']"
+    },
+    {
+      "run": "CT-03-memory-s3",
+      "step": 5,
+      "cited": [
+        "K-011",
+        "K-017",
+        "K-016"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately reflects the environment constraints and code status described in the cited memory entries."
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 5,
+      "cited": [
+        "K-004"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['K-004']"
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 6,
+      "cited": [
+        "PK-002",
+        "K-013"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['K-013']"
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 1,
+      "cited": [
+        "K-014",
+        "P-006"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['K-014', 'P-006']"
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 4,
+      "cited": [
+        "PK-001",
+        "P-007"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-007']"
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 5,
+      "cited": [
+        "K-018"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately summarizes the cited entry regarding the missing package configuration in pyproject.toml causing test import failures."
+    },
+    {
+      "run": "CT-05-memory-s3",
+      "step": 6,
+      "cited": [
+        "K-018",
+        "P-008"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder correctly synthesizes the root cause (missing pyproject configuration) and the required fix from the cited entries."
+    },
+    {
+      "run": "CT-01-memory-s4",
+      "step": 3,
+      "cited": [
+        "P-002"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder correctly summarizes the cited entry's instruction to run `make generate` to update the models file."
+    },
+    {
+      "run": "CT-01-memory-s4",
+      "step": 5,
+      "cited": [
+        "K-003"
+      ],
+      "faithful": false,
+      "harmful": true,
+      "label": "misleading",
+      "why": "The reminder claims pronouns must be added, but the cited entry confirms they were already added."
+    },
+    {
+      "run": "CT-03-memory-s4",
+      "step": 1,
+      "cited": [
+        "K-005"
+      ],
+      "faithful": false,
+      "harmful": true,
+      "label": "misleading",
+      "why": "The reminder claims the ticket requires bumping the timeout, but the cited entry only states the current configuration without mentioning any requirement to change it."
+    },
+    {
+      "run": "CT-03-memory-s4",
+      "step": 5,
+      "cited": [
+        "P-006"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['P-006']"
+    },
+    {
+      "run": "CT-03-memory-s4",
+      "step": 1,
+      "cited": [
+        "K-009"
+      ],
+      "faithful": null,
+      "harmful": null,
+      "label": "unresolvable",
+      "why": "loader missed ['K-009']"
+    },
+    {
+      "run": "CT-05-memory-s4",
+      "step": 3,
+      "cited": [
+        "K-002",
+        "P-002"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately summarizes the root cause and solution detailed in the cited memory entries."
+    }
+  ]
+}
