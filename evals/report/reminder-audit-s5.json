@@ -1,0 +1,68 @@
+{
+  "citation_integrity": {
+    "n": 5,
+    "consistent": 5,
+    "uncited": 0
+  },
+  "verdicts": [
+    {
+      "run": "CT-01-memory-s5",
+      "step": 2,
+      "cited": [
+        "K-010"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder correctly infers a viable implementation strategy (logging at function entry points) from the cited constraint (pure library architecture), which aligns with the conflict described in the entry."
+    },
+    {
+      "run": "CT-01-memory-s5",
+      "step": 2,
+      "cited": [
+        "P-002",
+        "K-013"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder correctly summarizes the findings and policy stated in the cited memory entries."
+    },
+    {
+      "run": "CT-05-memory-s5",
+      "step": 3,
+      "cited": [
+        "K-004",
+        "K-003"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately reflects the specific errors and recommended fixes described in the cited memory entries."
+    },
+    {
+      "run": "CT-05-memory-s5",
+      "step": 4,
+      "cited": [
+        "K-003",
+        "P-001"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately summarizes the cited entries, which confirm that httpx dropped the 'proxies' kwarg and that the root cause is known."
+    },
+    {
+      "run": "CT-05-memory-s5",
+      "step": 3,
+      "cited": [
+        "P-005",
+        "K-012"
+      ],
+      "faithful": true,
+      "harmful": false,
+      "label": "accurate",
+      "why": "The reminder accurately synthesizes the specific task details from P-005 and the consistency rule from K-012."
+    }
+  ]
+}

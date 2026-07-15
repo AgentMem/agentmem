@@ -91,6 +91,9 @@ def load_interventions(state_glob: str) -> list[dict]:
                     "step": e.get("step"),
                     "text": e.get("intervention_text") or "",
                     "cited": e.get("cited_ids") or [],
+                    # What the entries said when shown. Runs recorded before this was
+                    # captured have none, and their retired citations stay unauditable.
+                    "snapshot": e.get("cited_snapshot") or {},
                     "bank": bank,
                 }
             )
@@ -117,11 +120,17 @@ def citation_integrity(items: list[dict]) -> dict:
 def judge(provider: LLMProvider, item: dict) -> dict:
     lines, missing = [], []
     for cid in item["cited"]:
-        entry = item["bank"].get(cid)
-        if entry is None:
+        # The snapshot is what the agent was actually shown. The bank is a fallback for
+        # runs recorded before snapshots existed, and it only holds entries that
+        # consolidation and eviction happened to spare.
+        content = item["snapshot"].get(cid)
+        if content is None:
+            entry = item["bank"].get(cid)
+            content = entry.get("content") if entry else None
+        if content is None:
             missing.append(cid)
             continue
-        lines.append(f"{cid}: {entry.get('content', '')}")
+        lines.append(f"{cid}: {content}")
     if missing:
         # Never ask the judge to grade a reminder whose entries we failed to load:
         # it will blame the reminder for the loader's gap.
@@ -129,7 +138,7 @@ def judge(provider: LLMProvider, item: dict) -> dict:
             "faithful": None,
             "harmful": None,
             "label": "unresolvable",
-            "why": f"loader missed {missing}",
+            "why": f"no snapshot and the bank no longer has {missing}",
         }
     entries = "\n".join(lines)
     user = f"REMINDER:\n{item['text']}\n\nCITED ENTRIES:\n{entries}"
@@ -157,10 +166,12 @@ def main() -> int:
 
     items = load_interventions(args.states)
     ci = citation_integrity(items)
+    snapped = sum(1 for it in items if it["snapshot"])
     print("=== citation integrity (deterministic, no model) ===")
     print(f"  interventions:                {ci['n']}")
     print(f"  cited ids match the text:     {ci['consistent']}/{ci['n']}")
     print(f"  reminders citing nothing:     {ci['uncited']}")
+    print(f"  carry their own evidence:     {snapped}/{ci['n']}  (cited_snapshot)")
     for g in ci["ghosts"][:5]:
         print(f"    MISMATCH {g['run']} step {g['step']}: claimed {g['cited']}")
 

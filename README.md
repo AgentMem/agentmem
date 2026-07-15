@@ -197,6 +197,13 @@ The eval also paid for itself: the retention gap it exposed drove three lifecycl
 floor, and the session-start digest ranks by salience). Same model, same scenario:
 retention went from 56% to 78%.
 
+Because a layer that interrupts you had better be checkable, every reminder cites a bank
+entry id. Auditing 31 real interventions found the citations valid at inject time (31 of 31)
+but not durable: consolidation and eviction had retired the entries behind two thirds of
+them, so reminders the agent acted on pointed at nothing. Reminders now carry what their
+entries said when shown, verified on a fresh run
+([audit](./evals/audit/RESULTS.md)).
+
 For how this differs from CLAUDE.md files, Cursor rules, and retrieval APIs like Mem0,
 see [docs/comparison.md](./docs/comparison.md); every claim in the AgentMem column links
 to code or a measured result in this repo.
