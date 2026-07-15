@@ -39,8 +39,7 @@ def build_memory_provider(model: str, api_base: str, no_thinking: bool):  # noqa
 
 
 def make_run(args: argparse.Namespace, state_dir: Path) -> tuple[MemoryRun, list]:
-    """One session for the whole domain, one state dir. See MemoryRun for why the
-    session is not per ticket."""
+    """One session for the domain. See MemoryRun for why it is not one per ticket."""
     provider = CountingProvider(
         build_memory_provider(args.memory_model, args.api_base, args.no_thinking)
     )
@@ -58,13 +57,11 @@ def make_run(args: argparse.Namespace, state_dir: Path) -> tuple[MemoryRun, list
 
 
 def _refuse_a_warm_bank(state_dir: Path, resume: bool) -> None:
-    """Stop rather than quietly start the memory arm with a bank it already filled.
+    """Refuse to start the memory arm on a bank an earlier run left behind.
 
-    A state dir is keyed by domain and seed tag, so re-running the same command after
-    a crash, or after a first look at the numbers, hands the memory arm everything it
-    learned last time while the baseline starts from nothing. The run still completes
-    and the report still looks ordinary. Nothing about the output says the two arms
-    were no longer comparable, which is why this is an error and not a warning.
+    The state dir is keyed by domain and seed tag, so re-running the same command
+    gives the memory arm a head start the baseline does not get, and the report says
+    nothing about it. Hence an error rather than a warning.
     """
     if resume or not state_dir.exists():
         return
@@ -81,12 +78,11 @@ def _refuse_a_warm_bank(state_dir: Path, resume: bool) -> None:
 
 
 def _llm_args(args: argparse.Namespace) -> dict:
-    """What tau2 hands to litellm for the agent and the user simulator.
+    """What tau2 hands litellm for the agent and the user simulator.
 
-    no_thinking has to be in here, not only on our own provider. Qwen3.6 reasons by
-    default, and tau2 caps output tokens per turn, so the whole budget goes to a
-    reasoning trace and the turn comes back empty. Both arms are affected equally, so
-    it does not bend the comparison; it just makes every number meaningless.
+    no_thinking belongs here, not only on our own provider: Qwen3.6 reasons by default
+    and tau2 caps output tokens, so the budget goes to the trace and the turn returns
+    empty.
     """
     out: dict = {"temperature": 0.0}
     if args.api_base:
@@ -97,13 +93,11 @@ def _llm_args(args: argparse.Namespace) -> dict:
 
 
 def _preflight_through_tau2(model: str, llm_args: dict) -> None:
-    """Make one real call the way tau2 makes them, before starting anything long.
+    """One real call the way tau2 makes them, before anything long starts.
 
-    Our own check_endpoint proves the server works, but it goes through our provider,
-    which strips the `litellm/` prefix this repo puts on model names. tau2 does not:
-    it hands the string to litellm as-is. So a model name that passes every check we
-    own can still be an unknown provider to tau2, and the failure arrives once per
-    turn, quietly, on a GPU that is billing.
+    check_endpoint goes through our provider, which strips the `litellm/` prefix. tau2
+    passes the string to litellm as-is, so a name that passes our checks can still be
+    an unknown provider here.
     """
     from tau2.data_model.message import UserMessage
     from tau2.utils.llm_utils import generate
@@ -124,11 +118,8 @@ def _preflight_through_tau2(model: str, llm_args: dict) -> None:
             "--max-steps' token budget, before letting this run for hours."
         )
 
-    # And now the shape the injector actually produces. A chat template can accept
-    # every plain call and still reject the one turn that carries a reminder, which
-    # then fails only on the tickets where memory had something to say: the arm that
-    # is supposed to help is the only one that breaks, and it breaks as a 400 buried
-    # in a log. Qwen3.6 does exactly this to a system turn placed mid-conversation.
+    # A template can accept every plain call and still reject the turn that carries a
+    # reminder, so the arm meant to help is the only one that breaks.
     from tau2.data_model.message import AssistantMessage, SystemMessage
 
     print("preflight: the shape a reminder makes")
@@ -161,9 +152,7 @@ def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
         _refuse_a_warm_bank(state_dir, args.resume)
         run, counters = make_run(args, state_dir)
         agent_name = register_agentmem_agent(run, name="agentmem")
-        # One bank, one ticket at a time. Two tickets at once would interleave two
-        # conversations into it, and the order notes were learned in, which is the
-        # thing being measured, would stop meaning anything.
+        # One bank, one ticket at a time: two at once interleave into it.
         if concurrency != 1:
             print(f"  memory arm: forcing max_concurrency 1 (asked for {concurrency})")
             concurrency = 1
@@ -171,9 +160,7 @@ def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
     config = TextRunConfig(
         domain=args.domain,
         agent=agent_name,
-        # tau2 hands the model string straight to litellm, and the `litellm/` prefix is
-        # this repo's own convention for "route this through litellm", not something
-        # litellm knows. Leave it on and every call comes back as an unknown provider.
+        # `litellm/` is this repo's own prefix; litellm itself does not know it.
         llm_agent=args.action_model.removeprefix("litellm/"),
         llm_args_agent=dict(llm_args),
         user="user_simulator",
@@ -210,13 +197,10 @@ def run_arm(arm: str, args: argparse.Namespace, tasks: list) -> dict:
 
 
 def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: MemoryRun) -> object:
-    """One ticket at a time, closing each with the score it actually got.
+    """One ticket at a time, each closed with the score it got.
 
-    The baseline arm goes through tau2's batch runner, which is faster and does the
-    same thing for an agent with no memory. The memory arm cannot: the batch runner
-    reports every score at the end, and by then it is too late to tell the memory
-    layer which of its reminders were worth keeping. Scoring each ticket as it lands
-    is what makes the reward real instead of a placeholder zero.
+    The batch runner reports every score at the end, which is too late to tell the
+    memory layer which reminders were worth keeping.
     """
     from tau2.data_model.simulation import Results
     from tau2.runner.batch import run_single_task
@@ -225,10 +209,8 @@ def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: Memo
     sims = []
     for i, task in enumerate(tasks, start=1):
         sim = None
-        # The baseline goes through tau2's batch runner, which retries a ticket that
-        # errors. Without the same here, a dropped connection costs the memory arm a
-        # ticket the baseline would have kept, and the arm that loses tickets is the
-        # one whose surviving tickets then look suspiciously good.
+        # Retry to match what the batch runner already gives the baseline; otherwise a
+        # dropped connection costs this arm a ticket and flatters the survivors.
         for attempt in range(1, MAX_TICKET_ATTEMPTS + 1):
             try:
                 sim = run_single_task(config, task, save_dir=save_dir)
@@ -246,17 +228,14 @@ def _run_tickets_in_order(config: object, tasks: list, save_dir: Path, run: Memo
         run.end_ticket(float(reward) if reward is not None else 0.0)
         if i % 10 == 0 or i == len(tasks):
             print(f"  ticket {i}/{len(tasks)}: last reward {reward}")
-    # tau2's own get_info, because Results requires it and hand-rolling one here would
-    # be a second, worse copy of a struct that records what produced these numbers.
     return Results(info=get_info(config), tasks=tasks, simulations=sims)
 
 
 def _summarize(results: object) -> dict:
-    """tau2's Results, reduced to what an arm is judged on, plus what it cost.
+    """What an arm is judged on, plus what it cost.
 
-    The per-task verdicts are kept so the two arms can be compared task by task.
-    A pass rate alone cannot tell a real gain from an even trade, and an even trade
-    is exactly what the terminal-bench runs turned out to be."""
+    Per-task verdicts are kept because a pass rate cannot tell a real gain from an
+    even trade."""
     sims = getattr(results, "simulations", None) or []
     per_task: dict[str, float] = {}
     cost = 0.0
@@ -334,18 +313,14 @@ def main() -> int:
 
 
 def _report_pairs(none_arm: dict, mem_arm: dict) -> None:
-    """Which tasks each arm won, not just how many. A run where memory fixes four
-    tasks and breaks four is not the same as a run where nothing moved, and a pass
-    rate reports them identically."""
+    """Which tasks each arm won, not just how many: fixing four and breaking four is
+    not the same as nothing moving, and a pass rate reports them identically."""
     a, b = none_arm["results"]["per_task"], mem_arm["results"]["per_task"]
     shared = sorted(set(a) & set(b))
     gained = [t for t in shared if a[t] < 1.0 <= b[t]]
     lost = [t for t in shared if b[t] < 1.0 <= a[t]]
-    # The baseline goes through tau2's batch runner, which retries a ticket that
-    # errors; the memory arm runs them one at a time and drops one that raises. A
-    # ticket missing from either arm is dropped from the pairing, so this does not
-    # bend the comparison, but it does cost tickets and the count should be visible
-    # rather than inferred from a smaller n.
+    # A ticket missing from either arm is dropped from the pairing, so this costs n
+    # rather than bending the comparison. Still worth showing rather than inferring.
     only_none = sorted(set(a) - set(b))
     only_mem = sorted(set(b) - set(a))
     if only_none or only_mem:

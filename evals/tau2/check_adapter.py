@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-"""Drive the real tau2 orchestrator end to end with the LLM stubbed out.
+"""Run the real tau2 orchestrator on the mock domain with every model call stubbed.
 
-The unit tests call the adapter's methods directly. This calls none of them: it hands
-the agent to tau2 and lets tau2 run a real simulation on the mock domain, so what is
-being checked is the wiring the tests cannot see. Whether the factory signature is
-right, whether the orchestrator ever calls `stop`, whether a reminder survives into
-the trajectory that gets graded.
-
-No network, no GPU, no key. Run it before renting anything:
+The unit tests call the adapter directly; this checks the wiring they cannot see, and
+needs no network, GPU or key. Run it before renting anything:
 
     .venv-tau2/bin/python evals/tau2/check_adapter.py
 """
@@ -38,16 +33,12 @@ _USAGE = TokenUsage(input_tokens=10, output_tokens=5, model="stub")
 
 
 class StubMemoryProvider:
-    """Stands in for the memory model across all four of the calls it makes.
+    """Stands in for the memory model across every call it makes.
 
-    Saving is not optional: the injector only shows a bullet whose id it can find, so
-    a Phase 2 citing K-001 into an empty bank is dropped, exactly as designed.
-
-    Neither is routing by prompt. Phase 2, consolidation and promotion are all
-    tool-less calls with different systems and different reply grammars, so one canned
-    answer satisfies at most one of them and silently fails the rest. Answering the
-    promotion call with Phase 2's grammar parses to no decisions, nothing is promoted,
-    and this check would report an empty project bank as if the wiring were broken."""
+    Saving is not optional: the injector drops a bullet whose id is not in the bank.
+    Neither is routing by prompt: Phase 2, consolidation, promotion and the evaluator
+    are all tool-less calls with different reply grammars, and one canned answer
+    satisfies at most one of them."""
 
     model = "stub"
 
@@ -72,11 +63,8 @@ class StubMemoryProvider:
                 usage=_USAGE,
             )
         if "Outcome Evaluator" in system:
-            # A JSON array, and it has to be positive. This is the call that turns a
-            # ticket's score into reinforcement on the entries its reminders cited,
-            # and an entry with no reinforcement is never promoted. Answer it in the
-            # wrong grammar and it parses to nothing, which is indistinguishable from
-            # a run where the memory layer learned that its advice was worthless.
+            # Positive, because this is what turns a score into reinforcement, and an
+            # unreinforced entry is never promoted.
             self.calls.append("evaluator")
             return LLMResponse(
                 text='[{"step": 1, "reward": 0.9, "label": "changed_behavior_good", '
@@ -106,12 +94,9 @@ def stub_agent_generate(*, model, messages, tools=None, call_name=None, **kwargs
 
 
 def stub_user_generate(*, model, messages, tools=None, call_name=None, **kwargs):  # noqa: ANN001
-    """The customer says one thing, hears back, and leaves.
-
-    It has to say something first, or the agent never takes a turn and this check
-    passes having tested nothing. The turn count is read out of the conversation it
-    was handed rather than kept in a counter here, because a counter is per process
-    and this runs once per ticket."""
+    """Says one thing, hears back, leaves. It must speak first or the agent never
+    takes a turn. Counted from the conversation, not a global, which would leak
+    across tickets."""
     prior = [m for m in messages if getattr(m, "role", "") != "system"]
     if len(prior) >= 2:
         return UserMessage(role="user", content="That is all, thanks. ###STOP###")
@@ -119,8 +104,7 @@ def stub_user_generate(*, model, messages, tools=None, call_name=None, **kwargs)
 
 
 def main() -> int:
-    # Each module bound `generate` at import, so each has to be replaced by name.
-    # Missing one would send this check to a real endpoint.
+    # Each module bound `generate` at import; missing one reaches a real endpoint.
     llm_agent_mod.generate = stub_agent_generate
     user_mod.generate = stub_user_generate
 
@@ -133,12 +117,8 @@ def main() -> int:
             trigger=every_n(1),
             async_worker=False,
             session_id="tau2-mock",
-            # advantage_enabled matters more than it looks and is off by default.
-            # Reinforcement is applied inside the graded-session path, which only runs
-            # when the advantage layer is on, and an entry with no reinforcement is
-            # never promoted. Leave it off and the project bank stays empty forever
-            # while every other signal looks healthy. run_live.py sets it for the
-            # same reason.
+            # Off by default, and reinforcement lives inside the graded path, so
+            # leaving it off means nothing is ever promoted. run_live.py sets it too.
             config=AgentMemConfig(
                 state_dir=str(tmp / "mem"), advantage_enabled=True, advantage_gate=False
             ),
@@ -149,9 +129,7 @@ def main() -> int:
     print(f"registered: {name}")
     print(f"agents tau2 now knows: {sorted(registry.get_agents())}")
 
-    # Four, not one. An entry has to live through `continual_min_sessions_lived` (3)
-    # sessions before it is promoted, so a single-ticket check would show an empty
-    # project bank and prove nothing about whether tickets share anything.
+    # Four, not one: an entry must live through 3 boundaries before it is promoted.
     tasks = get_tasks(task_set_name="mock", task_split_name=None, num_tasks=4)
     print(f"mock domain tickets: {[t.id for t in tasks]}")
 
@@ -167,8 +145,7 @@ def main() -> int:
         max_steps=4,
         max_concurrency=1,
     )
-    # Ticket by ticket, exactly as run_live does it for the memory arm, because the
-    # reward has to be handed back before the next ticket starts.
+    # Ticket by ticket, as run_live does: the reward is handed back before the next.
     sims = []
     for task in tasks:
         try:
@@ -178,9 +155,8 @@ def main() -> int:
             continue
         sims.append(sim)
         reward = getattr(getattr(sim, "reward_info", None), "reward", 0.0) or 0.0
-        # Forced to 1.0: the stub agent solves nothing, so every real reward is 0,
-        # no entry is ever reinforced, and promotion could not fire no matter how
-        # correct the wiring is. What is under test here is the path, not the score.
+        # Forced: the stub solves nothing, so every real reward is 0 and promotion
+        # could not fire however correct the wiring. The path is what is under test.
         run.end_ticket(1.0)
         print(f"  ticket {task.id}: real reward {reward}, ended at 1.0 for this check")
     print(f"simulations finished: {len(sims)}")
@@ -203,18 +179,14 @@ def main() -> int:
     print(f"reminders left in the graded trajectory: {len(leaked)}")
     assert not leaked, "a reminder leaked into the trajectory tau2 grades"
 
-    # Not equal to the ticket count: tau2 retries a ticket that errors, and each retry
-    # builds a fresh agent, which opens a fresh session. Worth knowing before reading
-    # any session-count number off a real run.
     print(f"ticket boundaries the bank saw: {run.tickets_ended} (tickets that ran: {len(sims)})")
     assert run.tickets_ended == len(sims), "every ticket that ran should have ended exactly once"
     print(f"memory-model calls by kind: {sorted(set(mem_provider.calls))}")
 
     run.close()
 
-    # The whole reason the memory arm exists here is that ticket N+1 opens a bank
-    # ticket N wrote. If nothing was promoted, the arm is a per-ticket scratchpad
-    # with extra steps, and it would still have passed every check above.
+    # Ticket N+1 must open a bank ticket N wrote, or the arm is a scratchpad with
+    # extra steps, and it would still have passed every check above.
     banked = MemorySession(
         task="Handle customer service tickets",
         provider=StubMemoryProvider(),

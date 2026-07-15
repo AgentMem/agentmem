@@ -1,12 +1,9 @@
 """The tau2 adapter, tested without tau2, a GPU, a key, or a network.
 
-tau2 needs Python >=3.12 and this suite runs on 3.11, so when it is absent these
-tests stand up a double of the two tau2 pieces the adapter touches. The double is
-copied from tau2's own `LLMAgent._generate_next_message`, which makes it a
-restatement of upstream's behaviour and therefore able to drift from it. The check
-against that is `evals/tau2/check_adapter.py`, which runs this same adapter against
-the real classes in the tau2 venv. When tau2 does happen to be importable, the
-fixture below hands over the real thing and these tests become the real check.
+tau2 needs Python 3.12 and this suite runs on 3.11, so the fixture falls back to a
+double when it is absent, and hands over the real classes when it is not. The double
+restates upstream and can drift from it; evals/tau2/check_adapter.py is the check
+against that.
 """
 
 from __future__ import annotations
@@ -242,8 +239,7 @@ def test_reminder_lands_next_to_the_turn_it_is_for(tau2mod, tmp_path):
     roles = [getattr(m, "role", "") for m in tau2mod.sent.windows[-1]]
     assert roles[-1] == "user", "the customer's turn must stay last"
     assert roles[-2] == "user", "the reminder should sit immediately before it"
-    # Not a system message: Qwen3.6's template 400s on a system turn anywhere but the
-    # front. Measured, not assumed. The live shape is checked by run_live's preflight.
+    # Qwen3.6's template 400s on a system turn anywhere but the front.
     assert "system" not in roles[1:], "a system turn after the first will be rejected"
     memory.close()
 
@@ -303,10 +299,8 @@ def test_tool_results_and_calls_reach_memory(tau2mod, tmp_path):
 
 
 def test_stop_leaves_the_ticket_boundary_to_the_runner(tau2mod, tmp_path):
-    """stop must not end the ticket. tau2 scores a ticket after the conversation is
-    over, so an agent ending it here can only pass a reward of zero, a zero reward
-    moves no reinforcement, and an entry with no reinforcement is never promoted. The
-    project bank would stay empty for the whole run with nothing looking wrong."""
+    """stop can only pass a reward of zero, since tau2 scores after the conversation,
+    and a zero reward promotes nothing. The runner owns the boundary."""
     memory = _memory(tmp_path)
     agent = tau2mod.AgentMemLLMAgent(tools=[], domain_policy="p", llm="m", memory=memory)
     before = memory.bank.sessions_seen
@@ -332,9 +326,8 @@ def test_end_ticket_advances_the_counter_promotion_reads(tau2mod, tmp_path):
 
 
 def test_a_failed_ticket_pushes_its_notes_down_not_merely_not_up(tau2mod, tmp_path):
-    """tau2 rewards land in [0, 1] and the memory layer wants [-1, 1]. Passing the raw
-    reward through would make a failed ticket read as neutral, so bad advice would
-    never be marked as bad."""
+    """Raw tau2 rewards would make a failed ticket read as neutral, so bad advice
+    would never be marked bad."""
     seen: list[float] = []
     memory = _memory(tmp_path)
     memory.end_session = lambda task_reward=0.0: seen.append(task_reward)  # type: ignore[method-assign]
@@ -348,9 +341,8 @@ def test_a_failed_ticket_pushes_its_notes_down_not_merely_not_up(tau2mod, tmp_pa
 
 
 def test_every_agent_in_a_run_shares_one_session(tau2mod, tmp_path):
-    """tau2 builds an agent per ticket and per retry. They must all get the same bank:
-    a session per ticket restarts the counter promotion reads, so nothing is ever
-    eligible and the arm silently becomes a per-ticket scratchpad."""
+    """An agent per ticket and per retry, all sharing one bank: a session per ticket
+    restarts the counter promotion reads."""
 
     class Reg:
         def __init__(self) -> None:

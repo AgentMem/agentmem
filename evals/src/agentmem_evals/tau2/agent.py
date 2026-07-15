@@ -1,9 +1,7 @@
-"""A tau2-bench agent that is tau2's own agent plus a memory layer, and nothing else.
+"""tau2's own llm_agent with a memory layer bolted on, and nothing else different.
 
-The baseline arm runs tau2's `llm_agent` unmodified. This arm subclasses it and
-overrides two methods. Everything the two arms share, they share by inheritance
-rather than by being written twice, so a difference in the results cannot come
-from a difference in the harness.
+The baseline arm runs the parent unmodified, so the two arms cannot differ by
+anything except the memory.
 """
 
 from __future__ import annotations
@@ -32,8 +30,7 @@ def have_tau2() -> bool:
     return _HAVE_TAU2
 
 
-# Said plainly, because the agent is about to read this next to a real customer's
-# words and must not confuse the two.
+# The agent reads this next to a real customer's words, so it says whose words it is.
 REMINDER_PREFIX = (
     "Note from your own memory of earlier tickets. The customer did not say this. "
     "Each line cites the note it came from."
@@ -41,31 +38,19 @@ REMINDER_PREFIX = (
 
 
 class AgentMemLLMAgent(LLMAgent):  # type: ignore[misc]
-    """tau2's LLMAgent, with a memory layer watching and occasionally interrupting.
+    """A reminder rides along for one call and is gone before the state is saved.
 
-    Two overrides, both deliberate:
-
-    `_generate_next_message` slips a reminder in for exactly one call. It is appended
-    to `state.messages` before the parent runs and removed in a `finally`, so it
-    reaches the model while it is deciding and is gone before anything is saved. That
-    matters here more than it does in the terminal eval: tau2 grades the trajectory,
-    so a reminder left behind would become a message the agent never received.
-
-    What it deliberately does not do is end the session in `stop`. tau2 scores a
-    ticket after the conversation is over, so an agent being told to stop does not yet
-    know whether it succeeded, and ending the ticket with a neutral reward there costs
-    more than it looks: a graded reward of zero moves no reinforcement, an entry with
-    no reinforcement is never eligible for promotion, and the project bank stays empty
-    for the whole run. The ticket boundary belongs to the runner, which has the
-    verdict. See MemoryRun.end_ticket.
+    tau2 grades the trajectory, so anything left in it becomes a message the agent
+    was never sent. `stop` deliberately leaves the memory alone: the ticket boundary
+    belongs to whoever knows the score, which is the runner. See MemoryRun.
     """
 
     def __init__(
         self,
-        tools: list,
+        tools: list[Any],
         domain_policy: str,
         llm: str,
-        llm_args: dict | None = None,
+        llm_args: dict[str, Any] | None = None,
         *,
         memory: MemorySession | None = None,
     ) -> None:
@@ -84,31 +69,24 @@ class AgentMemLLMAgent(LLMAgent):  # type: ignore[misc]
             self._observe_output(reply)
             return reply
 
-        # A user message, not a system one, because Qwen3.6's chat template rejects a
-        # system message anywhere but the front: "System message must be at the
-        # beginning", 400, once per reminder. Measured against the live endpoint, which
-        # also accepts two user turns in a row. Hoisting it into the real system prompt
-        # would pass, but would bury a note about this turn at the top of the context.
-        # The prefix is what carries the provenance instead.
+        # A user turn, not a system one: Qwen3.6's template 400s on a system message
+        # anywhere but the front. The prefix carries the provenance instead.
         note = UserMessage(role="user", content=f"{REMINDER_PREFIX}\n{reminder}")
         state.messages.append(note)
         try:
             reply = super()._generate_next_message(message, state)
         finally:
-            # By identity: two identical reminders must not collapse into one removal.
+            # By identity; two identical reminders must not collapse into one removal.
             state.messages[:] = [m for m in state.messages if m is not note]
         self.reminders_injected += 1
         self._observe_output(reply)
         return reply
 
     def stop(self, message: Any = None, state: Any = None) -> None:
-        # Intentionally leaves the memory alone; the runner ends the ticket once it
-        # knows the score. Closing or ending here would spend the boundary on a
-        # reward nobody has computed yet.
-        super().stop(message, state)
+        super().stop(message, state)  # the runner ends the ticket, once it has the score
 
     def _observe_input(self, message: Any) -> None:
-        events = []
+        events: list[dict[str, Any]] = []
         if isinstance(message, MultiToolMessage):
             for tm in message.tool_messages:
                 events.append(_tool_result_event(tm))
@@ -150,26 +128,12 @@ def _tool_result_event(tm: Any) -> dict[str, Any]:
 
 
 class MemoryRun:
-    """One session for the whole run, ended once per ticket. Not one per ticket.
+    """One session for the whole run, ended once per ticket. Not one session per ticket.
 
-    This is the part that is easy to get backwards, and getting it backwards costs
-    nothing visible: the agent still injects, the reminders are still grounded, every
-    ticket still works, and the project bank stays empty forever.
-
-    Promotion is what lets ticket N+1 use what ticket N learned, and an entry only
-    becomes eligible once `bank.sessions_seen - entry.created_session` reaches
-    `continual_min_sessions_lived`. That counter lives on the bank and is advanced by
-    `end_session`. Give each ticket its own MemorySession and each ticket gets its own
-    bank, whose counter starts at zero and is thrown away at the end, so nothing is
-    ever eligible and the arm quietly degrades into a per-ticket scratchpad.
-
-    One session with a ticket boundary at each `end_session` is the shape the
-    lifecycle was built for, and the shape the daemon already uses across many
-    Claude Code sessions.
-
-    Tickets therefore run in order, one at a time. Two at once would interleave two
-    conversations into one bank; the runner keeps tau2's concurrency at 1 for this
-    arm and puts the parallelism in separate shards, each with its own state dir.
+    Promotion needs an entry to outlive `continual_min_sessions_lived` boundaries on
+    its bank, and that counter dies with the session. A session per ticket therefore
+    never promotes anything, silently: every ticket still works and the project bank
+    stays empty. One bank also means one ticket at a time.
     """
 
     def __init__(self, session: MemorySession) -> None:
@@ -182,18 +146,14 @@ class MemoryRun:
 
     @property
     def tickets_ended(self) -> int:
-        """Ticket boundaries the bank has seen. Promotion counts against this."""
+        """Boundaries the bank has seen. Promotion counts against this."""
         return self._session.bank.sessions_seen
 
     def end_ticket(self, reward: float) -> None:
-        """Call this once per ticket, with what the ticket actually scored.
-
-        The reward is not bookkeeping. It is what reinforces the entries the reminders
-        cited, and only a reinforced entry is ever promoted, so a run that ends every
-        ticket at 0.0 will look completely healthy and never build a project bank.
-        tau2 scores rewards in [0, 1] and the memory layer wants [-1, +1], hence the
-        rescale: a ticket that failed should push its notes down, not merely fail to
-        push them up."""
+        """Once per ticket, with the score it got. The reward reinforces the entries
+        its reminders cited, and only a reinforced entry is ever promoted, so ending
+        every ticket at zero builds nothing. tau2 scores [0, 1]; memory wants [-1, 1],
+        so a failed ticket pushes its notes down rather than merely not up."""
         self._session.end_session(task_reward=(reward * 2.0) - 1.0)
 
     def close(self) -> None:
@@ -207,27 +167,25 @@ def register_agentmem_agent(
     name: str = "agentmem",
     registry: Any = None,
 ) -> str:
-    """Add the agent to tau2's registry from out here, rather than by editing tau2.
+    """Register from out here so the vendored tau2 checkout stays as upstream shipped it.
 
-    tau2 has no plugin hook, but its registry is a plain importable object, so the
-    vendored checkout stays exactly as upstream published it and there is nothing to
-    re-apply when it moves.
-
-    The factory has to accept every keyword tau2 passes (`task`, `audio_native_config`,
-    `audio_taps_dir`, ...) and quietly drop the ones it does not use.
+    There is no plugin hook, but the registry is a plain importable object. The factory
+    must swallow every keyword tau2 passes, including the ones it ignores.
     """
     if registry is None:
         from tau2.registry import registry as _registry
 
         registry = _registry
 
-    def factory(tools: list, domain_policy: str, **kwargs: Any) -> AgentMemLLMAgent:
-        # tau2 builds a new agent per ticket, and per retry of a ticket. They all get
-        # the same session: the bank is the thing that is supposed to outlive them.
+    def factory(tools: list[Any], domain_policy: str, **kwargs: Any) -> AgentMemLLMAgent:
+        llm = kwargs.get("llm")
+        if not llm:
+            raise ValueError("no llm reached the factory; tau2 takes it from config.llm_agent")
+        # A new agent per ticket and per retry; they all share the bank that outlives them.
         return AgentMemLLMAgent(
             tools=tools,
             domain_policy=domain_policy,
-            llm=kwargs.get("llm"),
+            llm=llm,
             llm_args=kwargs.get("llm_args"),
             memory=run.session,
         )
