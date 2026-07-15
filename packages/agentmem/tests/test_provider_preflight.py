@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+import sys
+
 import pytest
 from agentmem.config import AgentMemConfig
 from agentmem.llm import preflight
 
 
-def test_flags_a_litellm_model() -> None:
+def hide_litellm(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make `import litellm` fail whether or not the extra is installed, so the
+    not-installed path is tested the same way on every machine."""
+    monkeypatch.setitem(sys.modules, "litellm", None)
+
+
+def test_flags_a_litellm_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    hide_litellm(monkeypatch)
     problems = preflight(AgentMemConfig(model="litellm/gpt-4o"))
     assert problems and "litellm" in problems[0]
 
