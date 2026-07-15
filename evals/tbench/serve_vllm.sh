@@ -16,6 +16,7 @@ PARSER="${PARSER:-qwen3_coder}"        # `vllm serve --help=Frontend` lists vali
 REASONING_PARSER="${REASONING_PARSER:-qwen3}"   # Qwen3.6 thinks by default
 MAX_LEN="${MAX_LEN:-32768}"            # native is 262144; this is plenty per trial
 GPU_FRAC="${GPU_FRAC:-0.92}"
+MAX_SEQS="${MAX_SEQS:-64}"         # hybrid Mamba models cap this hard; we feed few trials anyway
 KEY="${VLLM_API_KEY:-agentmem-local}"
 
 command -v vllm >/dev/null || {
@@ -35,6 +36,7 @@ args=(
     --tool-call-parser "$PARSER"
     --max-model-len "$MAX_LEN"
     --gpu-memory-utilization "$GPU_FRAC"
+    --max-num-seqs "$MAX_SEQS"
 )
 [ -n "$REASONING_PARSER" ] && args+=(--reasoning-parser "$REASONING_PARSER")
 
