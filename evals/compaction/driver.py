@@ -16,6 +16,7 @@ import subprocess
 import termios
 import time
 from pathlib import Path
+from typing import Any
 
 
 class Driver:
@@ -37,7 +38,7 @@ class Driver:
         self.rows = rows
         self.screen_tail = ""
         self._master: int | None = None
-        self._proc: subprocess.Popen | None = None
+        self._proc: subprocess.Popen[bytes] | None = None
 
     def start(self) -> None:
         self._master, slave = pty.openpty()
@@ -98,8 +99,8 @@ class Driver:
             time.sleep(0.25)
         raise TimeoutError(f"no idle within {timeout}s; screen tail:\n{self.screen_tail[-800:]}")
 
-    def entries(self) -> list[dict]:
-        out = []
+    def entries(self) -> list[dict[str, Any]]:
+        out: list[dict[str, Any]] = []
         try:
             text = self.transcript.read_text(errors="replace")
         except FileNotFoundError:

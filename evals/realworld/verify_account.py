@@ -17,6 +17,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "packages" / "agentmem" / "src"))
@@ -44,7 +45,7 @@ does, opinions, and anything about what someone else did. If the account asserts
 nothing about its own actions, return {"claims": []}."""
 
 
-def extract(provider, answer: str) -> list[dict]:  # noqa: ANN001
+def extract(provider: Any, answer: str) -> list[dict[str, str]]:  # noqa: ANN001
     resp = provider.complete(
         system=EXTRACT_SYSTEM,
         messages=[{"role": "user", "content": f"ACCOUNT:\n{answer}"}],
@@ -57,7 +58,7 @@ def extract(provider, answer: str) -> list[dict]:  # noqa: ANN001
         data = json.loads(m.group(0))
     except json.JSONDecodeError:
         return []
-    out = []
+    out: list[dict[str, str]] = []
     for c in data.get("claims", []):
         if isinstance(c, dict) and c.get("kind") and c.get("path"):
             out.append(
@@ -70,7 +71,7 @@ def extract(provider, answer: str) -> list[dict]:  # noqa: ANN001
     return out
 
 
-def check(claim: dict, led: Ledger, have_commands: bool) -> tuple[str, str]:
+def check(claim: dict[str, str], led: Ledger, have_commands: bool) -> tuple[str, str]:
     """Return (verdict, why). Anything the ledger cannot speak to is unverifiable.
 
     A parse the ledger has no evidence about must never become a contradiction: the
@@ -120,7 +121,9 @@ def check(claim: dict, led: Ledger, have_commands: bool) -> tuple[str, str]:
     return "unverifiable", f"no ledger evidence for kind {kind!r}"
 
 
-def verify(provider, answer: str, repo: Path, calls: list[dict] | None) -> dict:  # noqa: ANN001
+def verify(
+    provider: Any, answer: str, repo: Path, calls: list[dict[str, Any]] | None
+) -> dict[str, Any]:
     led = from_repo(repo, calls)
     claims = extract(provider, answer)
     results = []

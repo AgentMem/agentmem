@@ -6,14 +6,15 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages" / "agentmem" / "src"))
 
 from agentmem.triggers import _normalize  # noqa: E402
 
 
-def load(path: Path | str) -> list[dict]:
-    out = []
+def load(path: Path | str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
     for line in Path(path).read_text(errors="replace").splitlines():
         try:
             out.append(json.loads(line))
@@ -22,19 +23,19 @@ def load(path: Path | str) -> list[dict]:
     return out
 
 
-def last_boundary(entries: list[dict]) -> int:
+def last_boundary(entries: list[dict[str, Any]]) -> int:
     idx = [i for i, e in enumerate(entries) if e.get("subtype") == "compact_boundary"]
     if not idx:
         raise ValueError("no compact_boundary in the transcript; the compact never happened")
     return idx[-1]
 
 
-def _blocks(entry: dict) -> list[dict]:
+def _blocks(entry: dict[str, Any]) -> list[dict[str, Any]]:
     content = entry.get("message", {}).get("content", [])
     return [b for b in content if isinstance(b, dict)] if isinstance(content, list) else []
 
 
-def tool_uses(entries: list[dict]) -> list[tuple[int, str, str, str]]:
+def tool_uses(entries: list[dict[str, Any]]) -> list[tuple[int, str, str, str]]:
     """(entry index, tool_use_id, tool name, command-ish input) per call."""
     out = []
     for i, e in enumerate(entries):
@@ -48,7 +49,7 @@ def tool_uses(entries: list[dict]) -> list[tuple[int, str, str, str]]:
     return out
 
 
-def results_by_id(entries: list[dict]) -> dict[str, tuple[bool, str]]:
+def results_by_id(entries: list[dict[str, Any]]) -> dict[str, tuple[bool, str]]:
     out = {}
     for e in entries:
         if e.get("type") != "user":
@@ -62,7 +63,7 @@ def results_by_id(entries: list[dict]) -> dict[str, tuple[bool, str]]:
     return out
 
 
-def last_assistant_text(entries: list[dict], after: int = 0) -> str:
+def last_assistant_text(entries: list[dict[str, Any]], after: int = 0) -> str:
     for e in reversed(entries[after:]):
         if e.get("type") != "assistant":
             continue
@@ -72,7 +73,9 @@ def last_assistant_text(entries: list[dict], after: int = 0) -> str:
     return ""
 
 
-def post_compact_metrics(entries: list[dict], wall_re: str, green_re: str) -> dict:
+def post_compact_metrics(
+    entries: list[dict[str, Any]], wall_re: str, green_re: str
+) -> dict[str, Any]:
     """From re-hitting a known wall after the compact to getting back to green.
 
     calls_to_green counts every tool call from the first post-compact wall hit up to
@@ -123,7 +126,9 @@ def post_compact_metrics(entries: list[dict], wall_re: str, green_re: str) -> di
     return {
         "wall_reencountered": wall_at is not None,
         "recovered": green_at is not None,
-        "calls_wall_to_green": (green_at - wall_at + 1) if green_at is not None else None,
+        "calls_wall_to_green": (
+            green_at - wall_at + 1 if green_at is not None and wall_at is not None else None
+        ),
         "repeats_of_known_failures": repeats,
         "post_compact_tool_calls": len(calls),
         "post_compact_tokens_in": tokens_in,

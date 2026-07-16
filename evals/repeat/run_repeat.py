@@ -14,6 +14,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "packages" / "agentmem" / "src"))
@@ -29,7 +30,7 @@ from run_probe import Box, build_provider  # noqa: E402
 TURN_CAP = 25
 
 
-def waste(calls: list[dict], wall_re: str, green_re: str) -> dict:
+def waste(calls: list[dict[str, Any]], wall_re: str, green_re: str) -> dict[str, Any]:
     """What the last session cost, from the transcript of its own commands.
 
     Both numbers are counted, not modelled. The compaction eval infers whether a
@@ -52,17 +53,23 @@ def waste(calls: list[dict], wall_re: str, green_re: str) -> dict:
         "wall_hit": wall_at is not None,
         "wall_hits": hits,
         "recovered": green_at is not None,
-        "turns_wall_to_green": (green_at - wall_at + 1) if green_at is not None else None,
+        # Both, not just green_at: the loop only sets green_at after a wall hit, but
+        # that invariant lives in the loop and not here.
+        "turns_wall_to_green": (
+            green_at - wall_at + 1 if green_at is not None and wall_at is not None else None
+        ),
         "turns_in_session": len(calls),
     }
 
 
-def run_condition(cond: str, args: argparse.Namespace, spec: dict, root: Path) -> dict:
+def run_condition(
+    cond: str, args: argparse.Namespace, spec: dict[str, Any], root: Path
+) -> dict[str, Any]:
     workdir = root / f"repo-{cond}"
     box = Box(spec["repo"], spec["ref"], workdir, spec.get("test_deps", ""))
     box.up()
     mem_state = root / f"mem-{cond}"
-    sessions: list[dict] = []
+    sessions: list[dict[str, Any]] = []
     memory = None
     try:
         for i, ticket in enumerate(spec["sessions"], start=1):
@@ -88,7 +95,7 @@ def run_condition(cond: str, args: argparse.Namespace, spec: dict, root: Path) -
                 usd_cap=args.session_usd_cap,
                 max_tokens=args.max_tokens,
             )
-            calls: list[dict] = []
+            calls: list[dict[str, Any]] = []
             while True:
                 d = loop.next_decision()
                 if d.kind != "exec":
