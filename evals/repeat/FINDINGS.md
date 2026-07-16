@@ -53,3 +53,38 @@ across 50 tickets and moved the pass rate by one.
 
 The turn count is not the finding. The finding is that the layer's bottleneck is
 targeting, not memory, and now there is a diagnosis pointing straight at it.
+
+## The recall metric now exists, and it says 2 of 4
+
+`recall.py` measures the quality of silence deterministically: of the walls where the
+bank held a matching entry, how often a relevant reminder actually surfaced. Signature
+matching is conservative, code-shaped tokens shared between the wall output and a bank
+entry, so it can only undercount. On the four recall-on seeds:
+
+| seed | bank knew | relevant reminder fired | recall |
+|---|---|---|---|
+| click 1 | yes | no, ticket 4 fired none | 0 |
+| click 2 | yes | yes | 1 |
+| attrs 1 | yes | yes | 1 |
+| attrs 2 | yes | no, it fired an unrelated chore note | 0 |
+
+**2 of 4.** Half the time the layer had the answer and did not surface it at the wall.
+That is the number the targeting work has to move, and it is not fooled by turns.
+
+It also caught something the turn count was hiding. click seed 1's "2 turns to green"
+is the agent running `pytest -W ignore::PytestRemovedIn10Warning`, which suppresses
+the wall rather than fixing it; the scorer saw "passed" and stopped counting, while
+the agent went on for eleven more turns to fix it properly. The waste metric counts a
+suppressed wall as a recovery, which is one more reason the turn count is not the
+finding and recall is the better lens.
+
+## Why the fix is not a trigger
+
+The obvious next step read as "a trigger that fires on a known failure signature". It
+is not, because triggers see only the event stream, never the bank, so they cannot
+match against stored signatures. And the trigger is not where either recall-0 seed
+failed: click 1 ran its step and Phase 2 chose silence, attrs 2 fired but chose the
+wrong entry. The miss is in which entry Phase 2 surfaces, which is the bank view it is
+given and the salience that orders it. That is the seam the next change works on, and
+recall is how it will be judged.
+
