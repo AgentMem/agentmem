@@ -205,6 +205,7 @@ def run_step_cold(
 
     state = LiveState.load(_state_path(config, session_id))
     session_bank, _ = _load_banks(config, session_id)
+    before_version = session_bank.version
     agent = MemoryAgent(
         provider or _provider(config),
         config,
@@ -223,6 +224,20 @@ def run_step_cold(
         store.save_bank(session_id, state.task, outcome.bank)
     finally:
         store.close()
+    # The command-hook runtime kept no telemetry, so a plugin user had no record of
+    # what fired. Same sink and shape as MemorySession, so replay and receipts read
+    # both.
+    from .session import _telemetry_path
+    from .telemetry import Telemetry
+
+    tel = Telemetry(_telemetry_path(config))
+    tel.record(
+        session_id=session_id,
+        trigger="tool_failure" if bypass_cooldown else "hook",
+        bank_version_before=before_version,
+        outcome=outcome,
+    )
+    tel.close()
     if outcome.result.intervention is not None:
         write_pending(config, session_id, outcome.result.intervention.text)
 

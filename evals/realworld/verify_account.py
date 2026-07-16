@@ -139,11 +139,16 @@ def verify(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--report", required=True, help="a realworld probe report json")
+    ap.add_argument("--report", default="", help="a realworld probe report json")
+    ap.add_argument("--text", default="", help="an account to check, instead of a report")
+    ap.add_argument("--text-file", default="", help="file holding the account to check")
+    ap.add_argument("--repo", default="", help="the working tree the account is about")
     ap.add_argument("--model", required=True)
     ap.add_argument("--api-base", default="")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
+    if not args.report and not (args.repo and (args.text or args.text_file)):
+        ap.error("pass --report, or --repo with --text/--text-file")
 
     from agentmem.llm.litellm import LiteLLMProvider
 
@@ -154,7 +159,11 @@ def main() -> int:
         extra_body={"chat_template_kwargs": {"enable_thinking": False}},
     )
 
-    report = json.loads(Path(args.report).read_text())
+    if args.report:
+        report = json.loads(Path(args.report).read_text())
+    else:
+        text = args.text or Path(args.text_file).read_text()
+        report = [{"condition": "account", "probe_answer": text, "repo": args.repo}]
     out = []
     print(f"{'arm':8} {'supported':>9} {'contradicted':>12} {'unverifiable':>12}")
     for r in report:

@@ -26,6 +26,13 @@ def main(argv: list[str] | None = None) -> int:
     p_replay = sub.add_parser("replay", help="pretty-print a telemetry JSONL file")
     p_replay.add_argument("path", help="path to a telemetry.jsonl file")
 
+    p_receipts = sub.add_parser(
+        "receipts", help="per-session summary of what memory did: steps, edits, reminders"
+    )
+    p_receipts.add_argument(
+        "--state-dir", default=".agentmem", help="where the layer keeps its state"
+    )
+
     p_bank = sub.add_parser("bank", help="inspect stored memory banks")
     p_bank.add_argument("--store", default="json", help="store spec (default: json)")
     p_bank.add_argument("--state-dir", default=".agentmem", help="state directory")
@@ -79,6 +86,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_demo(args)
     if args.command == "replay":
         return _cmd_replay(args)
+    if args.command == "receipts":
+        return _cmd_receipts(args)
     if args.command == "bank":
         return _cmd_bank(args)
     if args.command == "init":
@@ -100,6 +109,20 @@ def _cmd_demo(args: argparse.Namespace) -> int:
     from ._demo import run_demo
 
     return run_demo(live=args.live)
+
+
+def _cmd_receipts(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .receipts import render, summarize
+    from .telemetry import read_events
+
+    path = Path(args.state_dir) / "telemetry.jsonl"
+    if not path.exists():
+        print(f"no telemetry at {path}; nothing has run here, or telemetry is off")
+        return 1
+    print(render(summarize(read_events(path))))
+    return 0
 
 
 def _cmd_replay(args: argparse.Namespace) -> int:

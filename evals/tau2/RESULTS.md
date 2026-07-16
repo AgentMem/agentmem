@@ -14,7 +14,11 @@ the airline split, the same sixteen for both arms.
 Nothing moved. That is what was written down before the run, for a reason: the
 baseline passes 13 of 16 on its own, so there are three failures available to flip,
 and one flip each way on sixteen tickets is noise wearing a number. The result is
-here because it happened, not because it says anything.
+here because it happened, not because it says anything. One
+caution a reader deserves: the run's JSON died with the stopped instance, so unlike
+every other number in this repo these three rows have no committed artifact behind
+them, only the log lines this page quotes. `evals/check_receipts.py` lists the entry
+as LOST for that reason, and the 50-ticket artifact replaces it when it lands.
 
 ## What the run was actually for
 
