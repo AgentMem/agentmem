@@ -65,3 +65,22 @@ alone. Reminders whose entries cannot be resolved are reported as unresolvable
 rather than judged, because a judge handed no entry text will blame the reminder
 for the loader's gap; that mistake produced a false 11-of-31 harm rate here
 before it was caught.
+
+
+## The judge has to be reproducible, and was not
+
+Auditing the twelve reminders from the repeat runs returned 10, 11, 11 and 12 out
+of 12 faithful across four runs of the same input. The judge was sampling: nothing
+had changed but the number did. A verdict that moves when the evidence does not is
+not a verdict, and this is the fourth time on this project that a measuring
+instrument, not the thing measured, was the bug.
+
+The provider now takes a temperature and the audit pins it to 0. Greedy-decoded,
+the same twelve score 12 of 12 faithful, 0 harmful, three runs running, and any
+future audit is repeatable by construction.
+
+One caution that number does not carry: reading the reminders by hand, two of them
+assert a little more than the entry they cite, once adding advice and once dropping
+a clause that mattered. The judge at temperature 0 does not rank that as
+misleading, and it is left standing as a limit rather than smoothed away. Faithful
+by the judge is not the same as claiming no more than the evidence.

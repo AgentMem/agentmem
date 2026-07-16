@@ -171,10 +171,14 @@ class LiteLLMProvider:
         api_base: str | None = None,
         timeout: float | None = None,
         extra_body: dict[str, Any] | None = None,
+        temperature: float | None = None,
         max_retries: int = 2,
         **_: Any,
     ) -> None:
         self.model = model
+        # Left None, the backend picks, and a caller that needs the same answer twice
+        # from the same input cannot get it. A judge is such a caller.
+        self.temperature = temperature
         # Points at a server you run yourself (vLLM, Ollama). Leave it None for hosted
         # backends, where litellm resolves the endpoint from the model prefix.
         self.api_base = api_base
@@ -216,6 +220,8 @@ class LiteLLMProvider:
             kwargs["timeout"] = self.timeout
         if self.extra_body:
             kwargs["extra_body"] = self.extra_body
+        if self.temperature is not None:
+            kwargs["temperature"] = self.temperature
 
         started = time.perf_counter()
         resp = None

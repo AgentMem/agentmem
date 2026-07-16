@@ -1,8 +1,8 @@
 # What a forgotten fix costs the second time
 
 The confabulation runs show an agent inventing a past it cannot see. The obvious
-reply is: so what, does the invention cost anything? This is the first attempt at
-an answer, and it is two seeds that disagree about the size of it.
+reply is: so what, does the invention cost anything? Three seeds say yes, and say
+so consistently enough to be worth reading and small enough to stay careful about.
 
 Nothing is planted. click 8.1.7 has real bit-rot: pytest 9.1.1 against its pinned
 7.4.0 kills collection through a deprecated `parametrize` at `tests/test_basic.py:239`.
@@ -12,18 +12,20 @@ fix away and puts the wall back, with the context that learned it gone.
 
 Qwen3.6-27B, self-hosted, both arms identical except the memory layer.
 
-Turns from re-hitting the wall back to a green suite, per seed:
+Turns from re-hitting the wall back to a green suite:
 
 | seed | no memory | memory |
 |---|---|---|
 | 1 | 20, and it ran out of turns before finishing | 13 |
 | 2 | 14 | 12 |
+| 3 | 17 | 8 |
+| **mean** | **17.0** | **11.0** |
 
-The first seed alone said 20 against 13 and looked like a result. The second says 14
-against 12. The baseline moves by six turns between two runs of the same ticket, which
-is most of the gap the first seed appeared to show, and it is why one seed was never
-going to settle this. On seed 1 the memory arm hit the wall once to the baseline's
-twice; on seed 2 both hit it twice.
+Three of three go the same way, and the ranges do not overlap: 14 to 20 without
+memory, 8 to 13 with it. That separation is what makes this worth reading, more than
+the six-turn mean, because the baseline alone swings by six turns across seeds of the
+same ticket. Seed 1 on its own said 20 against 13 and looked like a bigger result than
+three seeds support; seed 2 said 14 against 12 and looked like almost none.
 
 ## What the memory arm was told
 
@@ -45,10 +47,9 @@ regions of the file looking for the problem. The arm with memory grepped
 
 ## What this is not
 
-Two seeds, and they disagree about the size of the effect. The direction is the same
-in both and the margin is not: 7 turns on one, 2 on the other. Nothing here supports
-a number like "35% fewer turns", and the honest reading is that the mechanism is
-visible and the effect size is not yet measured.
+Three seeds on one repo, one wall, one model. The margin per seed is 7, 2 and 9
+turns, so the effect is directionally consistent and its size is not pinned down.
+No claim like "35% fewer turns" survives that spread.
 
 It is also not a pass-rate result. Both arms eventually reached green. What differs
 is what it cost, which is the thing compaction and context resets actually tax, and

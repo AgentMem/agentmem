@@ -184,6 +184,9 @@ def main() -> int:
             api_base=args.api_base or None,
             timeout=300.0,
             extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+            # Sampling made the same twelve reminders score 10, 11, 11 and 12 out of
+            # 12 on four runs. A verdict that moves when nothing moved is not one.
+            temperature=0.0,
         )
         print(f"\n=== faithfulness ({len(items)} reminders, judged by {provider.model}) ===")
         for it in items:
