@@ -109,3 +109,24 @@ whether 2 of 4 improves. Building it off-by-default is the honest shape: the mec
 is ready and tested, and the live behavior is provably unchanged until a number
 justifies the change.
 
+## The boost was measured, and the verdict is: keep it off
+
+Ran the four seeds again with `relevance_boost` on, same tickets and model.
+
+| | baseline | boost |
+|---|---|---|
+| recall | 2 of 4 | **4 of 4** |
+| turns (click 2 / attrs 1 / attrs 2) | 12 / 15 / 18 | 11 / **17** / 16 |
+
+The recall gain is real and not metric-gaming: reading the reminders, attrs seed 2
+now fires the actual diagnosis, `(P-002) all 3 test failures including test_unknown
+are caused by...`, where before it fired a chore note. The boost surfaces the right
+entry, and the LLM still chose to mention it.
+
+But the turn count, the user-facing number, did not follow: two seeds flat, and attrs
+seed 1 got worse, 15 to 17. Recall and the boost are conceptually aligned, both reward
+mentioning the wall's tokens, so 4 of 4 confirms the boost does its job more than it
+confirms the job helps. With a downside signal present and no user-facing gain shown,
+the flag stays off. The mechanism is built, tested, and measured; what it lacks is a
+reason to turn on, and this run did not provide one.
+
