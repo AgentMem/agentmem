@@ -75,21 +75,23 @@ def run_condition(
     mem_state = root / f"mem-{cond}"
     sessions: list[dict[str, Any]] = []
     memory = None
+    if cond == "memory":
+        # One session for the run, a boundary per ticket. A session per ticket gives
+        # every ticket a fresh bank and nothing promotes inside four boundaries, so
+        # the first version of this eval measured the layer with cross-ticket recall
+        # off: session 4's reminders could only cite what session 4 itself had seen.
+        memory = MemorySession(
+            task="Maintain this project across sessions",
+            provider=CountingProvider(build_provider(args.memory_model, args.api_base)),
+            trigger=default_trigger(),
+            async_worker=False,
+            session_id=f"repeat-{cond}",
+            config=AgentMemConfig(
+                state_dir=str(mem_state), advantage_enabled=True, advantage_gate=False
+            ),
+        )
     try:
         for i, ticket in enumerate(spec["sessions"], start=1):
-            if cond == "memory":
-                # A session per ticket, against one state dir: the context resets, the
-                # bank does not. That reset is the whole experiment.
-                memory = MemorySession(
-                    task="Maintain this project across sessions",
-                    provider=CountingProvider(build_provider(args.memory_model, args.api_base)),
-                    trigger=default_trigger(),
-                    async_worker=False,
-                    session_id=f"repeat-{cond}-{i}",
-                    config=AgentMemConfig(
-                        state_dir=str(mem_state), advantage_enabled=True, advantage_gate=False
-                    ),
-                )
             loop = ActionLoop(
                 CountingProvider(build_provider(args.action_model, args.api_base)),
                 f"You maintain the project in /work. Work this ticket, then task_done.\n\n"
@@ -108,7 +110,7 @@ def run_condition(
                 calls.append({"command": d.command, "output": out[:4000], "code": code})
                 loop.record_exec(d, out, "", code)
             if memory is not None:
-                memory.close(task_reward=0.0)
+                memory.end_session(task_reward=0.0)
             sessions.append(
                 {
                     "ticket": ticket[:70],
@@ -120,6 +122,8 @@ def run_condition(
             )
             print(f"  {cond} s{i}: turns={loop.turns} {loop.stop_reason}", flush=True)
     finally:
+        if memory is not None:
+            memory.close(task_reward=0.0)
         box.down()
 
     last = sessions[-1]["calls"] if sessions else []
