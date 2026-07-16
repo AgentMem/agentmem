@@ -49,6 +49,9 @@ def repeat_numbers(path: Path) -> dict[str, Any]:
         "memory_turns": g["memory"]["waste"]["turns_wall_to_green"],
         "none_hits": g["none"]["waste"]["wall_hits"],
         "memory_hits": g["memory"]["waste"]["wall_hits"],
+        # Zero here means the memory arm was the baseline wearing a label, which is
+        # what turned attrs seed 1 into this project's only control.
+        "reminders": g["memory"]["reminders_total"],
     }
 
 
@@ -165,21 +168,35 @@ CLAIMS = [
         "seed 1: 20 vs 13",
         "repeat-click-s1.json",
         repeat_numbers,
-        {"none_turns": 20, "memory_turns": 13, "none_hits": 2, "memory_hits": 1},
+        {"none_turns": 20, "memory_turns": 13, "none_hits": 2, "memory_hits": 1, "reminders": 3},
     ),
     Claim(
         "evals/repeat/RESULTS.md",
         "seed 2: 14 vs 12",
         "repeat-click-s2.json",
         repeat_numbers,
-        {"none_turns": 14, "memory_turns": 12, "none_hits": 2, "memory_hits": 2},
+        {"none_turns": 14, "memory_turns": 12, "none_hits": 2, "memory_hits": 2, "reminders": 4},
     ),
     Claim(
         "evals/repeat/RESULTS.md",
         "seed 3: 17 vs 8",
         "repeat-click-s3.json",
         repeat_numbers,
-        {"none_turns": 17, "memory_turns": 8, "none_hits": 1, "memory_hits": 1},
+        {"none_turns": 17, "memory_turns": 8, "none_hits": 1, "memory_hits": 1, "reminders": 5},
+    ),
+    Claim(
+        "evals/repeat/RESULTS.md",
+        "attrs 1: the accidental control, 22 vs 12 on zero reminders",
+        "repeat-attrs-s1.json",
+        repeat_numbers,
+        {"none_turns": 22, "memory_turns": 12, "reminders": 0},
+    ),
+    Claim(
+        "evals/repeat/RESULTS.md",
+        "attrs 2: 16 vs 13",
+        "repeat-attrs-s2.json",
+        repeat_numbers,
+        {"none_turns": 16, "memory_turns": 13, "reminders": 2},
     ),
     Claim(
         "evals/audit/RESULTS.md",

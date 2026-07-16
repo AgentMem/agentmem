@@ -21,6 +21,8 @@ writeup says so in plain sight rather than hoping nobody asks).
 | OK | seed 1: 20 vs 13 | evals/repeat/RESULTS.md | `evals/report/repeat-click-s1.json` |
 | OK | seed 2: 14 vs 12 | evals/repeat/RESULTS.md | `evals/report/repeat-click-s2.json` |
 | OK | seed 3: 17 vs 8 | evals/repeat/RESULTS.md | `evals/report/repeat-click-s3.json` |
+| OK | attrs 1: the accidental control, 22 vs 12 on zero reminders | evals/repeat/RESULTS.md | `evals/report/repeat-attrs-s1.json` |
+| OK | attrs 2: 16 vs 13 | evals/repeat/RESULTS.md | `evals/report/repeat-attrs-s2.json` |
 | OK | repeat reminders: 12/12 at temperature 0 | evals/audit/RESULTS.md | `evals/report/audit-repeat.json` |
 | LOST | airline 16: 13/16 both arms | evals/tau2/RESULTS.md | `evals/report/tau2-airline-b1.json` |
 
