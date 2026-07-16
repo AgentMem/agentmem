@@ -14,7 +14,7 @@
 # of the long loops start.
 set -euo pipefail
 
-MODEL="${MODEL:-claude-sonnet-4-6}"
+MODEL="${MODEL:-claude-sonnet-5}"  # what Claude Code ships; MODEL=claude-sonnet-4-6 for the older one
 API_BASE="${API_BASE:-}"
 MEMORY_MODEL="${MEMORY_MODEL:-claude-haiku-4-5}"  # boxless; set to litellm/hosted_vllm/... + API_BASE to use a GPU
 SEEDS="${SEEDS:-1 2 3}"
