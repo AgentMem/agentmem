@@ -1,0 +1,280 @@
+[
+  {
+    "condition": "none",
+    "sessions": [
+      {
+        "ticket": "Run the full test suite with 'python -m pytest tests/ -q' and make eve",
+        "turns": 20,
+        "stop": "task_done",
+        "reminders": 0
+      },
+      {
+        "ticket": "Find where the library decides that an attribute has no default value,",
+        "turns": 25,
+        "stop": "task_done",
+        "reminders": 0
+      },
+      {
+        "ticket": "Report how many test files are in tests/ and which is largest. Do not ",
+        "turns": 4,
+        "stop": "task_done",
+        "reminders": 0
+      },
+      {
+        "ticket": "Discard all uncommitted changes with 'git checkout -- .', then run the",
+        "turns": 25,
+        "stop": "task_done",
+        "reminders": 0
+      }
+    ],
+    "final_session_calls": [
+      {
+        "command": "cd /work && git checkout -- .",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python -m pytest tests/ -q",
+        "output": "........................................................................ [  5%]\n........................................................................ [ 10%]\n........................................................................ [ 16%]\n........................................................................ [ 21%]\n.....................................F.................................. [ 27%]\n........................................................................ [ 32%]\n........................................................................ [ 38%]\n........................................................................ [ 43%]\n........................................................................ [ 48%]\n........................................................................ [ 54%]\n........................................................................ [ 59%]\n........................................................................ [ 65%]\n........................................................................ [ 70%]\n........................................................................ [ 76%]\n.s...................................................................ss. [ 81%]\n.................x..............................s....................... [ 86%]\n.............................................sss........................ [ 92%]\n........................................................................ [ 97%]\n..............................                                           [100%]\n=================================== FAILURES ===================================\n____________________________ TestAssoc.test_unknown ____________________________\n\nself = <tests.test_funcs.TestAssoc object at 0xffffa93d7dd0>\nC = <class 'tests.strategies.HypClass'>\n\n    @given(simple_classes())\n    def test_unknown(self, C):\n        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\n>           assoc(C(), aaaa=2)\n\ntests/test_funcs.py:606: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ninst = HypClass(), changes = {'aaaa': 2}\n\n    def assoc(inst, **changes):\n        \"\"\"\n        Copy *inst* and apply *changes*.\n    \n        This is different from `evolve` that applies the changes to the arguments\n        that create the new instance.\n    \n        `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n        doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n    \n        .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n    \n        :param inst: Instance of a class with *attrs* attributes.\n        :param changes: Keyword changes in the new copy.\n    \n        :return: A copy of inst with *changes* incorporated.\n    \n        :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n            couldn't be found on *cls*.\n        :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n            class.\n    \n        ..  deprecated:: 17.1.0\n            Use `attrs.evolve` instead if you can.\n            This function will not be removed du to the slightly different approach\n            compared to `attrs.evolve`.\n        \"\"\"\n        new = copy.copy(inst)\n        attrs = fields(inst.__class__)\n        for k, v in changes.items():\n            a = getattr(attrs, k, NOTHING)\n            if a is NOTHING:\n                msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n>               raise AttrsAttributeNotFoundError(msg)\nE               attr.exceptions.AttrsAttributeNotFoundError: aaaa is not an attrs attribute on <class 'tests.strategies.HypClass'>.\n\nsrc/attr/_funcs.py:358: AttrsAttributeNotFoundError\n\nDuring handling of the above exception, another exception occurred:\n\nself = <tests.test_funcs",
+        "code": 1
+      },
+      {
+        "command": "cd /work && python -m pytest tests/test_funcs.py::TestAssoc::test_unknown -v 2>&1",
+        "output": "============================= test session starts ==============================\nplatform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python\ncachedir: .pytest_cache\nhypothesis profile 'patience' -> suppress_health_check=(HealthCheck.too_slow,)\nrootdir: /work\nconfigfile: pyproject.toml\nplugins: hypothesis-6.156.6\ncollecting ... collected 1 item\n\ntests/test_funcs.py::TestAssoc::test_unknown FAILED                      [100%]\n\n=================================== FAILURES ===================================\n____________________________ TestAssoc.test_unknown ____________________________\n\nself = <tests.test_funcs.TestAssoc object at 0xffff96668110>\nC = <class 'tests.strategies.HypClass'>\n\n    @given(simple_classes())\n    def test_unknown(self, C):\n        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\n>           assoc(C(), aaaa=2)\n\ntests/test_funcs.py:606: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ninst = HypClass(), changes = {'aaaa': 2}\n\n    def assoc(inst, **changes):\n        \"\"\"\n        Copy *inst* and apply *changes*.\n    \n        This is different from `evolve` that applies the changes to the arguments\n        that create the new instance.\n    \n        `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n        doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n    \n        .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n    \n        :param inst: Instance of a class with *attrs* attributes.\n        :param changes: Keyword changes in the new copy.\n    \n        :return: A copy of inst with *changes* incorporated.\n    \n        :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n            couldn't be found on *cls*.\n        :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n            class.\n    \n        ..  deprecated:: 17.1.0\n            Use `attrs.evolve` instead if you can.\n            This function will not be removed du to the slightly different approach\n            compared to `attrs.evolve`.\n        \"\"\"\n        new = copy.copy(inst)\n        attrs = fields(inst.__class__)\n        for k, v in changes.items():\n            a = getattr(attrs, k, NOTHING)\n            if a is NOTHING:\n                msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n>               raise AttrsAttributeNotFoundError(msg)\nE               attr.exceptions.AttrsAttributeNotFoundError: aaaa is not an attrs attribute on <class 'tests.strategies.HypClass'>.\n\nsrc/attr/_funcs.py:358: AttrsAttributeNotFoundError\n\nDuring handling of the above exception, another exception occurred:\n\nself = <tests.test_funcs.TestAssoc object at 0xffff96668110>\n\n    @given(simple_classes())\n>   def test_unknown(self, C):\n               ^^^^^^^\n\ntests/test_funcs.py:597: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <tests.test_funcs.TestAssoc object at 0xffff96668110>\nC = <class 'tests.strategies.HypClass'>\n\n    @given(simple_classes())\n    def test_unknown(self, C):\n        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n>       with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\nE       Failed: DID NOT WARN. No warnings of type (<class 'DeprecationWarning'>, <class 'PendingDeprecationWarning'>, <class 'FutureWarning'>) were emitted.\nE        Emitted warnings: [].\nE       Falsifying example: test_unknown(\nE           self=<tests.test_funcs.TestAssoc object at 0xffff96668110>,\nE           C=tests.strategies.HypClass,\nE       )\n\ntests/test_funcs.py:603: Fai",
+        "code": 1
+      },
+      {
+        "command": "cd /work && grep -n \"deprecated_call\\|deprecated\\|deprecat\" src/attr/funcs.py | head -30",
+        "output": "grep: src/attr/funcs.py: No such file or directory\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && find . -name \"funcs.py\" -path \"*/attr/*\" 2>/dev/null; find . -name \"funcs.py\" -path \"*/attrs/*\" 2>/dev/null; ls src/",
+        "output": "attr\nattrs\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && ls src/attr/ src/attrs/",
+        "output": "src/attr/:\n__init__.py\n__init__.pyi\n__pycache__\n_cmp.py\n_cmp.pyi\n_compat.py\n_config.py\n_funcs.py\n_make.py\n_next_gen.py\n_typing_compat.pyi\n_version_info.py\n_version_info.pyi\nconverters.py\nconverters.pyi\nexceptions.py\nexceptions.pyi\nfilters.py\nfilters.pyi\npy.typed\nsetters.py\nsetters.pyi\nvalidators.py\nvalidators.pyi\n\nsrc/attrs/:\n__init__.py\n__init__.pyi\n__pycache__\nconverters.py\nexceptions.py\nfilters.py\npy.typed\nsetters.py\nvalidators.py\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n \"deprecated\\|deprecat\\|warn\" src/attr/_funcs.py | head -30",
+        "output": "333:    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n347:    ..  deprecated:: 17.1.0\n379:    .. deprecated:: 23.1.0\n380:       It is now deprecated to pass the instance using the keyword argument\n381:       *inst*. It will raise a warning until at least April 2024, after which\n386:    # Use changes otherwise and warn it'll break.\n400:        import warnings\n402:        warnings.warn(\n403:            \"Passing the instance per keyword argument is deprecated and \"\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '590,620p' tests/test_funcs.py",
+        "output": "\n        changed = assoc(original, **change_dict)\n\n        for k, v in change_dict.items():\n            assert getattr(changed, k) == v\n\n    @given(simple_classes())\n    def test_unknown(self, C):\n        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\n            assoc(C(), aaaa=2)\n\n        assert (f\"aaaa is not an attrs attribute on {C!r}.\",) == e.value.args\n\n    def test_frozen(self):\n        \"\"\"\n        Works on frozen classes.\n        \"\"\"\n\n        @attr.s(frozen=True)\n        class C:\n            x = attr.ib()\n            y = attr.ib()\n\n        assert C(3, 2) == assoc(C(1, 2), x=3)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '390,420p' src/attr/_funcs.py",
+        "output": "        except ValueError:\n            msg = f\"evolve() takes 1 positional argument, but {len(args)} were given\"\n            raise TypeError(msg) from None\n    else:\n        try:\n            inst = changes.pop(\"inst\")\n        except KeyError:\n            msg = \"evolve() missing 1 required positional argument: 'inst'\"\n            raise TypeError(msg) from None\n\n        import warnings\n\n        warnings.warn(\n            \"Passing the instance per keyword argument is deprecated and \"\n            \"will stop working in, or after, April 2024.\",\n            DeprecationWarning,\n            stacklevel=2,\n        )\n\n    cls = inst.__class__\n    attrs = fields(cls)\n    for a in attrs:\n        if not a.init:\n            continue\n        attr_name = a.name  # To deal with private attributes.\n        init_name = a.alias\n        if init_name not in changes:\n            changes[init_name] = getattr(inst, attr_name)\n\n    return cls(**changes)\n\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n \"def assoc\" src/attr/_funcs.py",
+        "output": "325:def assoc(inst, **changes):\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '325,400p' src/attr/_funcs.py",
+        "output": "def assoc(inst, **changes):\n    \"\"\"\n    Copy *inst* and apply *changes*.\n\n    This is different from `evolve` that applies the changes to the arguments\n    that create the new instance.\n\n    `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n\n    .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n        couldn't be found on *cls*.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    ..  deprecated:: 17.1.0\n        Use `attrs.evolve` instead if you can.\n        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n    return new\n\n\ndef evolve(*args, **changes):\n    \"\"\"\n    Create a new instance, based on the first positional argument with\n    *changes* applied.\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise TypeError: If *attr_name* couldn't be found in the class\n        ``__init__``.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    .. versionadded:: 17.1.0\n    .. deprecated:: 23.1.0\n       It is now deprecated to pass the instance using the keyword argument\n       *inst*. It will raise a warning until at least April 2024, after which\n       it will become an error. Always pass the instance as a positional\n       argument.\n    \"\"\"\n    # Try to get instance by positional argument first.\n    # Use changes otherwise and warn it'll break.\n    if args:\n        try:\n            (inst,) = args\n        except ValueError:\n            msg = f\"evolve() takes 1 positional argument, but {len(args)} were given\"\n            raise TypeError(msg) from None\n    else:\n        try:\n            inst = changes.pop(\"inst\")\n        except KeyError:\n            msg = \"evolve() missing 1 required positional argument: 'inst'\"\n            raise TypeError(msg) from None\n\n        import warnings\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && git log --oneline -10",
+        "output": "9e443b1 Prepare 23.2.0\n41df262 Fix links\n5688711 Add social card\n2047e56 Update baipp & download artifacts\n86af08c Rewrite sponsor logo links to release versions\n249044c Run 3.12 under coverage instead of 3.11\nc365b3e update contributing\nc2ff96f Move sponsor logo hosting to docs\n5aea241 Move conditional clause to beginning for validator/converter docs.  (#1213)\n4c2b9e3 docs: add two warning about no-types mode\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && git log --oneline --all | head -20",
+        "output": "5cdc0d9 move comment\n6a46098 update\n8080df7 Add another (currently failing) example\nb640d91 Add typing examples for Pyrefly's new attrs support\nd544dd2 update dev (#1589)\n8f3d21d [pre-commit.ci] pre-commit autoupdate\n45de9be docs: move collect_by_mro to attr.s docstring\nae37edd Fix AI link\nb2fedf9 Bump the github-actions group with 3 updates (#1578)\n005e2fb update dev\n0b20bd1 docs: in this house we use endashes\n89fae83 Apply 1 week of cooldown for dev deps\nd2fbfcc [pre-commit.ci] pre-commit autoupdate (#1570)\n48ea7a1 dev: run Mypy on 3.15, too (#1568)\n24ce123 Add 3.15 (#1564)\n512bd6d update dev\n3823062 update dev -- notably mypy 2.0 (#1553)\n69a9729 update dev (#1552)\n87b7b4a docs: build on 3.14 (#1550)\n0f758fe Expose converter as a decorator (#1541)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && git log --all --oneline --grep=\"assoc\" | head -10",
+        "output": "b9084fa Remove pytest.deprecated_call() in TestAssoc::test_unknown (#1249)\n22ae847 Stop raising a deprecation warning on assoc (#1119)\nae51f34 Attribute.assoc \u2192 evolve\n123df67 Added support for keyword-only arguments on Python 3+ [rebase] (#411)\n74c39b6 Pass appropriate stacklevel in assoc deprecation warning. (#209)\n735ba41 Move assoc to deprecated section\n0d3cf3f Evolve and docs. (#135)\n1897dfd Improve tests, bandage assoc\neaa8c0d Make assoc work on frozen classes\nfec5c46 Link assoc and make_class from examples.rst\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && git show b9084fa --stat",
+        "output": "commit b9084fab02c009a593b604562a69f36a5915c8e5\nAuthor: Denis Laxalde <denis@laxalde.org>\nDate:   Sat Mar 2 07:40:36 2024 +0100\n\n    Remove pytest.deprecated_call() in TestAssoc::test_unknown (#1249)\n    \n    assoc() no longer raises a deprecation warning since commit\n    22ae8473fb88d6e585b05c709e81e1a46398a649 but the 'with\n    pytest.deprecated_call():' in that test was not removed then (in\n    contrast with other test cases).\n    \n    Maybe this got unnoticed due to a pytest bug?\n    In any case, using pytest 8+ (and keeping deprecated_call()) shows that\n    no warning is raised and the test fails.\n    \n    Removing the upper bound on pytest in dev dependencies as tests now\n    pass with pytest 8.0.\n    \n    Fix #1233.\n    \n    Co-authored-by: Hynek Schlawack <hs@ox.cx>\n\n pyproject.toml      | 3 +--\n tests/test_funcs.py | 4 +---\n 2 files changed, 2 insertions(+), 5 deletions(-)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && git show b9084fa",
+        "output": "commit b9084fab02c009a593b604562a69f36a5915c8e5\nAuthor: Denis Laxalde <denis@laxalde.org>\nDate:   Sat Mar 2 07:40:36 2024 +0100\n\n    Remove pytest.deprecated_call() in TestAssoc::test_unknown (#1249)\n    \n    assoc() no longer raises a deprecation warning since commit\n    22ae8473fb88d6e585b05c709e81e1a46398a649 but the 'with\n    pytest.deprecated_call():' in that test was not removed then (in\n    contrast with other test cases).\n    \n    Maybe this got unnoticed due to a pytest bug?\n    In any case, using pytest 8+ (and keeping deprecated_call()) shows that\n    no warning is raised and the test fails.\n    \n    Removing the upper bound on pytest in dev dependencies as tests now\n    pass with pytest 8.0.\n    \n    Fix #1233.\n    \n    Co-authored-by: Hynek Schlawack <hs@ox.cx>\n\ndiff --git a/pyproject.toml b/pyproject.toml\nindex 8a4ea39..0bd2c6d 100644\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -41,8 +41,7 @@ tests-no-zope = [\n   \"hypothesis\",\n   \"pympler\",\n   # 4.3.0 dropped last use of `convert`\n-  # 8.0 broke something around warnings/exceptions\n-  \"pytest>=4.3.0,<8.0\",\n+  \"pytest>=4.3.0\",\n   \"pytest-xdist[psutil]\",\n   \"attrs[tests-mypy]\",\n ]\ndiff --git a/tests/test_funcs.py b/tests/test_funcs.py\nindex 044aaab..398ba35 100644\n--- a/tests/test_funcs.py\n+++ b/tests/test_funcs.py\n@@ -600,9 +600,7 @@ class TestAssoc:\n         AttrsAttributeNotFoundError.\n         \"\"\"\n         # No generated class will have a four letter attribute.\n-        with pytest.raises(\n-            AttrsAttributeNotFoundError\n-        ) as e, pytest.deprecated_call():\n+        with pytest.raises(AttrsAttributeNotFoundError) as e:\n             assoc(C(), aaaa=2)\n \n         assert (f\"aaaa is not an attrs attribute on {C!r}.\",) == e.value.args\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '598,610p' tests/test_funcs.py",
+        "output": "        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\n            assoc(C(), aaaa=2)\n\n        assert (f\"aaaa is not an attrs attribute on {C!r}.\",) == e.value.args\n\n    def test_frozen(self):\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -i 's/with pytest.raises(\\n            AttrsAttributeNotFoundError\\n        ) as e, pytest.deprecated_call():/with pytest.raises(AttrsAttributeNotFoundError) as e:/' tests/test_funcs.py",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '598,610p' tests/test_funcs.py",
+        "output": "        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\n            assoc(C(), aaaa=2)\n\n        assert (f\"aaaa is not an attrs attribute on {C!r}.\",) == e.value.args\n\n    def test_frozen(self):\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python3 -c \"\ncontent = open('tests/test_funcs.py').read()\nold = '''with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():'''\nnew = '''with pytest.raises(AttrsAttributeNotFoundError) as e:'''\ncontent = content.replace(old, new)\nopen('tests/test_funcs.py', 'w').write(content)\n\"",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '598,610p' tests/test_funcs.py",
+        "output": "        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n        with pytest.raises(AttrsAttributeNotFoundError) as e:\n            assoc(C(), aaaa=2)\n\n        assert (f\"aaaa is not an attrs attribute on {C!r}.\",) == e.value.args\n\n    def test_frozen(self):\n        \"\"\"\n        Works on frozen classes.\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n \"pytest\" pyproject.toml",
+        "output": "33:  'pytest-mypy-plugins; python_implementation == \"CPython\" and python_version >= \"3.8\"',\n44:  \"pytest>=4.3.0\",\n45:  \"pytest-xdist[psutil]\",\n121:[tool.pytest.ini_options]\n217:  \"B017\",    # pytest.raises(Exception) is fine\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python -m pytest tests/test_funcs.py::TestAssoc::test_unknown -v 2>&1",
+        "output": "============================= test session starts ==============================\nplatform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python\ncachedir: .pytest_cache\nhypothesis profile 'patience' -> suppress_health_check=(HealthCheck.too_slow,)\nrootdir: /work\nconfigfile: pyproject.toml\nplugins: hypothesis-6.156.6\ncollecting ... collected 1 item\n\ntests/test_funcs.py::TestAssoc::test_unknown PASSED                      [100%]\n\n============================== 1 passed in 0.19s ===============================\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python -m pytest tests/ -q 2>&1",
+        "output": "........................................................................ [  5%]\n........................................................................ [ 10%]\n........................................................................ [ 16%]\n........................................................................ [ 21%]\n........................................................................ [ 27%]\n........................................................................ [ 32%]\n........................................................................ [ 38%]\n........................................................................ [ 43%]\n........................................................................ [ 48%]\n........................................................................ [ 54%]\n........................................................................ [ 59%]\n........................................................................ [ 65%]\n........................................................................ [ 70%]\n........................................................................ [ 76%]\n.s...................................................................ss. [ 81%]\n.................x..............................s....................... [ 86%]\n.............................................sss........................ [ 92%]\n........................................................................ [ 97%]\n..............................                                           [100%]\n=========================== short test summary info ============================\nSKIPPED [1] tests/test_3rd_party.py:14: could not import 'cloudpickle': No module named 'cloudpickle'\nSKIPPED [1] tests/test_make.py:2476: Pre-3.10 only.\nSKIPPED [1] tests/test_pyright.py:42: Requires pyright.\nSKIPPED [1] tests/test_pyright.py:93: Requires pyright.\nSKIPPED [1] tests/test_slots.py:497: slots without weakref_slot should only work on PyPy\nSKIPPED [1] tests/test_validators.py:345: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:360: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:380: zope-related tests skipped when zope.interface is not installed\nXFAIL tests/test_setattr.py::TestSetAttr::test_slotted_confused\n1318 passed, 8 skipped, 1 xfailed in 4.96s\n",
+        "code": 0
+      }
+    ],
+    "waste": {
+      "wall_hit": true,
+      "wall_hits": 1,
+      "recovered": true,
+      "turns_wall_to_green": 22,
+      "turns_in_session": 24
+    },
+    "reminders_total": 0
+  },
+  {
+    "condition": "memory",
+    "sessions": [
+      {
+        "ticket": "Run the full test suite with 'python -m pytest tests/ -q' and make eve",
+        "turns": 25,
+        "stop": "task_done",
+        "reminders": 2
+      },
+      {
+        "ticket": "Find where the library decides that an attribute has no default value,",
+        "turns": 22,
+        "stop": "task_done",
+        "reminders": 0
+      },
+      {
+        "ticket": "Report how many test files are in tests/ and which is largest. Do not ",
+        "turns": 8,
+        "stop": "task_done",
+        "reminders": 0
+      },
+      {
+        "ticket": "Discard all uncommitted changes with 'git checkout -- .', then run the",
+        "turns": 17,
+        "stop": "task_done",
+        "reminders": 3
+      }
+    ],
+    "final_session_calls": [
+      {
+        "command": "cd /work && git checkout -- .",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python -m pytest tests/ -q 2>&1 | tail -50",
+        "output": "                msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n>               raise AttrsAttributeNotFoundError(msg)\nE               attr.exceptions.AttrsAttributeNotFoundError: aaaa is not an attrs attribute on <class 'tests.strategies.HypClass'>.\n\nsrc/attr/_funcs.py:358: AttrsAttributeNotFoundError\n\nDuring handling of the above exception, another exception occurred:\n\nself = <tests.test_funcs.TestAssoc object at 0xffffaae21250>\n\n    @given(simple_classes())\n>   def test_unknown(self, C):\n               ^^^^^^^\n\ntests/test_funcs.py:597: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <tests.test_funcs.TestAssoc object at 0xffffaae21250>\nC = <class 'tests.strategies.HypClass'>\n\n    @given(simple_classes())\n    def test_unknown(self, C):\n        \"\"\"\n        Wanting to change an unknown attribute raises an\n        AttrsAttributeNotFoundError.\n        \"\"\"\n        # No generated class will have a four letter attribute.\n>       with pytest.raises(\n            AttrsAttributeNotFoundError\n        ) as e, pytest.deprecated_call():\nE       Failed: DID NOT WARN. No warnings of type (<class 'DeprecationWarning'>, <class 'PendingDeprecationWarning'>, <class 'FutureWarning'>) were emitted.\nE        Emitted warnings: [].\nE       Falsifying example: test_unknown(\nE           self=<tests.test_funcs.TestAssoc object at 0xffffaae21250>,\nE           C=tests.strategies.HypClass,  # or any other generated value\nE       )\n\ntests/test_funcs.py:603: Failed\n=========================== short test summary info ============================\nSKIPPED [1] tests/test_3rd_party.py:14: could not import 'cloudpickle': No module named 'cloudpickle'\nSKIPPED [1] tests/test_make.py:2476: Pre-3.10 only.\nSKIPPED [1] tests/test_pyright.py:42: Requires pyright.\nSKIPPED [1] tests/test_pyright.py:93: Requires pyright.\nSKIPPED [1] tests/test_slots.py:497: slots without weakref_slot should only work on PyPy\nSKIPPED [1] tests/test_validators.py:345: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:360: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:380: zope-related tests skipped when zope.interface is not installed\nXFAIL tests/test_setattr.py::TestSetAttr::test_slotted_confused\nFAILED tests/test_funcs.py::TestAssoc::test_unknown - Failed: DID NOT WARN. N...\n1 failed, 1317 passed, 8 skipped, 1 xfailed in 6.84s\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && cat src/attr/_funcs.py | head -380 | tail -50",
+        "output": "\n    `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n\n    .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n        couldn't be found on *cls*.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    ..  deprecated:: 17.1.0\n        Use `attrs.evolve` instead if you can.\n        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n    return new\n\n\ndef evolve(*args, **changes):\n    \"\"\"\n    Create a new instance, based on the first positional argument with\n    *changes* applied.\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise TypeError: If *attr_name* couldn't be found in the class\n        ``__init__``.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    .. versionadded:: 17.1.0\n    .. deprecated:: 23.1.0\n       It is now deprecated to pass the instance using the keyword argument\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n \"deprecated_call\\|test_unknown\\|def assoc\" tests/test_funcs.py | head -20",
+        "output": "597:    def test_unknown(self, C):\n605:        ) as e, pytest.deprecated_call():\n676:    def test_unknown(self, C):\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '330,370p' src/attr/_funcs.py",
+        "output": "    that create the new instance.\n\n    `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n\n    .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n        couldn't be found on *cls*.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    ..  deprecated:: 17.1.0\n        Use `attrs.evolve` instead if you can.\n        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n    return new\n\n\ndef evolve(*args, **changes):\n    \"\"\"\n    Create a new instance, based on the first positional argument with\n    *changes* applied.\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '310,355p' src/attr/_funcs.py",
+        "output": "    attrs = getattr(cls, \"__attrs_attrs__\", None)\n    if attrs is not None:\n        return True\n\n    # No attrs, maybe it's a specialized generic (A[str])?\n    generic_base = get_generic_base(cls)\n    if generic_base is not None:\n        generic_attrs = getattr(generic_base, \"__attrs_attrs__\", None)\n        if generic_attrs is not None:\n            # Stick it on here for speed next time.\n            cls.__attrs_attrs__ = generic_attrs\n        return generic_attrs is not None\n    return False\n\n\ndef assoc(inst, **changes):\n    \"\"\"\n    Copy *inst* and apply *changes*.\n\n    This is different from `evolve` that applies the changes to the arguments\n    that create the new instance.\n\n    `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n\n    .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n        couldn't be found on *cls*.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    ..  deprecated:: 17.1.0\n        Use `attrs.evolve` instead if you can.\n        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '325,365p' src/attr/_funcs.py",
+        "output": "def assoc(inst, **changes):\n    \"\"\"\n    Copy *inst* and apply *changes*.\n\n    This is different from `evolve` that applies the changes to the arguments\n    that create the new instance.\n\n    `evolve`'s behavior is preferable, but there are `edge cases`_ where it\n    doesn't work. Therefore `assoc` is deprecated, but will not be removed.\n\n    .. _`edge cases`: https://github.com/python-attrs/attrs/issues/251\n\n    :param inst: Instance of a class with *attrs* attributes.\n    :param changes: Keyword changes in the new copy.\n\n    :return: A copy of inst with *changes* incorporated.\n\n    :raise attrs.exceptions.AttrsAttributeNotFoundError: If *attr_name*\n        couldn't be found on *cls*.\n    :raise attrs.exceptions.NotAnAttrsClassError: If *cls* is not an *attrs*\n        class.\n\n    ..  deprecated:: 17.1.0\n        Use `attrs.evolve` instead if you can.\n        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n    return new\n\n\ndef evolve(*args, **changes):\n    \"\"\"\n    Create a new instance, based on the first positional argument with\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n \"^import warnings\\|^from warnings\" src/attr/_funcs.py",
+        "output": "",
+        "code": 1
+      },
+      {
+        "command": "cd /work && head -20 src/attr/_funcs.py",
+        "output": "# SPDX-License-Identifier: MIT\n\n\nimport copy\n\nfrom ._compat import PY_3_9_PLUS, get_generic_base\nfrom ._make import NOTHING, _obj_setattr, fields\nfrom .exceptions import AttrsAttributeNotFoundError\n\n\ndef asdict(\n    inst,\n    recurse=True,\n    filter=None,\n    dict_factory=dict,\n    retain_collection_types=False,\n    value_serializer=None,\n):\n    \"\"\"\n    Return the *attrs* attribute values of *inst* as a dict.\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -i '5a import warnings' src/attr/_funcs.py",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '1,15p' src/attr/_funcs.py",
+        "output": "# SPDX-License-Identifier: MIT\n\n\nimport copy\n\nimport warnings\nfrom ._compat import PY_3_9_PLUS, get_generic_base\nfrom ._make import NOTHING, _obj_setattr, fields\nfrom .exceptions import AttrsAttributeNotFoundError\n\n\ndef asdict(\n    inst,\n    recurse=True,\n    filter=None,\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && grep -n 'def assoc\\|^    \"\"\"' src/attr/_funcs.py | grep -A1 \"def assoc\"",
+        "output": "326:def assoc(inst, **changes):\n327:    \"\"\"\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '350,360p' src/attr/_funcs.py",
+        "output": "        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -i '352a\\    warnings.warn(\\n        \"assoc is deprecated, use evolve instead.\",\\n        DeprecationWarning,\\n        stacklevel=2,\\n    )' src/attr/_funcs.py",
+        "output": "",
+        "code": 0
+      },
+      {
+        "command": "cd /work && sed -n '350,365p' src/attr/_funcs.py",
+        "output": "        This function will not be removed du to the slightly different approach\n        compared to `attrs.evolve`.\n    \"\"\"\n    warnings.warn(\n        \"assoc is deprecated, use evolve instead.\",\n        DeprecationWarning,\n        stacklevel=2,\n    )\n    new = copy.copy(inst)\n    attrs = fields(inst.__class__)\n    for k, v in changes.items():\n        a = getattr(attrs, k, NOTHING)\n        if a is NOTHING:\n            msg = f\"{k} is not an attrs attribute on {new.__class__}.\"\n            raise AttrsAttributeNotFoundError(msg)\n        _obj_setattr(new, k, v)\n",
+        "code": 0
+      },
+      {
+        "command": "cd /work && python -m pytest tests/ -q 2>&1 | tail -20",
+        "output": "tests/test_funcs.py: 100 warnings\n  /work/tests/test_funcs.py:591: DeprecationWarning: assoc is deprecated, use evolve instead.\n    changed = assoc(original, **change_dict)\n\ntests/test_funcs.py::TestAssoc::test_frozen\n  /work/tests/test_funcs.py:620: DeprecationWarning: assoc is deprecated, use evolve instead.\n    assert C(3, 2) == assoc(C(1, 2), x=3)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nSKIPPED [1] tests/test_3rd_party.py:14: could not import 'cloudpickle': No module named 'cloudpickle'\nSKIPPED [1] tests/test_make.py:2476: Pre-3.10 only.\nSKIPPED [1] tests/test_pyright.py:42: Requires pyright.\nSKIPPED [1] tests/test_pyright.py:93: Requires pyright.\nSKIPPED [1] tests/test_slots.py:497: slots without weakref_slot should only work on PyPy\nSKIPPED [1] tests/test_validators.py:345: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:360: zope-related tests skipped when zope.interface is not installed\nSKIPPED [1] tests/test_validators.py:380: zope-related tests skipped when zope.interface is not installed\nXFAIL tests/test_setattr.py::TestSetAttr::test_slotted_confused\n1318 passed, 8 skipped, 1 xfailed, 152 warnings in 4.87s\n",
+        "code": 0
+      }
+    ],
+    "waste": {
+      "wall_hit": true,
+      "wall_hits": 1,
+      "recovered": true,
+      "turns_wall_to_green": 15,
+      "turns_in_session": 16
+    },
+    "reminders_total": 5
+  }
+]
