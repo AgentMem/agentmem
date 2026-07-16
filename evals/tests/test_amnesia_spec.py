@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
@@ -19,6 +20,15 @@ def _fixture(tmp_path: Path) -> Path:
     (r / "tests").mkdir()
     (r / "tests" / "test_engine.py").write_text("def test_ok():\n    assert True\n")
     (r / "pyproject.toml").write_text('[project]\nname = "demo-pkg"\nversion = "1.0"\n')
+    (r / "vendor").mkdir()
+    (r / "vendor" / "huge_third_party.py").write_text("# not ours\n" * 5000)
+    (r / ".gitignore").write_text("vendor/\n")
+    for cmd in (
+        ["init", "-q"],
+        ["add", "-A"],
+        ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "base"],
+    ):
+        subprocess.run(["git", "-C", str(r), *cmd], check=True, capture_output=True)
     return r
 
 
@@ -26,6 +36,7 @@ def test_tickets_are_named_for_the_repo(tmp_path: Path) -> None:
     spec = make_spec(_fixture(tmp_path))
     assert spec["package"] == "demo_pkg"
     assert spec["largest"].endswith("engine.py"), "the biggest real module, not tiny.py"
+    assert "vendor" not in spec["largest"], "a gitignored vendored file is not the user's code"
     assert any("engine.py" in s for s in spec["sessions"])
     assert any("importing demo_pkg" in s for s in spec["sessions"])
     assert any("tests/test_amnesia_probe.py" in s for s in spec["sessions"])
@@ -35,6 +46,12 @@ def test_a_repo_without_source_is_refused(tmp_path: Path) -> None:
     r = tmp_path / "empty"
     (r / "tests").mkdir(parents=True)
     (r / "tests" / "test_x.py").write_text("def test_ok():\n    assert True\n")
+    for cmd in (
+        ["init", "-q"],
+        ["add", "-A"],
+        ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "base"],
+    ):
+        subprocess.run(["git", "-C", str(r), *cmd], check=True, capture_output=True)
     import pytest
 
     with pytest.raises(SystemExit, match="no Python source"):

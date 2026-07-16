@@ -58,6 +58,20 @@ def test_a_wall_never_cleared_reports_none_not_a_number() -> None:
     assert not w["recovered"] and w["turns_wall_to_green"] is None
 
 
+def test_a_suite_that_still_has_failures_is_not_green() -> None:
+    """The attrs shape: the wall is failing tests, not a collection error, so a
+    summary line saying "2 failed, 1316 passed" contains the word passed and must
+    not read as recovery."""
+    dirty = "2 failed, 1316 passed, 8 skipped in 5.48s"
+    clean = "1318 passed, 8 skipped in 5.31s"
+    attrs_wall, attrs_green = r"DID NOT WARN|^\d+ failed|, \d+ failed", r"^\d+ passed"
+    w = waste([call("pytest -q", dirty, 1), call("pytest -q", clean)], attrs_wall, attrs_green)
+    assert w["wall_hits"] == 1 and w["recovered"] and w["turns_wall_to_green"] == 2
+
+    stuck = waste([call("pytest -q", dirty, 1)] * 3, attrs_wall, attrs_green)
+    assert stuck["wall_hits"] == 3 and not stuck["recovered"]
+
+
 def test_green_before_the_wall_does_not_count_as_recovery() -> None:
     """The suite passing on some unrelated file earlier is not getting past the wall."""
     calls = [

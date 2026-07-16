@@ -50,18 +50,28 @@ def _package_name(repo: Path) -> str:
     return repo.name.replace("-", "_")
 
 
+def _tracked(repo: Path) -> list[str]:
+    """git, not a directory walk: a vendored or gitignored checkout is not the user's
+    code, and a ticket naming a file out of one would be about somebody else's repo."""
+    p = subprocess.run(["git", "-C", str(repo), "ls-files", "*.py"], capture_output=True, text=True)
+    return [line for line in p.stdout.splitlines() if line] if p.returncode == 0 else []
+
+
 def _largest_source(repo: Path) -> str:
-    skip = {"tests", "test", ".venv", "venv", "build", "dist", "docs", "examples"}
+    skip = {"tests", "test", "docs", "examples"}
     best, size = "", -1
-    for p in repo.rglob("*.py"):
-        rel = p.relative_to(repo)
-        if any(part in skip or part.startswith(".") for part in rel.parts):
+    for rel in _tracked(repo):
+        parts = Path(rel).parts
+        if any(part in skip or part.startswith(".") for part in parts):
             continue
-        if p.name in ("setup.py", "conftest.py"):
+        if Path(rel).name in ("setup.py", "conftest.py"):
             continue
-        n = p.stat().st_size
+        f = repo / rel
+        if not f.is_file():
+            continue
+        n = f.stat().st_size
         if n > size:
-            best, size = str(rel), n
+            best, size = rel, n
     return best
 
 

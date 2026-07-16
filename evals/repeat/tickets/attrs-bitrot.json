@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/python-attrs/attrs",
+  "ref": "23.2.0",
+  "test_deps": "hypothesis",
+  "wall_re": "DID NOT WARN|^\\d+ failed|, \\d+ failed",
+  "green_re": "^\\d+ passed",
+  "sessions": [
+    "Run the full test suite with 'python -m pytest tests/ -q' and make every test pass. Two tests fail against the installed pytest; fix or skip them. Do not commit anything.",
+    "Find where the library decides that an attribute has no default value, and add a short comment above that code explaining the rule in your own words.",
+    "Report how many test files are in tests/ and which is largest. Do not change any code.",
+    "Discard all uncommitted changes with 'git checkout -- .', then run the full suite with 'python -m pytest tests/ -q' and make it pass again."
+  ]
+}

@@ -39,7 +39,11 @@ def waste(calls: list[dict[str, Any]], wall_re: str, green_re: str) -> dict[str,
     about what a shell command did. Hitting the wall is visible in its output, and
     turns are turns.
     """
-    wall, green = re.compile(wall_re), re.compile(green_re)
+    # MULTILINE so a spec can anchor on pytest's summary line. Without it, a repo
+    # whose wall is failing tests rather than a collection error reads as green:
+    # "2 failed, 1316 passed" still contains "passed".
+    wall = re.compile(wall_re, re.M)
+    green = re.compile(green_re, re.M)
     wall_at = green_at = None
     hits = 0
     for i, c in enumerate(calls):
