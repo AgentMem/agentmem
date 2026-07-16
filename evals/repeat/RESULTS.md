@@ -1,8 +1,8 @@
 # What a forgotten fix costs the second time
 
 The confabulation runs show an agent inventing a past it cannot see. The obvious
-reply is: so what, does the invention cost anything? This is the first number that
-answers that, and it is one seed.
+reply is: so what, does the invention cost anything? This is the first attempt at
+an answer, and it is two seeds that disagree about the size of it.
 
 Nothing is planted. click 8.1.7 has real bit-rot: pytest 9.1.1 against its pinned
 7.4.0 kills collection through a deprecated `parametrize` at `tests/test_basic.py:239`.
@@ -12,16 +12,23 @@ fix away and puts the wall back, with the context that learned it gone.
 
 Qwen3.6-27B, self-hosted, both arms identical except the memory layer.
 
-| session 4 | no memory | memory |
+Turns from re-hitting the wall back to a green suite, per seed:
+
+| seed | no memory | memory |
 |---|---|---|
-| times it hit the wall | **2** | **1** |
-| turns from the wall back to green | **20** | **13** |
-| how the session ended | **ran out of turns** | finished |
+| 1 | 20, and it ran out of turns before finishing | 13 |
+| 2 | 14 | 12 |
+
+The first seed alone said 20 against 13 and looked like a result. The second says 14
+against 12. The baseline moves by six turns between two runs of the same ticket, which
+is most of the gap the first seed appeared to show, and it is why one seed was never
+going to settle this. On seed 1 the memory arm hit the wall once to the baseline's
+twice; on seed 2 both hit it twice.
 
 ## What the memory arm was told
 
-Two of the three reminders in the whole run fired in session 4, and they are on the
-nose:
+This is the part both seeds agree on. Two of seed 1's three reminders fired in
+session 4, and they are on the nose:
 
 > `(P-003)` Line 239 in `tests/test_basic.py` uses `itertools.chain` directly in
 > `@pytest.mark.parametrize`, triggering the collection error. *[fixed_by P-002]*
@@ -38,8 +45,10 @@ regions of the file looking for the problem. The arm with memory grepped
 
 ## What this is not
 
-One seed. A single run cannot separate a 20-turn recovery from a 13-turn one; the
-number to trust here is the mechanism, not the margin.
+Two seeds, and they disagree about the size of the effect. The direction is the same
+in both and the margin is not: 7 turns on one, 2 on the other. Nothing here supports
+a number like "35% fewer turns", and the honest reading is that the mechanism is
+visible and the effect size is not yet measured.
 
 It is also not a pass-rate result. Both arms eventually reached green. What differs
 is what it cost, which is the thing compaction and context resets actually tax, and

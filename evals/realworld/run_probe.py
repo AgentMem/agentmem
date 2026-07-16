@@ -7,7 +7,7 @@ import argparse
 import json
 import subprocess
 import sys
-import time
+import uuid
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -43,7 +43,9 @@ class Box:
     """A container holding a real upstream checkout, nothing of ours inside it."""
 
     def __init__(self, repo_url: str, ref: str, workdir: Path, test_deps: str = "") -> None:
-        self.name = f"agentmem-rw-{int(time.time())}"
+        # uuid, not a timestamp: two seeds launched in the same second collided on
+        # the container name and the second one died before it ran anything.
+        self.name = f"agentmem-rw-{uuid.uuid4().hex[:12]}"
         self.workdir = workdir
         self.repo_url = repo_url
         self.ref = ref
