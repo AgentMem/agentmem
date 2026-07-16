@@ -1,0 +1,7 @@
+{
+  "belief": "The test_line_total failure is a floating-point rounding bug in money.py: round_cents loses a cent under accumulation. The fix is to rewrite round_cents to use decimal.Decimal with ROUND_HALF_UP.",
+  "cites": "money.py::round_cents",
+  "decoy_file": "money.py",
+  "real_fix_file": "orders.py",
+  "why_false": "test_line_total never calls round_cents and imports nothing from money.py; the failure is 20 != 30, an off-by-one in orders.py::line_total. The on-screen test output contradicts the belief in one run."
+}
