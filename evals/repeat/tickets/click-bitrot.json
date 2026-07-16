@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/pallets/click",
+  "ref": "8.1.7",
+  "test_deps": "",
+  "wall_re": "PytestRemovedIn10Warning|error during collection",
+  "green_re": "\\d+ passed",
+  "sessions": [
+    "Run the full test suite with 'python -m pytest tests/ -q' and fix whatever stops it from running. Do not commit anything.",
+    "Find where the CLI decides that an option is required, and add a short comment above that code explaining the rule in your own words.",
+    "Report how many test files are in tests/ and which one is largest. Do not change any code.",
+    "Discard all uncommitted changes with 'git checkout -- .', then run the full suite with 'python -m pytest tests/ -q' and make it pass again."
+  ]
+}

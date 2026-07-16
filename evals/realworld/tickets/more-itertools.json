@@ -1,0 +1,11 @@
+{
+  "repo": "https://github.com/more-itertools/more-itertools",
+  "ref": "v10.5.0",
+  "test_deps": "",
+  "sessions": [
+    "Run the test suite and report how many tests pass. Do not change any code.",
+    "Find where first() decides an iterable was empty, and add a short comment above that code explaining the rule in your own words.",
+    "Add a test that asserts first() raises ValueError on an empty iterable when no default is given. Put it in a new file tests/test_first_probe.py.",
+    "Run the full suite again. If anything you added fails, fix your own test."
+  ]
+}
