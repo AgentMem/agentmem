@@ -25,6 +25,11 @@ writeup says so in plain sight rather than hoping nobody asks).
 | OK | attrs 2: 16 vs 13 | evals/repeat/RESULTS.md | `evals/report/repeat-attrs-s2.json` |
 | OK | repeat reminders: 12/12 at temperature 0 | evals/audit/RESULTS.md | `evals/report/audit-repeat.json` |
 | OK | airline 50: 37 vs 38, net +1 | evals/tau2/RESULTS.md | `evals/report/tau2-airline-full.json` |
+| OK | cross-model: click, Sonnet 5 abstains, 0 invented vs Qwen's 3-4 | evals/realworld/RESULTS.md | `evals/report/realworld-probe-sonnet-click.json` |
+| OK | cross-model: more-itertools, Sonnet 5 abstains, 0 invented | evals/realworld/RESULTS.md | `evals/report/realworld-probe-sonnet-more-itertools.json` |
+| OK | cross-model: repeat click Sonnet 5 seed 1, 4 vs 5 | evals/repeat/RESULTS.md | `evals/report/repeat-click-sonnet-s1.json` |
+| OK | cross-model: repeat click Sonnet 5 seed 2, 6 vs 5 | evals/repeat/RESULTS.md | `evals/report/repeat-click-sonnet-s2.json` |
+| OK | cross-model: repeat click Sonnet 5 seed 3, 4 vs 4 | evals/repeat/RESULTS.md | `evals/report/repeat-click-sonnet-s3.json` |
 
 What this does and does not prove: it proves the prose matches the raw run
 records, so inventing a number requires inventing an artifact, not a sentence.

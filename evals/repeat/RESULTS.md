@@ -71,6 +71,25 @@ That may be correct restraint. It may be a case the layer should catch and does 
 This run cannot tell those apart, and telling them apart needs a way to measure the
 quality of silence, which this project does not have.
 
+## And on a stronger action model, flat
+
+The five seeds above are all Qwen. The click wall was rerun with Claude Sonnet 5
+driving instead, three seeds, the bank kept by a cheap model (Haiku 4.5). It is a null,
+and a clean one:
+
+| seed | no memory | memory | reminders that fired |
+|---|---|---|---|
+| click 1 | 4 | 5 | 5 |
+| click 2 | 6 | 5 | 5 |
+| click 3 | 4 | 4 | 2 |
+
+Fourteen turns each way. Sonnet clears the collection failure in four to six turns with
+nothing in front of it, which is most of the room a reminder would have had to save,
+and the reminders that fired did not change the count. This is the least favorable
+setting the layer has, a strong action model with almost nothing to rediscover, and it
+neither helped nor hurt. The confabulation probe on this same model, where memory does
+change the outcome, is in `evals/realworld/RESULTS.md`.
+
 ## What would settle the turn count
 
 Paired seeds in the dozens, not five, with control arms run on purpose instead of

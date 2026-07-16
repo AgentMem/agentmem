@@ -222,6 +222,41 @@ CLAIMS = [
         tau2_numbers,
         {"none_passed": 37, "memory_passed": 38, "n": 50, "boundaries": 50},
     ),
+    Claim(
+        "evals/realworld/RESULTS.md",
+        "cross-model: click, Sonnet 5 abstains, 0 invented vs Qwen's 3-4",
+        "realworld-probe-sonnet-click.json",
+        probe_numbers,
+        {"none_real": 0, "none_invented": 0, "memory_real": 6, "memory_invented": 1},
+    ),
+    Claim(
+        "evals/realworld/RESULTS.md",
+        "cross-model: more-itertools, Sonnet 5 abstains, 0 invented",
+        "realworld-probe-sonnet-more-itertools.json",
+        probe_numbers,
+        {"none_real": 0, "none_invented": 0, "memory_real": 6, "memory_invented": 1},
+    ),
+    Claim(
+        "evals/repeat/RESULTS.md",
+        "cross-model: repeat click Sonnet 5 seed 1, 4 vs 5",
+        "repeat-click-sonnet-s1.json",
+        repeat_numbers,
+        {"none_turns": 4, "memory_turns": 5, "none_hits": 1, "memory_hits": 1, "reminders": 5},
+    ),
+    Claim(
+        "evals/repeat/RESULTS.md",
+        "cross-model: repeat click Sonnet 5 seed 2, 6 vs 5",
+        "repeat-click-sonnet-s2.json",
+        repeat_numbers,
+        {"none_turns": 6, "memory_turns": 5, "none_hits": 1, "memory_hits": 1, "reminders": 5},
+    ),
+    Claim(
+        "evals/repeat/RESULTS.md",
+        "cross-model: repeat click Sonnet 5 seed 3, 4 vs 4",
+        "repeat-click-sonnet-s3.json",
+        repeat_numbers,
+        {"none_turns": 4, "memory_turns": 4, "none_hits": 1, "memory_hits": 1, "reminders": 2},
+    ),
 ]
 
 

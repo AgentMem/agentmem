@@ -7,12 +7,16 @@ sentence. The table of claim to artifact is [RECEIPTS.md](./RECEIPTS.md).
 
 ## Where things stand
 
-One result is strong. One is a mechanism without a number. Two are nulls. Nothing
-here has run on more than one action model, which is the largest hole.
+One result is strong, and now runs on two very different action models with a twist
+worth stating up front. One is a mechanism without a number. Two are nulls, and a third
+eval reruns as a null on the stronger model too. The turn-count value is still not
+established, which is now the largest hole.
 
 | question | verdict | detail |
 |---|---|---|
-| does an agent with no memory invent its own past | **yes, 0 of 5 repos grounded**, and git refutes 7 of 7 checkable claims | [realworld](./realworld/RESULTS.md) |
+| does an agent with no memory invent its own past | **on Qwen yes, 0 of 5 repos grounded**, git refutes 7 of 7 claims; **Sonnet 5 abstains instead** and invents nothing | [realworld](./realworld/RESULTS.md) |
+| does the demo hold on a stronger model | **no, and that is the finding**: Sonnet 5 refuses rather than confabulates, so the loud version is model-shaped | [realworld](./realworld/RESULTS.md) |
+| does memory ground the self-account on both models | **yes**: with memory Qwen and Sonnet 5 both cite only real files, 6 of 6 on Sonnet | [realworld](./realworld/RESULTS.md) |
 | does memory make its account of itself true | **partly**: 3 of 4 claims hold, 1 refuted, and the refutation stays in the table | [realworld](./realworld/RESULTS.md) |
 | does memory save turns after a context reset | **not established**: an accidental control moved 10 turns with no memory at all | [repeat](./repeat/RESULTS.md) |
 | are reminders grounded in what they cite | 12 of 12 at temperature 0, with two caveats found by hand | [audit](./audit/RESULTS.md) |
@@ -33,6 +37,14 @@ The stories differ every time, so nothing is being recited. The genre never does
 is always a generic web backend, and a database connection pool fails in most of
 them, in projects that have no database.
 
+That is Qwen. Run the same probe on Claude Sonnet 5 and the loud version disappears:
+it does not invent a false project, it says it has no memory of prior sessions and
+asks for the context. So the durable claim is the quieter one under it. Without memory
+an agent cannot account for work it actually did, and it fills that gap however its
+training disposes it, a weaker model by inventing and a stronger one by abstaining.
+With memory both name only real files. The demo is model-shaped; the gap memory closes
+is not.
+
 Grading is a grep against the checkout plus `git status` over the tree the agent
 left. No model judges anything. Point it at your own repo with
 [`amnesia/run_amnesia.py`](./amnesia/run_amnesia.py).
@@ -48,8 +60,10 @@ never needed the arithmetic.
 
 ## What is missing
 
-- **One model.** Every positive number is Qwen3.6-27B in our own loop.
-  [`run_sonnet.sh`](./run_sonnet.sh) is written and gated on an explicit spend.
+- **Two models, both extremes.** The probe now runs on Qwen3.6-27B and Claude Sonnet 5,
+  a small open model and a frontier hosted one. Memory grounds the self-account on both;
+  the confabulation itself is Qwen's. Nothing in the middle (a Llama-class model) has
+  been tried, and the turn-count value stays unestablished on either.
 - **The product surface.** The Claude Code plugin is where a user would meet this and
   it has no live evidence yet.
 - **Effect sizes.** Directions are consistent, magnitudes are not pinned.

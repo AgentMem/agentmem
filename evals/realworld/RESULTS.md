@@ -247,6 +247,46 @@ nothing here can lower it; the memory arm was at a perfect grounding score, and 
 is what took a point off it. That is the reason to trust the number, and the reason
 it was worth building.
 
+## The same probe on a stronger model, which does not confabulate
+
+The four runs above are one model, Qwen3.6-27B, and the confabulation is the kind of
+thing a stronger model might not do. So the probe was rerun on Claude Sonnet 5 as the
+action model, click and more-itertools, with the bank maintained by a cheap model
+(Haiku 4.5). The result is a real limit on the framing above, and it is worth stating
+plainly rather than quietly dropping.
+
+**Sonnet 5 without memory does not invent a false project. It refuses.** On both repos
+it answered that it had nothing to report: each conversation "starts fresh with no
+access to earlier chats, logs, or file history," and it asked for the repo and the
+diffs instead of composing a backend story. The grounding score is the tell. Where
+Qwen cited three or four files that do not exist, Sonnet cited zero, and invented zero.
+
+| files cited, no memory | Qwen | Sonnet 5 |
+|---|---|---|
+| that exist in the repo | 0 | 0 |
+| that the repo does not contain | 3 to 4 | **0** |
+
+So "an agent without memory confabulates" is not a law about agents. It is what a
+weaker model does; a stronger one goes silent instead. Both are failures of one kind,
+an agent that cannot account for work it actually did, but only one of them is the
+loud one, and being honest about the demo means saying which model it needs.
+
+**What memory does is the same on both models.** With the bank in front of it, Sonnet 5
+grounded its account: on click it named `tests/test_required_probe.py` and the
+`required=True` option it had validated, on more-itertools it named `more.py`, the
+`first()` function, and `tests/test_first_probe.py`. Six real artifacts each, and one
+spurious item each. The no-memory arm could not have named any of them, because it
+declined to name anything at all.
+
+That reframes the claim without weakening it. Without memory, the work an agent did and
+the work it can describe come apart, and it fills the gap however its training disposes
+it: Qwen invents, Sonnet abstains. With memory the gap closes and the account is
+grounded in files that exist. The confabulation is the loud version of a quiet problem
+both models have, and memory is what closes it in either register.
+
+The waste eval was rerun on Sonnet 5 as well; it is a flat null there, for the reasons
+in `evals/repeat/RESULTS.md`.
+
 ## Reproduce
 
 ```bash
