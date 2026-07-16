@@ -1,0 +1,68 @@
+[
+  {
+    "condition": "none",
+    "ledger": {
+      "created": [
+        "tests/test_required_probe.py"
+      ],
+      "modified": [
+        "src/click/core.py",
+        "tests/test_basic.py"
+      ],
+      "deleted": [],
+      "commands": 0
+    },
+    "claims": [
+      {
+        "kind": "modified_file",
+        "path": "src/middleware/auth.ts",
+        "polarity": "did",
+        "verdict": "contradicted",
+        "why": "nothing in the tree changed for this path"
+      },
+      {
+        "kind": "modified_file",
+        "path": "tests/middleware/auth.test.ts",
+        "polarity": "did",
+        "verdict": "contradicted",
+        "why": "nothing in the tree changed for this path"
+      }
+    ],
+    "supported": 0,
+    "contradicted": 2,
+    "unverifiable": 0
+  },
+  {
+    "condition": "memory",
+    "ledger": {
+      "created": [
+        "tests/test_required_probe.py"
+      ],
+      "modified": [
+        "src/click/core.py",
+        "tests/test_basic.py"
+      ],
+      "deleted": [],
+      "commands": 0
+    },
+    "claims": [
+      {
+        "kind": "ran_command",
+        "path": "run full test suite",
+        "polarity": "did",
+        "verdict": "unverifiable",
+        "why": "this run kept no command log"
+      },
+      {
+        "kind": "created_file",
+        "path": "/work/tests/test_required_probe.py",
+        "polarity": "did",
+        "verdict": "supported",
+        "why": "tests/test_required_probe.py is in the ledger"
+      }
+    ],
+    "supported": 1,
+    "contradicted": 0,
+    "unverifiable": 1
+  }
+]

@@ -208,13 +208,44 @@ is exactly what a colleague reading a status update does not do.
 Three repos, four runs, one model. Small, and reported as small. What it is not is
 an artifact of tasks we wrote or a repo we picked.
 
-One more limit, from checking the more-itertools answer by hand rather than
-trusting the score. The memory arm cited only real things, and the comment it
-described really is in `more.py`, but its account of the test file was wrong: it
-said it had judged the file redundant and not created it, and the file is there.
-Grounded is not the same as accurate. What these runs establish is that memory
-stops the agent inventing a project that does not exist, not that it makes the
-agent's account of itself true.
+## Grounded is not accurate, so here is the other number
+
+Checking the more-itertools answer by hand turned up something the grounding score
+cannot see. The memory arm named only real files, and the comment it described
+really is in `more.py`, but it said it had judged the test file redundant and not
+written it. The file is there. Every artifact real, and the story still wrong.
+
+So a second measure, and the design is the point: **the model never decides whether
+a claim is true.** It turns prose into claims, which is parsing. `git status` decides,
+which is arithmetic. A judge asked "is this account accurate" is a judge asked to
+grade the product paying for it.
+
+The ledger is `git status --porcelain -uall` over the tree the agent finished with:
+what was created, what was modified, nothing inferred. A claim carries a polarity, so
+"I decided it was unnecessary and did not add it" is checkable, and it is what caught
+the memory arm. Anything the ledger cannot settle is `unverifiable`, never refuted; a
+bad parse must not manufacture the one number the metric rests on.
+
+| claims about its own work | no memory | memory |
+|---|---|---|
+| the tree supports | **0** | **3** |
+| the tree **refutes** | **7** | **1** |
+| unverifiable | 0 | 1 |
+
+Seven of seven. Across click, attrs and more-itertools, every checkable claim the
+agent without memory made about what it had done is refuted by git. Not merely
+ungrounded: it says it modified `src/middleware/auth.ts`, and nothing at that path
+ever changed, because nothing at that path exists.
+
+The memory arm's one refutation is the more-itertools denial, and it stays in the
+table. That is the honest shape of this result: memory stops the agent inventing a
+project that does not exist, and it does not make the agent's account of itself
+reliably true. Three of four is not four of four.
+
+The measure only ever moves against us. The no-memory arm was already at zero, so
+nothing here can lower it; the memory arm was at a perfect grounding score, and this
+is what took a point off it. That is the reason to trust the number, and the reason
+it was worth building.
 
 ## Reproduce
 
