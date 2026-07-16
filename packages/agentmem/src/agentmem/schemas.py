@@ -133,7 +133,9 @@ class MemoryBank(BaseModel):
             or self._visible(self.procedural, include_dormant)
         )
 
-    def render_for_agent(self, *, include_dormant: bool = True, cap: int | None = None) -> str:
+    def render_for_agent(
+        self, *, include_dormant: bool = True, cap: int | None = None, window: str = ""
+    ) -> str:
         """Compact, id-first render for the Phase 1 / Phase 2 prompts.
 
         Phase 1 sees dormant entries too (`include_dormant=True`, the default) so it
@@ -144,12 +146,13 @@ class MemoryBank(BaseModel):
 
         `cap`, if given, keeps only the top-salience entries (combined across
         knowledge and procedural). It's the guardrail against a big bank drowning the
-        model in retrieval competition.
+        model in retrieval competition. `window`, if given, floats entries relevant to
+        it above the cap; empty window is the identity.
         """
         knowledge = self._visible(self.knowledge, include_dormant)
         procedural = self._visible(self.procedural, include_dormant)
         if cap is not None:
-            knowledge, procedural = self._cap_by_salience(knowledge, procedural, cap)
+            knowledge, procedural = self._cap_by_salience(knowledge, procedural, cap, window)
 
         lines: list[str] = []
         lines.append("STATUS: " + (self.status.strip() or "(empty)"))
@@ -176,9 +179,16 @@ class MemoryBank(BaseModel):
 
     @staticmethod
     def _cap_by_salience(
-        knowledge: list[MemoryEntry], procedural: list[MemoryEntry], cap: int
+        knowledge: list[MemoryEntry], procedural: list[MemoryEntry], cap: int, window: str = ""
     ) -> tuple[list[MemoryEntry], list[MemoryEntry]]:
         pool = sorted(knowledge + procedural, key=lambda e: e.lifecycle.salience, reverse=True)
+        if window:
+            # Relevance to what is on screen wins over the salience prior, so an old
+            # entry about the current error survives a cap that would drop it. Applied
+            # to the salience-sorted pool, so salience breaks ties.
+            from .relevance import order
+
+            pool = order(pool, window)
         keep = {e.id for e in pool[:cap]}
         return [e for e in knowledge if e.id in keep], [e for e in procedural if e.id in keep]
 
@@ -215,11 +225,13 @@ def render_tiered_for_agent(
     include_dormant: bool = True,
     session_cap: int = 12,
     project_cap: int = 8,
+    window: str = "",
 ) -> str:
     """Merge the project and session tiers into one render for Phase 1/2: project
     first (it's the durable, cross-session layer), each tier capped to its top
     entries by salience. With no project bank (nothing promoted yet, or continual
-    memory off), this is just the session tier, capped the same way.
+    memory off), this is just the session tier, capped the same way. `window`, if
+    given, floats entries relevant to it above each tier's cap; empty is the identity.
     """
     lines: list[str] = []
     if project is not None and not project.is_empty():
@@ -228,11 +240,17 @@ def render_tiered_for_agent(
             project.procedural, include_dormant
         )
         pool.sort(key=lambda e: e.lifecycle.salience, reverse=True)
+        if window:
+            from .relevance import order
+
+            pool = order(pool, window)
         for e in pool[:project_cap]:
             lines.append(f"  {e.render()}")
         lines.append("")
 
-    lines.append(session.render_for_agent(include_dormant=include_dormant, cap=session_cap))
+    lines.append(
+        session.render_for_agent(include_dormant=include_dormant, cap=session_cap, window=window)
+    )
     return "\n".join(lines)
 
 

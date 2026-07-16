@@ -89,6 +89,7 @@ def run_phase2(
         include_dormant=False,
         session_cap=config.continual_session_render_cap,
         project_cap=config.continual_project_render_cap,
+        window=window if config.relevance_boost else "",
     )
     content = phase2_user_content(task, window, bank_render)
     if prior:

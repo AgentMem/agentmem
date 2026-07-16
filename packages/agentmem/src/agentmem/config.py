@@ -94,6 +94,10 @@ class AgentMemConfig(BaseSettings):
     # rewritten as general rules in a smaller, longer-lived bank.
     continual_project_max: int = 40
     continual_min_sessions_lived: int = 3
+    # Float bank entries relevant to the current window above the render cap, so an
+    # old diagnosis of the error on screen is not dropped for a fresher generic note.
+    # Off until a measured run shows recall improves (evals/repeat/recall.py).
+    relevance_boost: bool = False
     continual_session_render_cap: int = 12  # per-tier caps on what Phase 1/2 see,
     continual_project_render_cap: int = 8  # highest salience first (negative transfer
     continual_playbook_render_cap: int = 3  # guardrail from too much retrieval competition)

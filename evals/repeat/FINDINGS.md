@@ -88,3 +88,24 @@ wrong entry. The miss is in which entry Phase 2 surfaces, which is the bank view
 given and the salience that orders it. That is the seam the next change works on, and
 recall is how it will be judged.
 
+## P0.3: relevance boost, built, gated off, waiting on a measured run
+
+The fix for the recall-0 seeds is in the bank view Phase 2 reads. `render_for_agent`
+and `render_tiered_for_agent` order by salience and cap to a top-N, so an old
+diagnosis of the error on screen can rank below a fresh generic note and fall off the
+cap. `agentmem.relevance` re-orders by relevance to the current window before the cap,
+matching code-shaped tokens shared between the window and an entry, salience breaking
+ties. It only re-orders entries the bank already holds and never invents one; Phase 2
+still decides whether to speak.
+
+It is gated behind `config.relevance_boost`, default off, and the tests prove both
+halves: with it off the render is byte-identical to before, and with it on the attrs
+seed 2 shape is fixed, a salience-0.2 diagnosis of `test_unknown` surviving a cap of 1
+that a salience-0.9 chore note would otherwise have taken.
+
+What it does not have yet is a measured recall. Turning it on and re-running the seeds
+is a GPU cost, so it stays off until that run happens, at which point recall.py says
+whether 2 of 4 improves. Building it off-by-default is the honest shape: the mechanism
+is ready and tested, and the live behavior is provably unchanged until a number
+justifies the change.
+
