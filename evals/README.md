@@ -10,12 +10,16 @@ sentence. The table of claim to artifact is [RECEIPTS.md](./RECEIPTS.md).
 One result is strong, and now runs on two very different action models with a twist
 worth stating up front. One is a mechanism without a number. The rest are nulls,
 including the compaction eval once it finally ran live on the product's home turf, and
-they line up into one honest read: every attempt to show memory making an agent fix code
+they line up into one honest read. Every attempt to show memory making an agent fix code
 faster comes back null, because the knowledge a re-encountered coding wall needs is
-almost always rederivable from the code and the error in front of it. What memory is
-decisive at is the other axis, recalling its own past accurately, where an agent without
-it invents a history or goes blank. Recall, not acceleration, is what this repo stands
-behind.
+almost always rederivable from the code and the error in front of it. The same law cuts
+the other way: a planted lie failed to poison even the always-inject arm, because one
+run of the test falsifies it. In a coding agent with a test to run, the current context
+dominates the store in both directions, so memory neither accelerates a task the agent
+can rederive nor poisons one it can check. What memory is decisive at is the axis with no
+current evidence to check against at all, recalling its own past accurately, where an
+agent without it invents a history or goes blank. Recall, not acceleration, is what this
+repo stands behind.
 
 | question | verdict | detail |
 |---|---|---|
@@ -28,6 +32,7 @@ behind.
 | tau2-bench airline, 50 paired tickets | **null**: 37 vs 38, net +1 | [tau2](./tau2/RESULTS.md) |
 | Terminal-Bench 2.0, 23 paired tasks | **null**, and structurally so | [tbench](./tbench/RESULTS.md) |
 | what survives Claude Code's compaction | **now runs live, and it is a null**: the bank crossed the compact but did not cut recovery calls (25 vs 37, 4 vs 4), both grounded | [compaction](./compaction/README.md) |
+| does a planted lie poison the agent | **no**: the always-inject arm got the lie 8 times and ignored it, the test falsifies it in one run | [poisoning](./poisoning/README.md) |
 
 ## The one that holds
 
