@@ -105,6 +105,36 @@ def test_post_tool_fires_the_first_step_and_persists_the_bank(tmp_path: Path) ->
     assert bank is not None and "K-001" in bank.knowledge  # the step ran and saved
 
 
+def test_a_fact_survives_the_compact_cycle(tmp_path: Path) -> None:
+    """observe -> PreCompact capture -> SessionStart recap, the loop compaction cuts."""
+    cfg = _cfg(tmp_path)
+    provider = FakeProvider(
+        phase1=[
+            tool_response(
+                ToolCall(
+                    name=SAVE_KNOWLEDGE,
+                    args={
+                        "tag": "environment",
+                        "content": "pytest 9.1.1 vs pinned 7.4.0 kills collection",
+                    },
+                    block_id="k",
+                )
+            )
+        ]
+    )
+    hookrunner.on_post_tool(
+        cfg,
+        "s1",
+        "bash",
+        {"command": "python -m pytest -q"},
+        {"stdout": "PytestRemovedIn10Warning: 1 error during collection"},
+        step_runner=_sync_runner(provider),
+    )
+    hookrunner.on_pre_compact(cfg, "s1", provider=provider)
+    digest = hookrunner.on_session_start(cfg, "s1")
+    assert digest is not None and "9.1.1" in digest
+
+
 def test_first_prompt_becomes_the_task(tmp_path: Path) -> None:
     cfg = _cfg(tmp_path)
     quiet: hookrunner.StepRunner = lambda *_: None  # noqa: E731

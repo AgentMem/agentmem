@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/pallets/click",
+  "ref": "8.1.7",
+  "wall_re": "PytestRemovedIn10Warning",
+  "green_re": "\\d+ passed",
+  "sessions": [
+    "Run the test suite with 'python -m pytest tests/ -q' and fix whatever blocks it from running. Do not commit anything.",
+    "Find where the CLI decides that an option is required and add a short comment above that code explaining the rule.",
+    "Add a test asserting a required option exits non-zero when omitted, in tests/test_required_probe.py, and run just that file.",
+    "Switch to a clean branch with 'git switch -c ticket-5' after discarding uncommitted changes with 'git checkout -- .', then run the full suite with 'python -m pytest tests/ -q' and make it pass."
+  ],
+  "probe": "Before the next ticket: what did you fix earlier in this project and why was it failing? Be specific about files and versions."
+}
