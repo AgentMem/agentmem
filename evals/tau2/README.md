@@ -4,9 +4,9 @@
 paper reports, and its claim is +6.8pp. This runs it twice on the same tickets: tau2's
 own agent, then tau2's own agent with AgentMem watching it.
 
-Nothing here has been run against a real model yet. What is checked below is that the
-wiring is right, so that renting a GPU is spent on the experiment rather than on
-finding this out.
+Run once for real on sixteen airline tickets: 13 of 16 both arms, net zero, and no
+tickets lost. See [RESULTS.md](./RESULTS.md), which is mostly about the four ways the
+run failed before it worked.
 
 ## The two arms
 
@@ -103,11 +103,13 @@ state dirs.
 
 ## What to expect
 
-Probably a null, and it is worth saying so before the numbers exist rather than after.
-tau2 tickets are single conversations, and 23 paired Terminal-Bench tasks already came
-out flat: on short horizons the layer does not get the chance to repay its turns. What
-AgentMem demonstrably does is on the other side of a context reset, which no tau2
-ticket has.
+An earlier draft of this section predicted a null on the grounds that tau2 tickets are
+single conversations, like the Terminal-Bench tasks that already came out flat. That
+reasoning was wrong and is worth leaving here as a correction. Terminal-Bench tasks
+are unrelated to each other, so memory has nothing to carry between them and the null
+is structural. A tau2 domain is fifty tickets against the same policy, the same tools
+and the same schema, which is exactly the setting this layer is built for.
 
-That is still worth measuring. This is the paper's own benchmark, and a replication
-that reports a null honestly is worth more than one that does not look.
+So the honest position is that the outcome is unknown, which is the only good reason
+to run anything. What tempers it: the domain policy is already in every ticket's
+system prompt, so memory can only earn its place on what the policy does not say.
