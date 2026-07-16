@@ -239,6 +239,10 @@ real piece of upstream bit-rot it had hit and fixed three sessions earlier, with
 wiped in between ([RESULTS.md](./evals/realworld/RESULTS.md)). The failure is not an artifact
 of tasks we wrote or a repo we picked.
 
+The paper's other benchmark, tau2-bench, ran in full on the airline split: 37 of 50
+against 38 of 50, five tickets flipping each way, net one
+([RESULTS.md](./evals/tau2/RESULTS.md)). A null, reported as one.
+
 There is also a [Terminal-Bench 2.0 harness](./evals/tbench) that runs real TB tasks on
 harbor with the same action loop bare vs memory-attached, hard USD caps on both arms
 that count the memory calls too. Three budget-capped runs (23 paired tasks, Haiku and

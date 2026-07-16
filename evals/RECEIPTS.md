@@ -24,7 +24,7 @@ writeup says so in plain sight rather than hoping nobody asks).
 | OK | attrs 1: the accidental control, 22 vs 12 on zero reminders | evals/repeat/RESULTS.md | `evals/report/repeat-attrs-s1.json` |
 | OK | attrs 2: 16 vs 13 | evals/repeat/RESULTS.md | `evals/report/repeat-attrs-s2.json` |
 | OK | repeat reminders: 12/12 at temperature 0 | evals/audit/RESULTS.md | `evals/report/audit-repeat.json` |
-| LOST | airline 16: 13/16 both arms | evals/tau2/RESULTS.md | `evals/report/tau2-airline-b1.json` |
+| OK | airline 50: 37 vs 38, net +1 | evals/tau2/RESULTS.md | `evals/report/tau2-airline-full.json` |
 
 What this does and does not prove: it proves the prose matches the raw run
 records, so inventing a number requires inventing an artifact, not a sentence.

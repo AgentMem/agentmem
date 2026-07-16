@@ -55,6 +55,16 @@ def repeat_numbers(path: Path) -> dict[str, Any]:
     }
 
 
+def tau2_numbers(path: Path) -> dict[str, Any]:
+    g = {r["arm"]: r for r in json.loads(path.read_text())}
+    return {
+        "none_passed": g["none"]["results"]["passed"],
+        "memory_passed": g["memory"]["results"]["passed"],
+        "n": g["none"]["results"]["n"],
+        "boundaries": g["memory"]["ticket_boundaries"],
+    }
+
+
 def audit_numbers(path: Path) -> dict[str, Any]:
     d = json.loads(path.read_text())
     v = d["verdicts"]
@@ -207,13 +217,10 @@ CLAIMS = [
     ),
     Claim(
         "evals/tau2/RESULTS.md",
-        "airline 16: 13/16 both arms",
-        "tau2-airline-b1.json",
-        lambda p: {},
-        {},
-        lost="the run finished as the instance hit $0 and its JSON died with the box; "
-        "the log lines are quoted in RESULTS.md and the full 50-ticket artifact "
-        "replaces this when it lands",
+        "airline 50: 37 vs 38, net +1",
+        "tau2-airline-full.json",
+        tau2_numbers,
+        {"none_passed": 37, "memory_passed": 38, "n": 50, "boundaries": 50},
     ),
 ]
 

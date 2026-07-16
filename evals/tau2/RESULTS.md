@@ -1,29 +1,26 @@
-# tau2-bench, airline, first live run
+# tau2-bench, airline, the paper's other benchmark
 
-Qwen3.6-27B on both sides, self-hosted, nothing billed per token. Sixteen tickets of
-the airline split, the same sixteen for both arms.
+Qwen3.6-27B on both sides, self-hosted, nothing billed per token. The whole airline
+split, the same fifty tickets for both arms, one ticket at a time for the memory arm
+because it shares one bank.
 
 | | no memory | memory |
 |---|---|---|
-| passed | 13 of 16 | 13 of 16 |
+| passed | 37 of 50 | 38 of 50 |
+| pass rate | 0.74 | 0.76 |
 | tickets lost to errors | 0 | 0 |
-| fail to pass with memory | | 1 |
-| pass to fail with memory | | 1 |
-| **net** | | **+0** |
+| ticket boundaries the bank saw | | 50 |
+| fail to pass with memory | | 5 |
+| pass to fail with memory | | 4 |
+| **net** | | **+1** |
 
-Nothing moved. That is what was written down before the run, for a reason: the
-baseline passes 13 of 16 on its own, so there are three failures available to flip,
-and one flip each way on sixteen tickets is noise wearing a number. The result is
-here because it happened, not because it says anything. One
-caution a reader deserves: the run's JSON died with the stopped instance, so unlike
-every other number in this repo these three rows have no committed artifact behind
-them, only the log lines this page quotes. `evals/check_receipts.py` lists the entry
-as LOST for that reason, and the 50-ticket artifact replaces it when it lands.
+The paper reports +6.8pp here. This run is +2pp, which on fifty paired tickets is
+one ticket. Five went one way and four went the other, and a coin does that.
 
-## What the run was actually for
+## Why the null is worth reading anyway
 
-Three earlier attempts died in ways that would have made any number a lie, and the
-last one is the reason to read this page at all:
+Not because it is a number, but because of what it cost to make it an honest one.
+Four runs died first, in ways that would each have produced a table:
 
 | attempt | outcome |
 |---|---|
@@ -32,31 +29,44 @@ last one is the reason to read this page at all:
 | 3 | a 400 per reminder: Qwen3.6's chat template rejects a system message anywhere but the front, so only the arm carrying reminders broke |
 | 4 | the ssh tunnel died and took sixteen of sixteen tickets with it |
 
-Attempt 3 is worth stating plainly. The memory arm was the only arm that could break,
+Attempt 3 is the one to keep. The memory arm was the only arm that could break,
 because it was the only one injecting, and it broke as a 400 buried in a log. Before
-that was found, the arm reported **3 of 3, a perfect pass rate**, against a baseline
-of 6 of 8. It looked like the best result the project had ever produced. It was
-survivorship: thirteen of sixteen tickets had already been dropped.
+that was found the arm reported **3 of 3, a perfect pass rate**, against a baseline
+of 6 of 8. It looked like the best result this project had ever produced. It was
+thirteen of sixteen tickets already dropped, and the survivors flattering us.
 
 The tunnel was the last of it. tau2 needs no Docker and the box already had Python
-3.12, so the harness moved onto the box and talks to vLLM over localhost. No tunnel,
-no failure class: **zero tickets lost**, which is the one thing this run does
-establish.
+3.12, so the harness moved onto the box and talks to vLLM over localhost. Zero
+tickets lost in this run, on both arms, which is the one thing the earlier attempts
+could never claim.
 
-## What would produce a number
+## What this does and does not say
 
-The full airline split, both arms, about three hours of one GPU. The infrastructure
-is now known clean, which is the only reason that spend is worth anything.
+It does not replicate +6.8pp on this model, and it does not refute it either: a
+different action model, a different memory implementation, and fifty tickets against
+their number are three reasons a gap this size would not show.
+
+What tempers any reading: the domain policy is in every ticket's system prompt
+already. Memory can only earn its place on what the policy does not say, which is a
+narrower job than the setup suggests. And the baseline passes 37 of 50 on its own,
+leaving thirteen failures to work with.
+
+An earlier draft of this section predicted a null by analogy to Terminal-Bench, and
+that reasoning was wrong even though the outcome matched. TB tasks are unrelated to
+each other, so memory has nothing to carry and the null there is structural. A tau2
+domain is fifty tickets against one policy, one schema and one tool set, which is
+the setting this layer is built for. It had its chance here and did not take it.
+
+## Reproduce
 
 ```bash
 # on the box, not through a tunnel
 /workspace/tau2-bench/.venv-tau2/bin/python evals/tau2/run_live.py \
-    --domain airline --seed-tag s1 \
+    --domain airline --seed-tag full \
     --action-model litellm/hosted_vllm/Qwen/Qwen3.6-27B \
     --api-base http://localhost:8011/v1 --no-thinking \
-    --out /workspace/tau2-airline-s1.json
+    --out tau2-airline-full.json
 ```
 
-Even then, the paper's claim is +6.8pp, which on fifty paired tickets is about three
-net flips. Fifty tickets can show a large effect and cannot resolve a small one, and
-that is worth deciding before the spend rather than discovering after it.
+`evals/report/tau2-airline-full.json` is the artifact every number above is computed
+from, and `python3 evals/check_receipts.py` recomputes them.
