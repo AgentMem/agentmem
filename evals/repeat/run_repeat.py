@@ -87,7 +87,10 @@ def run_condition(
             async_worker=False,
             session_id=f"repeat-{cond}",
             config=AgentMemConfig(
-                state_dir=str(mem_state), advantage_enabled=True, advantage_gate=False
+                state_dir=str(mem_state),
+                advantage_enabled=True,
+                advantage_gate=False,
+                relevance_boost=args.relevance_boost,
             ),
         )
     try:
@@ -146,6 +149,7 @@ def main() -> int:
     ap.add_argument("--session-usd-cap", type=float, default=5.0)
     ap.add_argument("--max-tokens", type=int, default=4096)
     ap.add_argument("--keep-dir", required=True)
+    ap.add_argument("--relevance-boost", action="store_true")
     ap.add_argument("--out", default="evals/report/repeat.json")
     args = ap.parse_args()
     args.memory_model = args.memory_model or args.action_model
