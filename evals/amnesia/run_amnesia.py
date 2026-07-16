@@ -168,7 +168,7 @@ def main() -> int:
     ap.add_argument("--action-model", required=True)
     ap.add_argument("--memory-model", default="")
     ap.add_argument("--api-base", default="")
-    ap.add_argument("--session-usd-cap", type=float, default=5.0)
+    ap.add_argument("--session-usd-cap", type=float, default=1.0)
     ap.add_argument("--max-tokens", type=int, default=4096)
     ap.add_argument("--out-dir", default="")
     args = ap.parse_args()
@@ -224,10 +224,16 @@ def main() -> int:
             f"refuted={r['account']['contradicted']}"
         )
 
+    from agentmem_evals.tbench.loop import is_self_hosted
+
+    if not is_self_hosted(args.action_model):
+        spent = sum(s.get("spent_usd", 0.0) for arm in arms for s in arm.get("sessions", []))
+        print(f"\nthis run billed roughly ${spent:.2f} on {args.action_model}")
+
     meta = {"repo": args.repo, "ref": ref[:12], "model": args.action_model}
     (out_dir / "amnesia-report.json").write_text(json.dumps(arms, indent=2))
     (out_dir / "amnesia-report.md").write_text(render_report(spec, arms, meta))
-    print(f"\nreport: {out_dir}/amnesia-report.md")
+    print(f"report: {out_dir}/amnesia-report.md")
     return 0
 
 

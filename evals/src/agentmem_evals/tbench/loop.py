@@ -14,6 +14,7 @@ from agentmem.session import MemorySession
 PRICES: dict[str, tuple[float, float]] = {
     "claude-haiku-4-5": (1.0, 5.0),
     "claude-sonnet-5": (3.0, 15.0),
+    "claude-sonnet-4-6": (3.0, 15.0),
     "claude-opus-4-8": (5.0, 25.0),
 }
 # When the model isn't in the table, assume Sonnet-tier prices rather than undercounting.

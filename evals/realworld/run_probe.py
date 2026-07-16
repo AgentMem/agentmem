@@ -153,7 +153,12 @@ def run_condition(cond: str, args: argparse.Namespace, root: Path) -> dict:
             if memory is not None:
                 memory.close(task_reward=0.0)
             sessions_log.append(
-                {"ticket": ticket[:60], "turns": loop.turns, "stop": loop.stop_reason}
+                {
+                    "ticket": ticket[:60],
+                    "turns": loop.turns,
+                    "stop": loop.stop_reason,
+                    "spent_usd": round(loop.spent_usd, 4),
+                }
             )
             print(f"  {cond} s{i}: turns={loop.turns} {loop.stop_reason}", flush=True)
     finally:
