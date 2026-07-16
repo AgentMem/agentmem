@@ -8,9 +8,14 @@ sentence. The table of claim to artifact is [RECEIPTS.md](./RECEIPTS.md).
 ## Where things stand
 
 One result is strong, and now runs on two very different action models with a twist
-worth stating up front. One is a mechanism without a number. Two are nulls, and a third
-eval reruns as a null on the stronger model too. The turn-count value is still not
-established, which is now the largest hole.
+worth stating up front. One is a mechanism without a number. The rest are nulls,
+including the compaction eval once it finally ran live on the product's home turf, and
+they line up into one honest read: every attempt to show memory making an agent fix code
+faster comes back null, because the knowledge a re-encountered coding wall needs is
+almost always rederivable from the code and the error in front of it. What memory is
+decisive at is the other axis, recalling its own past accurately, where an agent without
+it invents a history or goes blank. Recall, not acceleration, is what this repo stands
+behind.
 
 | question | verdict | detail |
 |---|---|---|
@@ -22,7 +27,7 @@ established, which is now the largest hole.
 | are reminders grounded in what they cite | 12 of 12 at temperature 0, with two caveats found by hand | [audit](./audit/RESULTS.md) |
 | tau2-bench airline, 50 paired tickets | **null**: 37 vs 38, net +1 | [tau2](./tau2/RESULTS.md) |
 | Terminal-Bench 2.0, 23 paired tasks | **null**, and structurally so | [tbench](./tbench/RESULTS.md) |
-| what survives Claude Code's compaction | **harness built and verified dry, never run live** | [compaction](./compaction/README.md) |
+| what survives Claude Code's compaction | **now runs live, and it is a null**: the bank crossed the compact but did not cut recovery calls (25 vs 37, 4 vs 4), both grounded | [compaction](./compaction/README.md) |
 
 ## The one that holds
 

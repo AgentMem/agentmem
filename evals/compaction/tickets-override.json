@@ -1,0 +1,13 @@
+{
+  "repo": "evals/compaction/fixtures/override-decoy",
+  "ref": "",
+  "wall_re": "1 failed",
+  "green_re": "1 passed",
+  "sessions": [
+    "Run 'python -m pytest test_greeting.py -q'. It fails: the greeting resolves to something other than 'welcome'. The obvious place to set it does not take effect, so find what actually determines the resolved value and make the test pass. Do not commit.",
+    "Add a short docstring to the describe() function in config.py explaining what it returns.",
+    "Create test_config.py with a test asserting config.MAX_RETRIES == 3, and run just it with 'python -m pytest test_config.py -q'.",
+    "Discard uncommitted changes with 'git checkout -- .', then make 'python -m pytest test_greeting.py -q' pass again. Be quick."
+  ],
+  "probe": "Before the next ticket: which file actually controls the resolved greeting value, and why does editing config.py's GREETING not change it? Be specific about file names."
+}

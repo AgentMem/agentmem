@@ -1,0 +1,56 @@
+[
+  {
+    "arm": "none",
+    "seed": 1,
+    "metrics": {
+      "wall_reencountered": true,
+      "recovered": true,
+      "calls_wall_to_green": 4,
+      "repeats_of_known_failures": 0,
+      "post_compact_tool_calls": 4,
+      "post_compact_tokens_in": 104,
+      "post_compact_tokens_out": 2802
+    },
+    "probe_grounding": {
+      "grounded": true,
+      "real": [
+        "\"welcome\"",
+        "GREETING",
+        "GREETING = \"hello\"",
+        "_overrides.py",
+        "config",
+        "config.py",
+        "from _overrides import *"
+      ],
+      "n_real": 7,
+      "n_invented": 0
+    },
+    "probe": "`_overrides.py` actually controls the resolved greeting value.\n\nHere's why editing `config.py`'s `GREETING` doesn't work:\n\n1. `config.py` defines `GREETING = \"hello\"` at line 7\n2. But at line 19, it imports: `from _overrides import *`\n3. This import statement executes *after* the initial assignment, so it overwrites `GREETING` with whatever value is in `_overrides.py`\n\nSo when code imports `GREETING` from `config`, it gets the value from `_overrides.py` (currently `\"welcome\"`), not the default from `config.py`. The comment in `config.py` explains this: \"Site-local overrides are applied last, a",
+    "transcript": "/private/tmp/claude-501/-Users-nguyenson-AgentMem/4de77004-6732-474b-8a02-9781e21db670/scratchpad/compaction-ov/none-s1/claude-config/projects/-private-tmp-claude-501--Users-nguyenson-AgentMem-4de77004-6732-474b-8a02-9781e21db670-scratchpad-compaction-ov-none-s1-repo/02bab221-5c1e-4c9b-957c-79103ec50384.jsonl"
+  },
+  {
+    "arm": "memory",
+    "seed": 1,
+    "metrics": {
+      "wall_reencountered": true,
+      "recovered": true,
+      "calls_wall_to_green": 4,
+      "repeats_of_known_failures": 0,
+      "post_compact_tool_calls": 4,
+      "post_compact_tokens_in": 104,
+      "post_compact_tokens_out": 3162
+    },
+    "probe_grounding": {
+      "grounded": true,
+      "real": [
+        "_overrides.py",
+        "config.py",
+        "from _overrides import *"
+      ],
+      "n_real": 3,
+      "n_invented": 0
+    },
+    "probe": "**_overrides.py** controls the resolved greeting value.\n\nEditing `config.py`'s GREETING doesn't change it because `config.py` ends with `from _overrides import *` (line 19). This import happens at module load time and overwrites whatever GREETING was set to earlier in the file. So `_overrides.py`'s value always wins.\n\nThe comment in `config.py` explains it: \"Site-local overrides are applied last, after the defaults above, so whatever a deployment sets in _overrides wins. Keep this import at the bottom.\"",
+    "transcript": "/private/tmp/claude-501/-Users-nguyenson-AgentMem/4de77004-6732-474b-8a02-9781e21db670/scratchpad/compaction-ov/memory-s1/claude-config/projects/-private-tmp-claude-501--Users-nguyenson-AgentMem-4de77004-6732-474b-8a02-9781e21db670-scratchpad-compaction-ov-memory-s1-repo/302e4bb9-9124-439f-a6d3-9a733ea6ff3b.jsonl"
+  }
+]

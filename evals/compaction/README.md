@@ -81,3 +81,42 @@ and answer the probe grounded. If it does not, that is not a benchmark artifact 
 explain away; this is the product's home turf, and a null here is product feedback.
 One thing this eval cannot show either way is task pass rates; it measures waste and
 recall, which is what compaction actually taxes.
+
+## What the first live runs found
+
+Getting the harness to run was the first paid smoke's real work. Driving the actual
+Claude Code TUI through a pty never submitted its input reliably, and a fresh config dir
+walks into a chain of first-run prompts (onboarding, folder trust, the env-key notice,
+the bypass-permissions accept). The runner drives headless instead: each ticket is a
+`claude -p` turn chained with `--continue`, and `/compact` runs the same way. The plugin
+hooks fire under it unchanged, so the memory arm is real. This is what `run_live.py` now
+does; the pty `driver.py` is kept only for the offline mock check.
+
+Two scenarios, Haiku in both roles, one seed each:
+
+| scenario | what the compact drops | none | memory |
+|---|---|---|---|
+| click 8.1.7 pytest bit-rot | the fix, but `git checkout` puts the failing test back on screen | 25 calls to green | 37 |
+| override-decoy fixture | which of two files sets the value | 4 | 4 |
+
+Both null, and both for the same reason, which is the point. The memory arm genuinely
+carried the bank across the compact: its transcript cites `K-002`, `P-001` through
+`P-003`, the none arm cites no entry, so the arms differ as intended. Memory still did
+not help, because in both scenarios the dropped knowledge was cheap to rebuild from what
+stayed on screen. The pytest error names its own fix, and the override file announces
+itself in a comment the agent reads in one step (the constructed fixture turned out no
+less rederivable than the real repo). Claude Code's own compact summary also preserved
+enough for both arms to answer the probe grounded.
+
+That is the same shape as `evals/repeat`, and it is not an accident. Memory pays for
+itself only when the needed knowledge cannot be cheaply rebuilt from the current
+context; a re-encountered wall that re-describes its own fix is the opposite case.
+Constructing a genuinely non-rederivable coding scenario is hard precisely because a
+capable agent rereads the code and rederives it, which is the honest limit this measure
+keeps hitting.
+
+So the result is a null on the waste metric, on the product's home turf, and a null the
+rest of this repo predicts. What memory is decisive at is the other axis: the
+confabulation runs, where the question is not "fix it faster" but "what did you do", are
+where the bank changes the answer. Recall, not acceleration, is the value this layer has
+earned; this eval measures acceleration and honestly finds none.

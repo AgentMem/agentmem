@@ -21,8 +21,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parents[0] / "longdebug_causal"))
 
 import grounding as G  # noqa: E402
-from driver import Driver  # noqa: E402
-from score import last_assistant_text, load, post_compact_metrics  # noqa: E402
+from score import load, post_compact_metrics  # noqa: E402
 
 PLUGIN_HOOKS = HERE.parents[1] / "integrations" / "claude-code-plugin" / "hooks" / "hooks.json"
 
@@ -52,11 +51,45 @@ def fresh_dir(path: Path) -> Path:
 def setup_arm(arm: str, seed: int, args: argparse.Namespace, spec: dict) -> dict:
     root = fresh_dir(Path(args.workroot) / f"{arm}-s{seed}")
     workdir = root / "repo"
-    sh(["git", "clone", "-q", spec["repo"], str(workdir)])
-    sh(["git", "checkout", "-q", spec["ref"]], cwd=str(workdir))
+    src = Path(spec["repo"])
+    if src.exists():
+        # A local fixture, not a clone: copy it and make it a git repo so ticket 4's
+        # `git checkout -- .` has a committed state to revert to.
+        sh(["cp", "-R", str(src.resolve()), str(workdir)])
+        sh(["git", "init", "-q"], cwd=str(workdir))
+        sh(["git", "add", "-A"], cwd=str(workdir))
+        sh(["git", "-c", "user.email=e@x", "-c", "user.name=eval", "commit", "-qm", "init"], cwd=str(workdir))
+    else:
+        sh(["git", "clone", "-q", spec["repo"], str(workdir)])
+        sh(["git", "checkout", "-q", spec["ref"]], cwd=str(workdir))
 
     config_dir = root / "claude-config"
     config_dir.mkdir(parents=True)
+    # A fresh CLAUDE_CONFIG_DIR otherwise drops claude into its first-run onboarding TUI
+    # and then a per-folder trust prompt, neither of which hands control back to the
+    # driver. Seed the flags a finished setup leaves behind, including trust for the
+    # workdir, so the session opens straight at the prompt.
+    (config_dir / ".claude.json").write_text(
+        json.dumps(
+            {
+                "hasCompletedOnboarding": True,
+                "lastOnboardingVersion": "2.1.202",
+                "hasSeenAutoModeEntryWarning": True,
+                "numStartups": 5,
+                "theme": "dark",
+                "installMethod": "native",
+                "projects": {
+                    str(workdir.resolve()): {
+                        "hasTrustDialogAccepted": True,
+                        "projectOnboardingSeenCount": 1,
+                        "allowedTools": [],
+                        "hasClaudeMdExternalIncludesApproved": False,
+                        "hasClaudeMdExternalIncludesWarningShown": False,
+                    }
+                },
+            }
+        )
+    )
     if arm == "memory":
         hooks = json.loads(PLUGIN_HOOKS.read_text())
         (config_dir / "settings.json").write_text(json.dumps(hooks, indent=2))
@@ -75,33 +108,36 @@ def find_transcript(config_dir: Path) -> Path:
     return files[-1]
 
 
-def run_arm(arm: str, seed: int, args: argparse.Namespace, spec: dict) -> dict:
-    ctx = setup_arm(arm, seed, args, spec)
-    d = Driver(
-        ["claude", "--model", args.model, "--dangerously-skip-permissions"],
-        Path("/nonexistent-until-first-turn"),
+def _turn(prompt: str, *, cont: bool, args: argparse.Namespace, ctx: dict) -> subprocess.CompletedProcess:
+    cmd = ["claude", "--model", args.model, "--dangerously-skip-permissions"]
+    if cont:
+        cmd.append("--continue")
+    cmd += ["-p", prompt]
+    return subprocess.run(
+        cmd,
         cwd=str(ctx["workdir"]),
         env=ctx["env"],
+        capture_output=True,
+        text=True,
+        timeout=args.ticket_timeout,
     )
-    d.start()
-    try:
-        d.send(spec["sessions"][0])
-        d.wait_idle(quiet=25.0, timeout=args.ticket_timeout)
-        d.transcript = find_transcript(ctx["config_dir"])
-        for ticket in spec["sessions"][1:3]:
-            d.send(ticket)
-            d.wait_idle(quiet=25.0, timeout=args.ticket_timeout)
-        d.compact(timeout=600)
-        d.send(spec["sessions"][3])
-        d.wait_idle(quiet=25.0, timeout=args.ticket_timeout)
-        d.send(spec["probe"])
-        d.wait_idle(quiet=25.0, timeout=600)
-        transcript = d.transcript
-    finally:
-        d.stop()
 
+
+def run_arm(arm: str, seed: int, args: argparse.Namespace, spec: dict) -> dict:
+    ctx = setup_arm(arm, seed, args, spec)
+    # Headless, not the TUI. Each ticket is a `claude -p` turn, chained with --continue
+    # into one session; /compact runs the same way. Driving the real Ink TUI through a
+    # pty never submitted its input reliably and a fresh config dragged in the whole
+    # first-run gate cascade, while -p sidesteps both and still fires the plugin hooks.
+    _turn(spec["sessions"][0], cont=False, args=args, ctx=ctx)
+    for ticket in spec["sessions"][1:3]:
+        _turn(ticket, cont=True, args=args, ctx=ctx)
+    _turn("/compact", cont=True, args=args, ctx=ctx)
+    _turn(spec["sessions"][3], cont=True, args=args, ctx=ctx)
+    probe = _turn(spec["probe"], cont=True, args=args, ctx=ctx).stdout.strip()
+
+    transcript = find_transcript(ctx["config_dir"])
     entries = load(transcript)
-    probe = last_assistant_text(entries)
     return {
         "arm": arm,
         "seed": seed,

@@ -55,6 +55,16 @@ def repeat_numbers(path: Path) -> dict[str, Any]:
     }
 
 
+def compaction_numbers(path: Path) -> dict[str, Any]:
+    g = {r["arm"]: r for r in json.loads(path.read_text())}
+    return {
+        "none_calls": g["none"]["metrics"]["calls_wall_to_green"],
+        "memory_calls": g["memory"]["metrics"]["calls_wall_to_green"],
+        "none_grounded": g["none"]["probe_grounding"]["grounded"],
+        "memory_grounded": g["memory"]["probe_grounding"]["grounded"],
+    }
+
+
 def tau2_numbers(path: Path) -> dict[str, Any]:
     g = {r["arm"]: r for r in json.loads(path.read_text())}
     return {
@@ -256,6 +266,20 @@ CLAIMS = [
         "repeat-click-sonnet-s3.json",
         repeat_numbers,
         {"none_turns": 4, "memory_turns": 4, "none_hits": 1, "memory_hits": 1, "reminders": 2},
+    ),
+    Claim(
+        "evals/compaction/README.md",
+        "compaction click, headless Haiku: null, 25 vs 37, both grounded",
+        "compaction-haiku-smoke.json",
+        compaction_numbers,
+        {"none_calls": 25, "memory_calls": 37, "none_grounded": True, "memory_grounded": True},
+    ),
+    Claim(
+        "evals/compaction/README.md",
+        "compaction override-decoy, Haiku: null, 4 vs 4, both grounded",
+        "compaction-override-haiku.json",
+        compaction_numbers,
+        {"none_calls": 4, "memory_calls": 4, "none_grounded": True, "memory_grounded": True},
     ),
 ]
 
