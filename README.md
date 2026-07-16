@@ -223,6 +223,11 @@ Details, including the miss, in [RESULTS.md](./evals/longdebug_causal/RESULTS.md
 mirror image of the Terminal-Bench result below: memory earns its keep across sessions, not
 inside a single short task.
 
+To watch this on your own code instead of ours: `evals/amnesia/run_amnesia.py
+/path/to/your/repo --action-model ...` runs the same probe against any Python repo
+with a test suite and writes the two answers side by side, every claim checked
+against git.
+
 Those tasks are ours, so the same probe was run on code that isn't: four ordinary chores on
 [pallets/click](https://github.com/pallets/click), then on
 [python-attrs/attrs](https://github.com/python-attrs/attrs), no gold answer and no planted
