@@ -1,0 +1,16 @@
+{
+  "session_id": "tau2-airline-p4",
+  "task": "Handle customer service tickets in this domain",
+  "updated_at": "2026-07-15T23:54:46.765420+00:00",
+  "bank": {
+    "status": "",
+    "knowledge": {},
+    "procedural": {},
+    "edges": [],
+    "archive": {},
+    "version": 0,
+    "sessions_seen": 1,
+    "seq_knowledge": 0,
+    "seq_procedural": 0
+  }
+}

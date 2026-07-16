@@ -32,8 +32,12 @@ tau2 needs its own virtualenv. It is not optional and not cosmetic:
 ```bash
 git clone https://github.com/sierra-research/tau2-bench && cd tau2-bench
 uv venv --python 3.12 .venv-tau2
-VIRTUAL_ENV=$PWD/.venv-tau2 uv pip install -e . ../AgentMem/packages/agentmem ../AgentMem/evals
+VIRTUAL_ENV=$PWD/.venv-tau2 uv pip install -e . -e ../AgentMem/packages/agentmem -e ../AgentMem/evals
 ```
+
+Install ours editable. Without `-e` the venv holds a copy taken at install time, so
+every check below passes against whatever the code was then, including the bugs it
+still had.
 
 `evals/vm/bringup.sh` does all of this on a fresh box, along with everything else.
 

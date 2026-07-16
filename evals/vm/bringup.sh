@@ -66,7 +66,9 @@ cd "$WORK"
 cd tau2-bench && git checkout -q "$TAU2_REF" && git pull -q --ff-only || true
 [ -d .venv-tau2 ] || uv venv -q --python 3.12 .venv-tau2
 VIRTUAL_ENV="$PWD/.venv-tau2" uv pip install -q -e . pytest
-VIRTUAL_ENV="$PWD/.venv-tau2" uv pip install -q "$WORK/AgentMem/packages/agentmem" "$WORK/AgentMem/evals"
+# Editable, so the venv tracks the checkout. A plain install copies a snapshot,
+# and every check then passes against whatever the code was at install time.
+VIRTUAL_ENV="$PWD/.venv-tau2" uv pip install -q -e "$WORK/AgentMem/packages/agentmem" -e "$WORK/AgentMem/evals"
 # NOTE: `pip install tau2` from PyPI is a completely unrelated package by another
 # author. The benchmark is only on GitHub.
 

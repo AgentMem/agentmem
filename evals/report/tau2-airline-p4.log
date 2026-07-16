@@ -1,0 +1,1782 @@
+2026-07-16 06:43:20.278 | WARNING  | tau2.utils.utils:<module>:15 - No .env file found
+2026-07-16 06:43:20.278 | INFO     | tau2.utils.utils:<module>:28 - Using data directory from source: /Users/nguyenson/AgentMem/tau2-bench/data
+2026-07-16 06:43:22.878 | INFO     | tau2.utils.llm_utils:<module>:102 - LiteLLM: Cache is disabled
+2026-07-16 06:43:22.919 | DEBUG    | tau2.registry:<module>:281 - Registering default components...
+2026-07-16 06:43:22.921 | DEBUG    | tau2.registry:<module>:292 - Voice dependencies not installed, skipping voice user registration
+2026-07-16 06:43:22.921 | DEBUG    | tau2.registry:<module>:350 - Default components registered successfully. Registry info: {
+  "domains": [
+    "mock",
+    "airline",
+    "retail",
+    "telecom",
+    "telecom-workflow",
+    "banking_knowledge"
+  ],
+  "agents": [
+    "llm_agent",
+    "llm_agent_gt",
+    "llm_agent_solo",
+    "discrete_time_audio_native_agent"
+  ],
+  "users": [
+    "user_simulator",
+    "dummy_user"
+  ],
+  "task_sets": [
+    "mock",
+    "airline",
+    "retail",
+    "telecom_full",
+    "telecom_small",
+    "telecom",
+    "telecom-workflow",
+    "banking_knowledge"
+  ]
+}
+2026-07-16 06:43:24.068 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+2026-07-16 06:43:26.753 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+2026-07-16 06:43:26.754 | WARNING  | tau2.utils.llm_utils:generate:427 - Output might be incomplete due to token limit!
+action, user simulator and memory are all self-hosted: $0 in API spend
+domain airline, split base: 16 tasks
+preflight: one call as tau2 makes it, model='hosted_vllm/Qwen/Qwen3.6-27B'
+  reply: 'ok'
+preflight: the shape a reminder makes
+  accepted: 'I have checked the fare rules as noted i'
+action=litellm/hosted_vllm/Qwen/Qwen3.6-27B  user=litellm/hosted_vllm/Qwen/Qwen3.6-27B  memory=litellm/hosted_vllm/Qwen/Qwen3.6-27B
+== none
+1/16 (trial 1/1). Running task 1, trial 1
+2/16 (trial 1/1). Running task 2, trial 1
+0/16 (trial 1/1). Running task 0, trial 1
+3/16 (trial 1/1). Running task 3, trial 1
+2026-07-16 06:43:29.210 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:29.388 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:29.454 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:33.722 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:34.349 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:35.866 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:36.071 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:36.276 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:36.990 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:39.449 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:40.116 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:41.812 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:42.544 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:45.882 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:46.253 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:49.171 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:49.425 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:49.523 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:52.792 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:54.745 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 0/16 complete. Avg reward: N/A. 4 running: 0.0(30s), 1.0(30s), 2.0(30s),
+3.0(30s)
+2026-07-16 06:43:56.986 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:57.475 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:43:58.158 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:00.510 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:02.581 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:02.800 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:07.304 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:07.565 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:11.325 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:12.802 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:15.091 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:16.238 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:16.457 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:17.642 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:17.937 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:20.849 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:23.229 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:25.322 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:26.229 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 0/16 complete. Avg reward: N/A. 4 running: 0.0(60s), 1.0(60s), 2.0(60s),
+3.0(60s)
+2026-07-16 06:44:28.628 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:29.032 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:29.252 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:32.816 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:33.214 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+4/16 (trial 1/1). Running task 4, trial 1
+2026-07-16 06:44:35.275 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:35.497 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:38.212 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:38.578 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:42.530 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:42.787 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:45.924 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:46.399 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:49.543 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:49.701 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:49.763 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:52.257 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:52.460 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+5/16 (trial 1/1). Running task 5, trial 1
+2026-07-16 06:44:54.612 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:44:54.813 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 2/16 complete. Avg reward: 1.00 (N=2). 4 running: 1.0(90s), 2.0(90s), 
+4.0(24s), 5.0(4s)
+2026-07-16 06:44:57.722 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:01.133 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:01.831 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:05.467 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:06.168 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:08.992 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:09.360 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:12.776 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:13.683 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:13.924 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:13.938 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:14.253 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+6/16 (trial 1/1). Running task 6, trial 1
+2026-07-16 06:45:18.269 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:18.710 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:22.913 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:23.167 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 3/16 complete. Avg reward: 1.00 (N=3). 4 running: 2.0(120s), 4.0(54s), 
+5.0(34s), 6.0(12s)
+2026-07-16 06:45:27.383 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:27.708 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:30.290 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:30.554 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:30.798 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:35.090 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:35.308 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:38.686 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:41.371 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:44.067 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:45.812 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:47.125 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:47.343 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:49.804 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:50.046 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:54.572 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:45:54.790 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 3/16 complete. Avg reward: 1.00 (N=3). 4 running: 2.0(150s), 4.0(84s), 
+5.0(64s), 6.0(42s)
+2026-07-16 06:45:59.533 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:03.752 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:04.158 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:07.242 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:07.568 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:10.066 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+7/16 (trial 1/1). Running task 7, trial 1
+2026-07-16 06:46:11.007 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:13.951 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:16.734 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:17.102 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:18.137 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:18.538 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:20.829 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:21.696 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:22.182 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:22.399 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 4/16 complete. Avg reward: 1.00 (N=4). 4 running: 2.0(180s), 5.0(94s), 
+6.0(72s), 7.0(16s)
+2026-07-16 06:46:28.475 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:28.738 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:34.385 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:37.492 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:39.549 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:40.924 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:41.260 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+8/16 (trial 1/1). Running task 8, trial 1
+2026-07-16 06:46:41.675 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+9/16 (trial 1/1). Running task 9, trial 1
+2026-07-16 06:46:43.855 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:46.263 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:48.222 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:48.438 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:51.423 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:51.654 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:54.524 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:56.828 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 6/16 complete. Avg reward: 0.83 (N=6). 4 running: 6.0(102s), 7.0(46s), 
+8.0(15s), 9.0(15s)
+2026-07-16 06:46:57.233 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:46:59.039 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:01.213 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:01.552 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:05.378 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:05.983 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:07.598 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:08.336 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:13.341 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:17.347 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:20.579 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:21.128 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:26.266 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 6/16 complete. Avg reward: 0.83 (N=6). 4 running: 6.0(132s), 7.0(76s), 
+8.0(45s), 9.0(45s)
+2026-07-16 06:47:29.197 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:29.514 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:29.999 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:32.519 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:32.926 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:35.261 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:38.143 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:38.345 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:42.345 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:44.084 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:44.698 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:49.180 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:52.072 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:47:55.612 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 6/16 complete. Avg reward: 0.83 (N=6). 4 running: 6.0(162s), 7.0(106s), 
+8.0(75s), 9.0(75s)
+2026-07-16 06:47:58.316 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:00.892 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:03.232 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:04.792 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:05.779 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:10.838 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:13.516 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:13.935 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:18.263 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:21.869 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:22.277 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 6/16 complete. Avg reward: 0.83 (N=6). 4 running: 6.0(192s), 7.0(137s), 
+8.0(105s), 9.0(105s)
+2026-07-16 06:48:28.027 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:29.650 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:33.171 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:40.468 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:42.349 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:44.825 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:45.930 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:48.263 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:48.574 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+10/16 (trial 1/1). Running task 10, trial 1
+11/16 (trial 1/1). Running task 11, trial 1
+2026-07-16 06:48:51.708 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:52.226 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:55.574 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 8/16 complete. Avg reward: 0.75 (N=8). 4 running: 8.0(135s), 9.0(135s), 
+10.0(8s), 11.0(8s)
+2026-07-16 06:48:57.200 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:58.598 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:48:58.862 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:01.393 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:01.839 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:06.000 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:06.685 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:09.557 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:11.001 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:11.441 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:16.139 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:19.285 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:22.104 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:22.513 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:25.725 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 8/16 complete. Avg reward: 0.75 (N=8). 4 running: 8.0(165s), 9.0(165s), 
+10.0(38s), 11.0(38s)
+2026-07-16 06:49:29.600 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:34.205 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:34.408 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:38.667 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:43.889 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:49.799 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:54.320 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 8/16 complete. Avg reward: 0.75 (N=8). 4 running: 8.0(195s), 9.0(195s), 
+10.0(68s), 11.0(68s)
+2026-07-16 06:49:57.121 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:57.559 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:49:59.219 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+12/16 (trial 1/1). Running task 12, trial 1
+2026-07-16 06:49:59.767 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:01.850 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:02.067 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:03.423 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:08.784 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:09.905 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:12.864 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:18.683 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:20.447 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:24.476 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 9/16 complete. Avg reward: 0.78 (N=9). 4 running: 9.0(225s), 10.0(98s), 
+11.0(98s), 12.0(27s)
+2026-07-16 06:50:27.746 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:28.004 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:29.534 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:30.127 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:30.347 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:39.084 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:42.771 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:46.966 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:48.410 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:48.750 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+13/16 (trial 1/1). Running task 13, trial 1
+2026-07-16 06:50:48.912 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:53.421 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:50:53.948 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 10/16 complete. Avg reward: 0.80 (N=10). 4 running: 9.0(255s), 
+10.0(128s), 12.0(57s), 13.0(8s)
+2026-07-16 06:50:57.101 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:04.072 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:04.703 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:06.595 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:10.117 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:10.528 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:10.745 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:14.206 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+14/16 (trial 1/1). Running task 14, trial 1
+2026-07-16 06:51:16.048 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:16.665 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:17.349 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:21.990 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:23.524 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:23.916 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:25.981 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 11/16 complete. Avg reward: 0.73 (N=11). 4 running: 10.0(158s), 
+12.0(87s), 13.0(38s), 14.0(12s)
+2026-07-16 06:51:28.440 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:31.154 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:31.523 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:35.960 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:37.279 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:37.574 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:43.399 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:44.212 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:47.558 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:48.664 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:52.316 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:51:55.027 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 11/16 complete. Avg reward: 0.73 (N=11). 4 running: 10.0(188s), 
+12.0(117s), 13.0(68s), 14.0(42s)
+2026-07-16 06:51:58.640 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:01.023 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:01.880 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:04.870 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+15/16 (trial 1/1). Running task 15, trial 1
+2026-07-16 06:52:05.687 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:09.914 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:10.128 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:14.968 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:15.564 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:16.227 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:19.602 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:21.394 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:21.840 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:26.209 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:26.565 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 12/16 complete. Avg reward: 0.75 (N=12). 4 running: 10.0(218s), 
+13.0(98s), 14.0(72s), 15.0(22s)
+2026-07-16 06:52:30.802 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:33.256 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:33.964 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:40.069 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:49.948 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:51.331 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:52:55.180 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 12/16 complete. Avg reward: 0.75 (N=12). 4 running: 10.0(248s), 
+13.0(128s), 14.0(102s), 15.0(52s)
+2026-07-16 06:52:58.859 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:03.156 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:03.361 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:03.782 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:08.595 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:10.950 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:14.220 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:16.154 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:19.066 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:24.355 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 13/16 complete. Avg reward: 0.77 (N=13). 3 running: 13.0(158s), 
+14.0(132s), 15.0(82s)
+2026-07-16 06:53:38.363 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+2026-07-16 06:53:41.728 | ERROR    | tau2.utils.llm_utils:get_response_cost:129 - This model isn't mapped yet. model=Qwen/Qwen3.6-27B, custom_llm_provider=hosted_vllm. Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
+
+Status: 14/16 complete. Avg reward: 0.79 (N=14). 2 running: 14.0(162s), 
+15.0(112s)
+Status: 14/16 complete. Avg reward: 0.79 (N=14). 2 running: 14.0(192s), 
+15.0(142s)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:36.725 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:36.733 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Retry 1/3 for task 15: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+  Retry 1/3 for task 14: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:38.033 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:38.044 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Retry 2/3 for task 15: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+  Retry 2/3 for task 14: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:39.287 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Retry 3/3 for task 15: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:39.297 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Retry 3/3 for task 14: litellm.InternalServerError: InternalServerError: 
+Hosted_vllmException - [Errno 61] Connection refused
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:40.870 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+2026-07-16 06:54:40.877 | ERROR    | tau2.runner.progress:run_with_retry:101 - Task 15 failed after 4 attempts: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Task 15 failed permanently after 4 attempts: litellm.InternalServerError: 
+InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:40.881 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+2026-07-16 06:54:40.887 | ERROR    | tau2.runner.progress:run_with_retry:101 - Task 14 failed after 4 attempts: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  Task 14 failed permanently after 4 attempts: litellm.InternalServerError: 
+InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+Successfully completed all simulations!
+To review the simulations, run: tau2 view
+  none: 11/14 pass_rate=0.7857
+== memory
+  memory arm: forcing max_concurrency 1 (asked for 4)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:40.989 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 1/16 0: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.107 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 1/16 0: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.198 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 1/16 0: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 1/16 0: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.319 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 2/16 1: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.412 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 2/16 1: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.506 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 2/16 1: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 2/16 1: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.640 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 3/16 2: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.734 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 3/16 2: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.877 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 3/16 2: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 3/16 2: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:41.971 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 4/16 3: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.104 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 4/16 3: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.199 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 4/16 3: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 4/16 3: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.292 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 5/16 4: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.429 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 5/16 4: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.524 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 5/16 4: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 5/16 4: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.649 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 6/16 5: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.743 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 6/16 5: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.837 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 6/16 5: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 6/16 5: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:42.971 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 7/16 6: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.064 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 7/16 6: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.204 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 7/16 6: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 7/16 6: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.300 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 8/16 7: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.432 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 8/16 7: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.527 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 8/16 7: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 8/16 7: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:43.621 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 9/16 8: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.279 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 9/16 8: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.368 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 9/16 8: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 9/16 8: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.488 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 10/16 9: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.579 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 10/16 9: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.670 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 10/16 9: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 10/16 9: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.801 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 11/16 10: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:44.894 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 11/16 10: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.033 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 11/16 10: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 11/16 10: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.127 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 12/16 11: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.256 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 12/16 11: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.349 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 12/16 11: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 12/16 11: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.444 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 13/16 12: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.580 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 13/16 12: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.675 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 13/16 12: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 13/16 12: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.797 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 14/16 13: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.891 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 14/16 13: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:45.982 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 14/16 13: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 14/16 13: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.113 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 15/16 14: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.204 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 15/16 14: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.344 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 15/16 14: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 15/16 14: gave up, dropped from the pairing
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.439 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 16/16 15: attempt 1/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.570 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 16/16 15: attempt 2/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+2026-07-16 06:54:46.663 | ERROR    | tau2.utils.llm_utils:generate:417 - litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connection refused
+
+  ticket 16/16 15: attempt 3/3 failed (InternalServerError: litellm.InternalServerError: InternalServerError: Hosted_vllmException - [Errno 61] Connec)
+  ticket 16/16 15: gave up, dropped from the pairing
+  memory: 0/0 pass_rate=None
+
+report: /Users/nguyenson/AgentMem/evals/report/tau2-airline-p4.json
+
+unpaired and therefore ignored: 14 the memory arm lost, 0 the baseline lost
+
+paired on 0 tasks
+  fail -> pass with memory: 0  []
+  pass -> fail with memory: 0  []
+  net: +0
+  agent spend: none $0.0000 vs memory $0.0000 + $0.0000 on the memory layer itself
+  too few tasks moved either way to call this anything but noise
