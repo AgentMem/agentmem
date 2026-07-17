@@ -80,6 +80,15 @@ def main(argv: list[str] | None = None) -> int:
     p_step.add_argument("--state-dir", default=".agentmem")
     p_step.add_argument("--tool-failure", action="store_true")
 
+    p_report = sub.add_parser(
+        "report", help="verify an agent's account of its work against a repo (flight recorder)"
+    )
+    src = p_report.add_mutually_exclusive_group(required=True)
+    src.add_argument("--account", help="the agent's account of what it did")
+    src.add_argument("--account-file", help="read the account from a file")
+    p_report.add_argument("--repo", default=".", help="repository checkout to verify against")
+    p_report.add_argument("--html", help="also write a self-contained HTML report to this path")
+
     args = parser.parse_args(argv)
 
     if args.command == "demo":
@@ -100,9 +109,27 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_hook(args)
     if args.command == "_step":
         return _cmd_step(args)
+    if args.command == "report":
+        return _cmd_report(args)
 
     parser.print_help()
     return 0
+
+
+def _cmd_report(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .verify import verify_account
+
+    account = args.account if args.account is not None else Path(args.account_file).read_text()
+    report = verify_account(account, Path(args.repo))
+    print(report.to_markdown())
+    if args.html:
+        Path(args.html).write_text(report.to_html())
+        print(f"html: {args.html}")
+    # a clear fabrication (nothing verified, something contradicted) exits non-zero, so
+    # `agentmem report` can gate a script or CI on the agent not inventing its own past.
+    return 1 if report.status == "CONTRADICTED" else 0
 
 
 def _cmd_demo(args: argparse.Namespace) -> int:
