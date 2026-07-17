@@ -84,18 +84,9 @@ def test_has_our_hooks_detects_both_modes() -> None:
     assert not has_our_hooks({"hooks": {"PostToolUse": [{"hooks": [{"command": "echo hi"}]}]}})
 
 
-def _subcommands_only(hooks: dict) -> dict:
-    """The hooks structure with each command reduced to its `hook <subcommand>`. Lets the
-    plugin (which runs through its bundled wrapper) and the installer (which calls the bare
-    `agentmem`) be compared on everything but the command prefix."""
-    from copy import deepcopy
-
-    out = deepcopy(hooks)
-    for entries in out.values():
-        for entry in entries:
-            for h in entry["hooks"]:
-                h["command"] = "hook " + h["command"].split("hook ", 1)[1].strip()
-    return out
+def _subcommands(entries: list) -> set[str]:
+    """The `hook <subcommand>` each hook in an event fires, ignoring the command prefix."""
+    return {h["command"].split("hook ", 1)[1].strip() for e in entries for h in e["hooks"]}
 
 
 def test_plugin_hooks_stay_in_sync_with_the_installer() -> None:
@@ -109,8 +100,14 @@ def test_plugin_hooks_stay_in_sync_with_the_installer() -> None:
     plugin = json.loads(plugin_path.read_text())["hooks"]
     installer = daemonless_hooks()
 
-    # Same events, matchers, and hook subcommands, so the two install paths never drift.
-    assert _subcommands_only(plugin) == _subcommands_only(installer)
+    # Every memory hook the installer writes is present in the plugin, same event, same
+    # subcommand, so the two install paths never drift. The plugin adds the auto-audit
+    # hooks (audit-begin on SessionStart, audit-end on Stop) on top.
+    for event, entries in installer.items():
+        assert event in plugin
+        assert _subcommands(entries) <= _subcommands(plugin[event])
+    assert "Stop" in plugin and _subcommands(plugin["Stop"]) == {"audit-end"}
+    assert "audit-begin" in _subcommands(plugin["SessionStart"])
 
     # They differ only in how they reach the engine: the plugin through its bundled
     # bootstrap wrapper, the installer through an `agentmem` already on PATH.

@@ -21,6 +21,7 @@ import hashlib
 import json
 import re
 import uuid
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -28,6 +29,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from . import grounding
+from .recorders import OVERREACH_KINDS, Change, Recorder
 
 # Directories that are never part of an agent's real work product, so we neither snapshot
 # nor diff them. Keeps the before-state small and the diff about code, not noise.
@@ -76,6 +78,14 @@ _MAX_BLOB = 4_000_000
 _SUCCESS = re.compile(
     r"\b(pass(?:es|ed|ing)?|green|works?|working|fixed|fixes|succe\w*|done|"
     r"no (?:errors?|failures?)|all (?:good|tests? pass))\b",
+    re.I,
+)
+
+# A claim that asserts a git action. If git was recorded and none of these left a trace,
+# the agent is describing work it did not do.
+_GIT_CLAIM = re.compile(
+    r"\b(commit(?:s|ted|ting)?|push(?:es|ed|ing)?|branch(?:es|ed)?|tag(?:s|ged)?|"
+    r"merg(?:e|es|ed|ing)|pull request|opened a pr|\bpr\b)\b",
     re.I,
 )
 
@@ -209,6 +219,7 @@ class ActionReceipt(BaseModel):
     fabricated: list[str]
     overreach: list[str]
     incidental: list[str]
+    changes: list[Change] = []
     checks: list[Check]
     reversible: bool
     prev_hash: str
@@ -258,6 +269,7 @@ class ActionReceipt(BaseModel):
             "added": self.added,
             "modified": self.modified,
             "deleted": self.deleted,
+            "changes": [c.model_dump() for c in self.changes],
             "checks": [c.model_dump() for c in self.checks],
             "prev_hash": self.prev_hash,
         }
@@ -293,6 +305,11 @@ class ActionReceipt(BaseModel):
             lines.append(f"| `{c}` | changed, incidental |")
         for chk in self.failed_checks:
             lines.append(f"| check `{chk.name}` | claimed to pass, failed |")
+        if self.changes:
+            lines += ["", "beyond files:"]
+            for ch in self.changes:
+                extra = f" ({ch.detail})" if ch.detail else ""
+                lines.append(f"- {ch.verb} {ch.kind} `{ch.label}`{extra}")
         lines += [
             "",
             f"changed {len(self.added)} added, {len(self.modified)} modified, "
@@ -351,6 +368,8 @@ def build_receipt(
     effect: Effect,
     *,
     repo_name: str,
+    changes: list[Change] | None = None,
+    recorded_kinds: set[str] | None = None,
     checks: list[Check] | None = None,
     reversible: bool = True,
     actor: str = "agent",
@@ -358,7 +377,14 @@ def build_receipt(
     created_at: str | None = None,
     prev_hash: str = "",
 ) -> ActionReceipt:
-    """Split a claim against a real diff into verified / fabricated / overreach, and seal it."""
+    """Split a claim against a real diff into verified / fabricated / overreach, and seal it.
+
+    `changes` are non-file artifacts a recorder saw (git branches, commits, API resources);
+    `recorded_kinds` is what was actually watched, so a git action the claim asserts but
+    that left no branch, commit, or tag can be flagged rather than silently missed.
+    """
+    changes = changes or []
+    recorded_kinds = recorded_kinds or set()
     checks = checks or []
     changed = effect.changed
     claimed = grounding.path_candidates(claim)
@@ -382,6 +408,27 @@ def build_receipt(
             continue
         (incidental if _incidental(c) else overreach).append(c)
 
+    # Fold in the non-file changes. A commit is evidence the agent did work, never an
+    # overreach; a named artifact (branch, tag, resource) is verified when the claim
+    # mentions it and overreach when it does not.
+    low_claim = claim.lower()
+    for ch in changes:
+        if ch.kind == "commit":
+            continue
+        if ch.label.lower() in low_claim:
+            verified.append(f"{ch.kind} {ch.label}")
+        elif ch.kind in OVERREACH_KINDS:
+            overreach.append(f"{ch.kind} {ch.label} ({ch.verb})")
+
+    # A git action asserted in the claim that left no trace at all.
+    git_kinds = {"commit", "branch", "tag"}
+    if (
+        recorded_kinds & git_kinds
+        and _GIT_CLAIM.search(claim)
+        and not any(ch.kind in git_kinds for ch in changes)
+    ):
+        fabricated.append("a claimed git action that left no commit, branch, or tag")
+
     receipt = ActionReceipt(
         receipt_id=receipt_id or uuid.uuid4().hex[:12],
         created_at=created_at or datetime.now(UTC).isoformat(timespec="seconds"),
@@ -395,6 +442,7 @@ def build_receipt(
         fabricated=fabricated,
         overreach=overreach,
         incidental=incidental,
+        changes=changes,
         checks=checks,
         reversible=reversible,
         prev_hash=prev_hash,
@@ -409,6 +457,8 @@ def verify_run(
     after: Snapshot,
     claim: str,
     *,
+    changes: list[Change] | None = None,
+    recorded_kinds: set[str] | None = None,
     checks: list[Check] | None = None,
     repo_name: str | None = None,
     receipt_id: str | None = None,
@@ -416,8 +466,9 @@ def verify_run(
     actor: str = "agent",
 ) -> ActionReceipt:
     """Compare two snapshots, verify the claim against the real diff, and return a receipt.
-    A change is reversible only if the before-bytes of every modified or deleted file were
-    stored; added files need no stored bytes, undo just removes them."""
+    `changes` are non-file artifacts a recorder observed (git, API). A change is reversible
+    only if the before-bytes of every modified or deleted file were stored; added files need
+    no stored bytes, undo just removes them."""
     effect = Effect.between(before, after)
     reversible = all(
         before.blob(before.files[p][0]) is not None for p in effect.modified + effect.deleted
@@ -426,6 +477,8 @@ def verify_run(
         claim,
         effect,
         repo_name=repo_name or before.root.name or str(before.root),
+        changes=changes,
+        recorded_kinds=recorded_kinds,
         checks=checks,
         reversible=reversible,
         actor=actor,
@@ -449,9 +502,14 @@ class ReceiptStore:
     def _slot(self, receipt_id: str) -> Path:
         return self.dir / receipt_id
 
-    def begin(self, root: Path) -> str:
-        receipt_id = uuid.uuid4().hex[:12]
-        Snapshot.capture(Path(root), store=self._slot(receipt_id) / "before")
+    def begin(
+        self, root: Path, recorders: Sequence[Recorder] = (), receipt_id: str | None = None
+    ) -> str:
+        receipt_id = receipt_id or uuid.uuid4().hex[:12]
+        slot = self._slot(receipt_id)
+        Snapshot.capture(Path(root), store=slot / "before")
+        states = {r.name: dict(r.capture()) for r in recorders}
+        (slot / "before" / "recorders.json").write_text(json.dumps(states))
         self.dir.mkdir(parents=True, exist_ok=True)
         (self.dir / "CURRENT").write_text(receipt_id)
         return receipt_id
@@ -467,17 +525,42 @@ class ReceiptStore:
         cur = self.dir / "CURRENT"
         return cur.read_text().strip() if cur.exists() else None
 
+    def recorded_names(self, receipt_id: str) -> set[str]:
+        """Which recorders were active at `begin`, so `end` can re-create them."""
+        path = self._slot(receipt_id) / "before" / "recorders.json"
+        if not path.exists():
+            return set()
+        return set(json.loads(path.read_text()).keys())
+
     def end(
         self,
         receipt_id: str,
         claim: str,
         root: Path | None = None,
+        recorders: Sequence[Recorder] = (),
         checks: list[Check] | None = None,
     ) -> ActionReceipt:
-        before = Snapshot.load(self._slot(receipt_id) / "before")
+        slot = self._slot(receipt_id)
+        before = Snapshot.load(slot / "before")
         after = Snapshot.capture(Path(root) if root is not None else before.root, store=None)
+        before_states: dict[str, dict[str, str]] = {}
+        recorder_json = slot / "before" / "recorders.json"
+        if recorder_json.exists():
+            before_states = json.loads(recorder_json.read_text())
+        changes: list[Change] = []
+        recorded_kinds: set[str] = set()
+        for r in recorders:
+            recorded_kinds |= set(r.kinds)
+            changes.extend(r.diff(before_states.get(r.name, {}), dict(r.capture())))
         receipt = verify_run(
-            before, after, claim, checks=checks, receipt_id=receipt_id, prev_hash=self.head_hash()
+            before,
+            after,
+            claim,
+            changes=changes,
+            recorded_kinds=recorded_kinds,
+            checks=checks,
+            receipt_id=receipt_id,
+            prev_hash=self.head_hash(),
         )
         (self._slot(receipt_id) / "receipt.json").write_text(receipt.model_dump_json(indent=2))
         with (self.dir / "chain.jsonl").open("a") as fh:

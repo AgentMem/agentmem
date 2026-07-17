@@ -194,3 +194,44 @@ def test_action_audit_detection_eval_is_perfect() -> None:
         text=True,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
+
+
+def test_auto_audit_hook_records_and_verifies(tmp_path: Path, monkeypatch) -> None:  # noqa: ANN001
+    # The Claude Code auto-audit: SessionStart snapshots, Stop reads the agent's final
+    # message off the transcript and verifies it against the real diff, all through
+    # `agentmem hook`. A per-conversation receipt lands in the store.
+    import io
+
+    from agentmem.verify.receipt import ReceiptStore
+
+    _tree(tmp_path)
+    transcript = tmp_path / "transcript.jsonl"
+    transcript.write_text(
+        json.dumps(
+            {
+                "type": "assistant",
+                "message": {
+                    "role": "assistant",
+                    "content": [
+                        {"type": "text", "text": "I edited `core.py` and `services/ghost.py`."}
+                    ],
+                },
+            }
+        )
+        + "\n"
+    )
+
+    def feed(payload: dict) -> None:
+        monkeypatch.setattr("sys.stdin", io.StringIO(json.dumps(payload)))
+
+    feed({"cwd": str(tmp_path), "session_id": "s1"})
+    assert main(["hook", "audit-begin"]) == 0
+
+    _write(tmp_path, "core.py", "2\n")  # the "work" the agent did this session
+
+    feed({"cwd": str(tmp_path), "session_id": "s1", "transcript_path": str(transcript)})
+    assert main(["hook", "audit-end"]) == 0
+
+    receipt = ReceiptStore(tmp_path / ".agentmem").load("cc-s1")
+    assert "services/ghost.py" in receipt.fabricated
+    assert receipt.verdict == "FABRICATED"

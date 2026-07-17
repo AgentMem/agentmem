@@ -16,9 +16,11 @@ PLUGIN = REPO / "integrations" / "claude-code-plugin"
 MARKETPLACE = REPO / ".claude-plugin" / "marketplace.json"
 WRAPPER = PLUGIN / "bin" / "agentmem-engine"
 
-# The five events the engine's `agentmem hook` command understands. The hooks.json must
-# wire exactly these, or an event fires a subcommand the engine will reject.
-HOOK_EVENTS = {"session-start", "prompt", "post-tool", "pre-compact", "session-end"}
+# The memory hooks and the auto-audit hooks the engine's `agentmem hook` command
+# understands. The hooks.json must wire subcommands from this set, or an event fires one
+# the engine will reject.
+MEMORY_EVENTS = {"session-start", "prompt", "post-tool", "pre-compact", "session-end"}
+AUDIT_EVENTS = {"audit-begin", "audit-end"}
 
 
 def _load(path: Path) -> dict:
@@ -51,6 +53,7 @@ def test_hooks_call_the_wrapper_with_known_events() -> None:
         "UserPromptSubmit",
         "PostToolUse",
         "PreCompact",
+        "Stop",  # the auto-audit verifies the wrap-up here
         "SessionEnd",
     }
     seen = set()
@@ -62,7 +65,7 @@ def test_hooks_call_the_wrapper_with_known_events() -> None:
                 assert "${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine" in cmd
                 assert cmd.strip().startswith('"${CLAUDE_PLUGIN_ROOT}')  # path is quoted
                 seen.add(cmd.rsplit(" ", 1)[-1])
-    assert seen == HOOK_EVENTS
+    assert seen == MEMORY_EVENTS | AUDIT_EVENTS
 
 
 def test_wrapper_is_executable_shell() -> None:

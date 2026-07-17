@@ -18,14 +18,19 @@ from .receipt import (
     undo,
     verify_run,
 )
+from .recorders import ApiRecorder, Change, GitRecorder, Recorder
 from .report import AccountReport, verify_account
 
 __all__ = [
     "AccountReport",
     "ActionReceipt",
+    "ApiRecorder",
+    "Change",
     "Check",
     "Effect",
+    "GitRecorder",
     "ReceiptStore",
+    "Recorder",
     "Snapshot",
     "UndoResult",
     "build_receipt",

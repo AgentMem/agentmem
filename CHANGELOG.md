@@ -11,6 +11,14 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- Action audit reaches beyond files. A `Recorder` captures any ground truth an agent acts
+  on and diffs it into the same receipt: `GitRecorder` records branches, commits, and tags
+  (offline, no token), so a commit shows as evidence, an undisclosed branch is flagged, and
+  a claim to have committed that left no trace is caught; `ApiRecorder` does the same for any
+  cloud or mail resource you can list, without bundling a vendor SDK. `agentmem audit --git`
+  turns it on from the CLI. In the Claude Code plugin it runs itself: a SessionStart hook
+  freezes the state and a Stop hook checks the agent's wrap-up against the session's real
+  diff. New in `agentmem.verify`: `Recorder`, `Change`, `GitRecorder`, `ApiRecorder`.
 - `agentmem audit` verifies what an agent actually *did*, not just what it said. It captures
   the real before and after around a span of work and checks the agent's account against the
   diff, catching fabrication (a file claimed but never touched), overreach (a file changed

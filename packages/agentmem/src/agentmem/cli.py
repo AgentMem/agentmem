@@ -75,7 +75,15 @@ def main(argv: list[str] | None = None) -> int:
     p_hook = sub.add_parser("hook", help="handle a Claude Code hook event (reads JSON on stdin)")
     p_hook.add_argument(
         "event",
-        choices=["session-start", "prompt", "post-tool", "pre-compact", "session-end"],
+        choices=[
+            "session-start",
+            "prompt",
+            "post-tool",
+            "pre-compact",
+            "session-end",
+            "audit-begin",
+            "audit-end",
+        ],
     )
 
     # Internal: the detached memory-step a hook spawns. Hidden from help.
@@ -118,6 +126,11 @@ def main(argv: list[str] | None = None) -> int:
         choices=["trust", "any", "none"],
         default="trust",
         help="what makes end exit non-zero: trust breaks (default), any issue, or never",
+    )
+    p_audit.add_argument(
+        "--git",
+        action="store_true",
+        help="also record git branches, commits, and tags (on begin; end auto-detects)",
     )
 
     args = parser.parse_args(argv)
@@ -170,13 +183,16 @@ def _cmd_audit(args: argparse.Namespace) -> int:
     from pathlib import Path
 
     from .verify.receipt import Check, ReceiptStore
+    from .verify.recorders import GitRecorder
 
     repo = Path(args.repo)
     store = ReceiptStore(repo / ".agentmem")
 
     if args.action == "begin":
-        new_id = store.begin(repo)
-        print(f"recording started, receipt {new_id}")
+        recorders = [GitRecorder(repo)] if args.git else []
+        new_id = store.begin(repo, recorders=recorders)
+        extra = " (files + git)" if args.git else ""
+        print(f"recording started, receipt {new_id}{extra}")
         print('do the work, then:  agentmem audit end --claim "..."')
         return 0
 
@@ -200,7 +216,8 @@ def _cmd_audit(args: argparse.Namespace) -> int:
             checks.append(
                 Check(name=cmd, ok=proc.returncode == 0, detail=out.splitlines()[-1] if out else "")
             )
-        receipt = store.end(receipt_id, claim, repo, checks=checks)
+        recorders = [GitRecorder(repo)] if "git" in store.recorded_names(receipt_id) else []
+        receipt = store.end(receipt_id, claim, repo, recorders=recorders, checks=checks)
         print(receipt.to_markdown())
         return _audit_exit(receipt, args.fail_on)
 
@@ -475,6 +492,12 @@ def _handle_hook(args: argparse.Namespace) -> str:
             payload = {}
 
         cwd = str(payload.get("cwd") or ".")
+
+        # Auto-audit is a separate concern from memory: it records the real diff of the
+        # session and checks the agent's wrap-up against it. Keyed per conversation.
+        if args.event in ("audit-begin", "audit-end"):
+            return _handle_audit(args.event, cwd, payload)
+
         config = AgentMemConfig(state_dir=str(Path(cwd) / ".agentmem"))
         session_id = project_key(cwd)
 
@@ -499,6 +522,83 @@ def _handle_hook(args: argparse.Namespace) -> str:
         return json.dumps(hook_output(event_name, context))
     except Exception:
         return "{}"
+
+
+def _audit_slot(payload: dict[str, object]) -> str:
+    """A per-conversation receipt id, so each session gets its own chained receipt."""
+    import re
+
+    raw = str(payload.get("session_id") or payload.get("cwd") or "default")
+    return "cc-" + re.sub(r"[^A-Za-z0-9]+", "-", raw).strip("-")[:60]
+
+
+def _last_assistant_text(transcript_path: object) -> str:
+    """The agent's final message from a Claude Code transcript, used as the claim. Defensive
+    about the JSONL shape, and returns empty if it cannot be read."""
+    import json
+    from pathlib import Path
+
+    if not transcript_path:
+        return ""
+    path = Path(str(transcript_path))
+    if not path.exists():
+        return ""
+    text = ""
+    for line in path.read_text(errors="ignore").splitlines():
+        if not line.strip():
+            continue
+        try:
+            obj = json.loads(line)
+        except ValueError:
+            continue
+        message = obj.get("message") if isinstance(obj.get("message"), dict) else obj
+        is_assistant = obj.get("type") == "assistant" or message.get("role") == "assistant"
+        if not is_assistant:
+            continue
+        content = message.get("content")
+        if isinstance(content, str):
+            text = content
+        elif isinstance(content, list):
+            parts = [
+                b.get("text", "")
+                for b in content
+                if isinstance(b, dict) and b.get("type") == "text"
+            ]
+            joined = "\n".join(p for p in parts if p)
+            if joined:
+                text = joined
+    return text
+
+
+def _handle_audit(event: str, cwd: str, payload: dict[str, object]) -> str:
+    from pathlib import Path
+
+    from .verify.receipt import ReceiptStore
+    from .verify.recorders import GitRecorder
+
+    root = Path(cwd)
+    store = ReceiptStore(root / ".agentmem")
+    slot = _audit_slot(payload)
+
+    if event == "audit-begin":
+        store.begin(root, recorders=[GitRecorder(root)], receipt_id=slot)
+        return "{}"
+
+    claim = _last_assistant_text(payload.get("transcript_path"))
+    if not claim:
+        return "{}"
+    recorders = [GitRecorder(root)] if "git" in store.recorded_names(slot) else []
+    try:
+        receipt = store.end(slot, claim, root, recorders=recorders)
+    except (OSError, ValueError):
+        return "{}"  # no matching begin this session, nothing to verify
+    if receipt.verdict != "FAITHFUL":
+        print(
+            f"AgentMem: the wrap-up did not match the diff ({receipt.verdict}). "
+            f"See it with:  agentmem audit show --id {slot}",
+            file=sys.stderr,
+        )
+    return "{}"
 
 
 def _cmd_step(args: argparse.Namespace) -> int:

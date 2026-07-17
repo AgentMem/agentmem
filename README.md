@@ -96,6 +96,24 @@ On twelve labeled scenarios the verifier catches every injected issue with no fa
 (`evals/action_audit/`). Undo is exact where the before-bytes were captured, and honest
 about the files too large to store.
 
+**Beyond files.** An agent also acts through APIs. Add `--git` and the receipt also covers
+git: a commit the agent made shows as evidence, a branch or tag it created but never
+mentioned is flagged, and a claim to have committed that left no commit at all is caught.
+The same shape extends to the cloud and the inbox with `ApiRecorder`: give it a function
+that lists the resources you care about (buckets, sent messages, rows) and any API action
+becomes recordable and verifiable, without bundling a vendor SDK.
+
+```bash
+agentmem audit begin --git      # record files and git
+#  ... the agent commits, branches, edits ...
+agentmem audit end --claim "$(cat summary.txt)"
+```
+
+**Automatic in Claude Code.** With the plugin installed, this runs itself: a `SessionStart`
+hook freezes the ground truth, and a `Stop` hook reads the agent's own wrap-up and checks it
+against the session's real diff. When the summary does not match, you are told, with the
+receipt one command away. Silence-first: a faithful session says nothing.
+
 ## Where this is going
 
 Today AgentMem is a flight recorder for one agent: an honest, verifiable memory of what it

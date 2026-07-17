@@ -26,11 +26,14 @@ everything is ready. That's the whole setup, no terminal required.
 
 From the next session on, Claude Code fires the plugin's hooks:
 
-- **SessionStart** recaps durable memory from earlier sessions on this project.
+- **SessionStart** recaps durable memory from earlier sessions, and freezes the ground
+  truth (files and git) so the session can be audited.
 - **PostToolUse** watches the run and, when something's worth remembering, computes a
   reminder in the background.
 - **UserPromptSubmit** delivers that reminder before the next turn.
 - **PreCompact** saves execution state before the transcript is compacted.
+- **Stop** reads the agent's own wrap-up and checks it against the session's real diff. If
+  the summary does not match what changed, you are told; a faithful session stays silent.
 - **SessionEnd** consolidates and promotes what proved durable.
 
 Each hook runs `bin/agentmem-engine hook <event>`, a small wrapper that finds the engine
@@ -51,7 +54,7 @@ uv tool install agentmem-core
 |---|---|
 | `.claude-plugin/plugin.json` | Plugin manifest. |
 | `bin/agentmem-engine` | Bootstrap wrapper: runs the engine without a manual pip. |
-| `hooks/hooks.json` | The five command hooks (no daemon). |
+| `hooks/hooks.json` | The memory hooks plus the auto-audit (no daemon). |
 | `skills/setup/` | `/agentmem:setup`, the first-time wizard. |
 | `skills/status/` | `/agentmem:status`, show what's remembered. |
 
