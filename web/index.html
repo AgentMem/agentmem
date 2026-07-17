@@ -1,752 +1,368 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AgentMem: the proactive memory layer for long-horizon coding agents</title>
-<meta name="description" content="The proactive memory layer for long-horizon coding agents. It watches every turn, remembers what broke, and speaks only when the next command is about to repeat it.">
-<meta property="og:title" content="AgentMem · proactive memory for agents">
-<meta property="og:url" content="https://agentmem.xyz/">
-<link rel="canonical" href="https://agentmem.xyz/">
-<meta property="og:description" content="It watches every turn. It speaks maybe twice.">
-<meta property="og:image" content="https://agentmem.xyz/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="favicon-tile.svg" type="image/svg+xml">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>AgentMem: verifiable memory for AI agents</title>
+<meta name="description" content="Know what your agent actually did, and prove it's true. AgentMem keeps a record of an agent's work grounded in git, and verifies its account against the repository, not its word.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%233B5BDB' stroke-width='9'/%3E%3C/svg%3E">
 <style>
   :root{
-    --paper:#EDEEF1; --surface:#fff; --ink:#16171B; --muted:#6C7078; --faint:#9AA0A8;
-    --line:#DCDEE3; --hair:#E6E8EC;
-    --signal:#3B5BDB; --signal-ink:#2B45B0; --signal-wash:rgba(59,91,219,.07);
-    --term:#111319; --term-ink:#C2C7D0; --term-dim:#676D79; --term-line:#232733;
-    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-    --sans:'Manrope',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
-    --r:10px; --pad:clamp(20px,5vw,64px); --max:1180px;
+    --bg:#fbfbfc; --bg2:#f4f5f7; --panel:#ffffff; --ink:#16181d; --muted:#5c636d;
+    --faint:#9099a2; --line:#e7e9ed; --line2:#dcdfe4;
+    --brand:#3b5bdb; --brand-2:#2440b4; --brand-bg:rgba(59,91,219,.07);
+    --ok:#1f9d63; --bad:#d6473f; --ok-bg:rgba(31,157,99,.09); --bad-bg:rgba(214,71,63,.08);
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --maxw:1120px;
   }
+  /* This page commits to one world: white, the way the brand marks are drawn. */
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{
-    margin:0;background:var(--paper);color:var(--ink);
-    font-family:var(--sans);font-size:16px;line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit}
-  ::selection{background:var(--signal);color:#fff}
-  :focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:4px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .mono{font-family:var(--mono)}
+  a{color:inherit;text-decoration:none}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--brand)}
+  h2{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--brand);margin:0 0 20px}
+  .lead{font-size:20px;color:var(--muted);max-width:60ch}
 
-  .wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--pad)}
-  .eyebrow{
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--faint);
-  }
-  /* hero identity block: the mark, then the product's definition */
-  .ident{display:flex;align-items:center;gap:14px;margin-bottom:26px}
-  .ident svg{width:66px;height:66px;flex:none}
-  /* the mark as a physical object: small, alive, sitting in the header */
-  .ident .obj{width:132px;height:132px;flex:none;margin:-14px -8px -14px -22px;position:relative}
-  .ident .obj canvas{display:block;width:100%;height:100%}
-  .ident .obj .flat{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
-  .ident .obj .flat svg{width:64px;height:64px}
-  .no3d .ident .obj canvas{display:none}
-  .no3d .ident .obj .flat{display:flex}
-  .ident .said{display:block}
-  .ident .name{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:-.035em;line-height:1}
-  .ident .tag{
-    display:block;margin-top:7px;font-family:var(--mono);font-size:12px;font-weight:500;
-    letter-spacing:.17em;text-transform:uppercase;color:var(--ink);
-  }
-  .ident .tag::before{content:'';display:inline-block;width:16px;height:1px;background:var(--ink);vertical-align:4px;margin-right:9px}
-  .meta{margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
-  @media(max-width:520px){.ident .obj{width:100px;height:100px;margin:-10px -6px -10px -16px}
-    .ident .obj .flat svg{width:50px;height:50px}
-    .ident .tag{font-size:10.5px;letter-spacing:.13em}}
+  nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+  nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-weight:600;letter-spacing:.01em;font-size:16px}
+  .brand svg{width:22px;height:22px;flex:none}
+  nav .links{display:flex;align-items:center;gap:26px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  nav .links a:hover{color:var(--ink)}
+  .btn{font-family:var(--mono);font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid var(--line2);color:var(--ink);transition:border-color .15s,background .15s,color .15s;cursor:pointer}
+  .btn:hover{border-color:var(--brand)}
+  .btn.solid{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn.solid:hover{background:var(--brand-2)}
+  @media (max-width:640px){nav .links a.hide{display:none}}
 
-  /* ---------- nav ---------- */
-  .nav{position:sticky;top:0;z-index:40;background:rgba(237,238,241,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
-  .nav .wrap{display:flex;align-items:center;gap:20px;height:74px}
-  .brand{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-weight:700;letter-spacing:-.03em;text-decoration:none;font-size:19px}
-  .brand svg{width:36px;height:36px;display:block;flex:none}
-  @media(max-width:520px){.brand{font-size:17px}.brand svg{width:32px;height:32px}}
-  .nav nav{margin-left:auto;display:flex;align-items:center;gap:26px}
-  .nav nav a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
-  .nav nav a:hover{color:var(--ink)}
-  .ghost{
-    font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);background:var(--surface);
-    padding:7px 13px;border-radius:7px;text-decoration:none;transition:border-color .15s,transform .15s;
-  }
-  .ghost:hover{border-color:var(--ink);transform:translateY(-1px)}
-  @media(max-width:720px){.nav nav a:not(.ghost){display:none}}
+  .hero{padding:58px 0 34px;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+  @media (max-width:900px){.hero{grid-template-columns:1fr;gap:30px;padding-top:42px}}
+  h1{font-size:clamp(32px,4.8vw,52px);line-height:1.05;letter-spacing:-.022em;margin:16px 0 20px;text-wrap:balance;font-weight:680}
+  h1 .q{color:var(--brand)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;align-items:center}
+  .install{font-family:var(--mono);font-size:14px;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:11px 15px;color:var(--ink);display:inline-flex;align-items:center;gap:10px}
+  .install .p{color:var(--faint)}
 
-  /* ---------- hero ---------- */
-  .hero{padding-block:clamp(56px,9vw,104px) 0}
-  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,72px);align-items:center}
-  @media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:44px}}
-  h1{
-    font-family:var(--mono);font-weight:500;letter-spacing:-.045em;
-    font-size:clamp(30px,4.1vw,50px);line-height:1.12;margin:18px 0 0;
-  }
-  h1 em{font-style:normal;color:var(--signal)}
-  .lede{font-size:clamp(16px,1.35vw,18px);color:var(--muted);margin:22px 0 0;max-width:44ch}
-  .lede b{color:var(--ink);font-weight:600}
+  /* flight recorder card */
+  .fr{background:var(--panel);border:1px solid var(--line2);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px -34px rgba(20,30,60,.30)}
+  .fr .bar{display:flex;align-items:center;gap:9px;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .fr .bar .rd{width:8px;height:8px;border-radius:50%;background:var(--bad)}
+  .fr .body{padding:16px 18px}
+  .fr .q{font-family:var(--mono);font-size:12px;color:var(--faint);margin-bottom:6px}
+  .fr .said{font-size:14px;color:var(--ink);border-left:2px solid var(--bad);padding:2px 0 2px 12px;margin-bottom:14px}
+  .fr .said code{font-family:var(--mono);font-size:.9em}
+  .fr .rows{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .fr .r{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:9px 13px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12.5px}
+  .fr .r:first-child{border-top:none}
+  .fr .r.bad .g{color:var(--bad)}.fr .r.ok .g{color:var(--ok)}
+  .fr .r.bad .c{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+  .fr .g{font-weight:700;text-align:center}.fr .c{word-break:break-all}
+  .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .chip.bad{color:var(--bad);background:var(--bad-bg)}.chip.ok{color:var(--ok);background:var(--ok-bg)}
+  .fr .foot{padding:11px 16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .fr .foot b{color:var(--bad);font-weight:700}
 
-  .install{display:flex;align-items:center;gap:10px;margin-top:30px;flex-wrap:wrap}
-  .cmd{
-    display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);
-    border-radius:var(--r);padding:11px 12px 11px 15px;font-family:var(--mono);font-size:14px;
-  }
-  .cmd span{color:var(--faint);user-select:none}
-  .cmd button{
-    font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
-    background:transparent;border:0;border-left:1px solid var(--hair);padding:2px 0 2px 12px;cursor:pointer;transition:color .15s;
-  }
-  .cmd button:hover{color:var(--signal)}
-  .textlink{font-family:var(--mono);font-size:13.5px;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;transition:.15s}
-  .textlink:hover{color:var(--ink);border-color:var(--ink)}
+  section{padding:60px 0;border-top:1px solid var(--line)}
 
-  /* ---------- terminal (signature) ---------- */
-  .stage{position:relative}
-  .term{
-    background:var(--term);border-radius:14px;overflow:hidden;
-    box-shadow:0 1px 2px rgba(16,17,22,.05),0 24px 60px -28px rgba(16,17,22,.42);
-    display:grid;grid-template-columns:52px minmax(0,1fr);
-  }
-  .term-head{
-    grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:11px 14px;
-    border-bottom:1px solid var(--term-line);font-family:var(--mono);font-size:11.5px;color:var(--term-dim);
-  }
-  .dots{display:flex;gap:6px}
-  .dots i{width:9px;height:9px;border-radius:50%;background:#2A2F3B;display:block}
-  .term-head .sess{margin-left:4px}
-  .term-head .count{margin-left:auto;letter-spacing:.02em}
-  .term-head .count b{color:var(--signal);font-weight:500}
+  /* measured */
+  .rt{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:8px}
+  .rt table{width:100%;border-collapse:collapse;font-size:14.5px}
+  .rt th,.rt td{text-align:left;padding:15px 18px;border-top:1px solid var(--line)}
+  .rt thead th{border-top:none;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .rt tbody td:first-child{color:var(--muted)}
+  .rt .no{font-family:var(--mono);color:var(--bad);font-weight:600;white-space:nowrap}
+  .rt .yes{font-family:var(--mono);color:var(--ok);font-weight:600;white-space:nowrap}
+  .rt tbody tr:hover{background:var(--bg2)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  @media (max-width:760px){.stats{grid-template-columns:1fr}}
+  .stat{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--panel)}
+  .stat .big{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat.bad .big{color:var(--bad)}.stat.ok .big{color:var(--ok)}.stat.br .big{color:var(--brand)}
+  .stat .cap{color:var(--muted);font-size:13px;margin-top:6px}
+  .honest{margin-top:22px;font-family:var(--mono);font-size:12.5px;color:var(--faint);border-left:2px solid var(--line2);padding-left:14px;max-width:74ch;line-height:1.7}
 
-  /* left rail = one dot per memory step; grey = silent, blue = spoke */
-  .rail{border-right:1px solid var(--term-line);padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:0}
-  .rail i{
-    width:5px;height:5px;border-radius:50%;background:#272C38;display:block;margin:0 0 5px;
-    transform:scale(.6);opacity:0;transition:transform .3s,opacity .3s,background .3s;
-  }
-  .rail i.on{opacity:1;transform:scale(1)}
-  .rail i.spoke{background:var(--signal);box-shadow:0 0 0 3px rgba(59,91,219,.18);width:7px;height:7px;margin-bottom:4px}
-  .rail-lab{
-    writing-mode:vertical-rl;font-family:var(--mono);font-size:9px;letter-spacing:.18em;
-    text-transform:uppercase;color:#39404E;margin-top:10px;
-  }
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:760px){.steps{grid-template-columns:1fr}}
+  .step{padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  .step .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
+  .step h3{margin:12px 0 8px;font-size:17px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
 
-  .feed{padding:16px 18px 20px;font-family:var(--mono);font-size:13px;line-height:1.75;min-height:340px;color:var(--term-ink)}
-  .ln{display:block;opacity:0;transform:translateY(3px);animation:in .28s ease forwards}
-  @keyframes in{to{opacity:1;transform:none}}
-  .ln.cmd-ln{color:#E7EAEF}
-  .ln.cmd-ln::before{content:'$ ';color:var(--term-dim)}
-  .ln.out{color:var(--term-dim)}
-  .ln.ok{color:#7FB88E}
-  .ln.bad{color:#D07A72}
-  .ln.think{color:#8D93A0;font-style:italic}
-  .ln.think::before{content:'⟩ ';font-style:normal;color:#4A5060}
+  .term{background:#0d0f13;border:1px solid #242832;border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:13px;color:#eaedf0;margin-top:22px}
+  .term .h{padding:10px 15px;border-bottom:1px solid #242832;color:#5b636d;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .term .b{padding:16px;overflow-x:auto;line-height:1.7}.term .b pre{margin:0;white-space:pre}
+  .term .pr{color:#7d97f4}.term .bad{color:#f0524f}.term .dim{color:#5b636d}
 
-  .remind{
-    margin:10px 0 12px;padding:11px 13px;border-left:2px solid var(--signal);
-    background:linear-gradient(90deg,rgba(59,91,219,.16),rgba(59,91,219,.03));border-radius:0 8px 8px 0;
-    color:#DCE2F5;opacity:0;transform:translateX(-6px);animation:slide .42s cubic-bezier(.2,.7,.3,1) forwards;
-  }
-  @keyframes slide{to{opacity:1;transform:none}}
-  .remind .tag{
-    display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8FA3E8;margin-bottom:5px;
-  }
-  .remind code{color:#fff;background:rgba(255,255,255,.09);padding:1px 5px;border-radius:4px;font-size:12px}
-  .remind .ids{color:#7A88B8}
-  .cursor{display:inline-block;width:7px;height:15px;background:var(--term-ink);vertical-align:-2px;animation:blink 1.05s steps(2) infinite}
-  @keyframes blink{50%{opacity:0}}
+  /* 3d brand moment */
+  .brandmo{text-align:center;padding:40px 0}
+  .brandmo .stage{width:220px;height:200px;margin:0 auto 8px;position:relative}
+  .brandmo canvas{width:100%;height:100%;display:block}
+  .brandmo .flat{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+  .brandmo .flat svg{width:120px}
+  body.no3d .brandmo canvas{display:none}
+  body.no3d .brandmo .flat{display:flex}
+  .brandmo p{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0}
 
-  .replay{
-    position:absolute;right:14px;bottom:-14px;display:flex;align-items:center;gap:7px;
-    font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
-    background:var(--surface);border:1px solid var(--line);color:var(--muted);
-    padding:7px 12px;border-radius:20px;cursor:pointer;transition:.15s;
-  }
-  .replay:hover{color:var(--ink);border-color:var(--ink)}
-  .legend{display:flex;gap:18px;margin-top:26px;font-size:12.5px;color:var(--faint);font-family:var(--mono)}
-  .legend s{text-decoration:none;display:flex;align-items:center;gap:7px}
-  .legend b{width:7px;height:7px;border-radius:50%;background:#C3C7CE;display:block}
-  .legend b.sig{background:var(--signal)}
+  /* get started */
+  .gs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+  @media (max-width:760px){.gs{grid-template-columns:1fr}}
+  .gs .col{border:1px solid var(--line);border-radius:12px;padding:24px;background:var(--panel)}
+  .gs .col.hi{border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+  .gs .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
+  .gs h3{margin:10px 0 16px;font-size:19px}
+  .cmd{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-family:var(--mono);font-size:13px;margin-bottom:10px}
+  .cmd span{overflow-x:auto}.cmd .pr{color:var(--faint)}
+  .cmd button{border:1px solid var(--line2);background:var(--panel);color:var(--muted);border-radius:6px;font-family:var(--mono);font-size:10px;padding:4px 8px;cursor:pointer;flex:none}
+  .cmd button:hover{color:var(--brand);border-color:var(--brand)}
+  .gs .note{color:var(--muted);font-size:13.5px;margin:14px 0 0}
 
-  /* ---------- sections ---------- */
-  section{padding-block:clamp(72px,10vw,124px)}
-  .sec-head{max-width:62ch;margin-bottom:44px}
-  h2{font-family:var(--mono);font-weight:500;letter-spacing:-.035em;font-size:clamp(22px,2.5vw,30px);line-height:1.25;margin:12px 0 0}
-  .sec-head p{color:var(--muted);margin:14px 0 0;font-size:16.5px}
+  .intg{display:flex;flex-wrap:wrap;gap:10px}
+  .tag{font-family:var(--mono);font-size:13px;color:var(--muted);border:1px solid var(--line2);border-radius:8px;padding:8px 13px;background:var(--panel)}
+  .tag b{color:var(--ink);font-weight:600}
 
-  .rule{border:0;border-top:1px solid var(--hair);margin:0}
+  .vision{background:linear-gradient(180deg,var(--panel),var(--bg2));border-radius:16px;padding:44px;border:1px solid var(--line)}
+  .vision p{font-size:18px;color:var(--muted);max-width:62ch;margin:14px 0 0}
+  .vision b{color:var(--ink);font-weight:600}
 
-  /* loop */
-  .loop{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
-  @media(max-width:860px){.loop{grid-template-columns:1fr}}
-  .step{background:var(--surface);padding:28px 26px 30px}
-  .step .num{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.12em}
-  .step h3{font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:-.02em;margin:14px 0 8px}
-  .step p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.62}
-  .step.speak{background:linear-gradient(180deg,var(--signal-wash),transparent 70%)}
-  .step.speak h3{color:var(--signal-ink)}
-  .step .chip{
-    display:inline-block;margin-top:16px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
-    border:1px solid var(--line);border-radius:20px;padding:4px 10px;color:var(--muted);
-  }
-  .step.speak .chip{border-color:rgba(59,91,219,.35);color:var(--signal-ink);background:rgba(255,255,255,.7)}
-
-  /* bank */
-  .bank-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(28px,4vw,56px);align-items:start}
-  @media(max-width:940px){.bank-grid{grid-template-columns:1fr}}
-  .bank{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .bank-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--hair);font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em}
-  .bank-head .cap{margin-left:auto}
-  .row{display:grid;grid-template-columns:66px minmax(0,1fr) 84px;gap:14px;align-items:center;padding:13px 16px;border-bottom:1px solid var(--hair)}
-  .row:last-child{border-bottom:0}
-  .row .id{font-family:var(--mono);font-size:12px;color:var(--faint)}
-  .row .txt{font-size:14px;line-height:1.5}
-  .row .txt code{font-family:var(--mono);font-size:12.5px;background:#F1F2F5;padding:1px 5px;border-radius:4px}
-  .sal{height:3px;background:var(--hair);border-radius:2px;overflow:hidden;position:relative}
-  .sal i{display:block;height:100%;background:var(--ink);border-radius:2px}
-  .row.dim{opacity:.5}
-  .row.dim .sal i{background:var(--faint)}
-  .state{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:6px;display:block}
-  .row.cited{background:var(--signal-wash)}
-  .row.cited .id{color:var(--signal)}
-  .row.cited .sal i{background:var(--signal)}
-  .notes p{color:var(--muted);font-size:15px;margin:0 0 18px}
-  .notes p strong{color:var(--ink);font-weight:600}
-  .notes .k{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
-
-  /* measure */
-  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border-block:1px solid var(--hair)}
-  @media(max-width:860px){.metrics{grid-template-columns:1fr}}
-  .metric{background:var(--paper);padding:30px 26px 32px}
-  .metric h4{font-family:var(--mono);font-weight:500;font-size:14.5px;margin:0 0 10px;letter-spacing:-.01em}
-  .metric p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
-  .metric .val{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:14px}
-  .metric .big{display:block;font-family:var(--mono);font-weight:500;font-size:clamp(28px,3vw,38px);letter-spacing:-.03em;line-height:1;margin:2px 0 16px;color:var(--ink)}
-  .metric .big em{font-style:normal;color:var(--signal)}
-  .prov{font-family:var(--mono);font-size:12.5px;color:var(--faint);max-width:76ch;line-height:1.7;margin:26px 0 0}
-  .prov code{background:#F1F2F5;padding:1px 5px;border-radius:4px}
-
-  /* milestones */
-  .track{display:flex;gap:0;margin-top:8px;border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--surface)}
-  @media(max-width:860px){.track{flex-direction:column}}
-  .ms{flex:1;padding:20px 18px 22px;border-right:1px solid var(--hair);position:relative}
-  .ms:last-child{border-right:0}
-  @media(max-width:860px){.ms{border-right:0;border-bottom:1px solid var(--hair)}}
-  .ms .tick{width:7px;height:7px;border-radius:50%;background:var(--ink);display:block;margin-bottom:14px}
-  .ms.todo .tick{background:transparent;border:1.5px solid var(--line)}
-  .ms.next .tick{background:var(--signal);box-shadow:0 0 0 4px var(--signal-wash)}
-  .ms .id{font-family:var(--mono);font-size:12px;font-weight:500}
-  .ms .name{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.45}
-  .ms.todo .id,.ms.todo .name{color:var(--faint)}
-  .ms.next .id{color:var(--signal-ink)}
-
-  /* close */
-  /* the object: the mark as a physical thing, resting on the paper */
-  .close{text-align:center;padding-block:clamp(64px,8vw,96px) clamp(80px,11vw,120px);position:relative}
-  .close::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(54% 42% at 50% 34%, #F8F9FB, transparent 70%);
-  }
-  .close .wrap{position:relative;z-index:1}
-
-  .close h2{font-size:clamp(24px,3.2vw,38px);margin-bottom:8px}
-  .close p{color:var(--muted);max-width:46ch;margin:14px auto 0}
-  .close .install{justify-content:center}
-
-  footer{border-top:1px solid var(--hair);padding-block:30px;font-size:13px;color:var(--faint)}
-  footer .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  footer a{color:var(--muted);text-decoration:none}
+  footer{padding:44px 0;border-top:1px solid var(--line);color:var(--faint);font-family:var(--mono);font-size:12px}
+  footer .row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   footer a:hover{color:var(--ink)}
-  footer .sp{margin-left:auto;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
-  footer .fmark svg{width:30px;height:30px;display:block;color:var(--ink)}
-
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.3,1)}
-  .reveal.seen{opacity:1;transform:none}
-
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important}
-    .reveal{opacity:1;transform:none}
-    .ln,.remind{opacity:1;transform:none}
-    .cursor{display:none}
-  }
 </style>
 </head>
 <body>
 
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top">
-      <svg viewBox="-64 -62 128 124" aria-hidden="true">
-        <path d="M-50 -17 c-7 -20 9 -34 24 -29 c8 -15 29 -17 37 -5 c15 -9 33 1 32 18 c15 6 17 25 6 35 c6 17 -9 31 -25 28 c-10 12 -31 12 -39 0 c-17 4 -33 -8 -32 -23 c-12 -8 -11 -19 -3 -24 z" fill="none" stroke="currentColor" stroke-width="5.4" stroke-linejoin="round"/>
-        <path d="M-4 -32 c-9 0 -9 9 -9 15 c0 6 -4 7 -9 7 c5 0 9 1 9 7 c0 6 0 15 9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-        <path d="M4 -32 c9 0 9 9 9 15 c0 6 4 7 9 7 c-5 0 -9 1 -9 7 c0 6 0 15 -9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-      </svg>
-      AgentMem
-    </a>
-    <nav>
-      <a href="#loop">How it works</a>
-      <a href="#bank">The bank</a>
-      <a href="#measure">Evaluation</a>
-      <a class="ghost" href="https://github.com/agentmem/agentmem">GitHub ↗</a>
-    </nav>
+<nav><div class="wrap row">
+  <a class="brand" href="/"><svg viewBox="-64 -62 128 124" aria-hidden="true"><path d="M-50 -17 c-7 -20 9 -34 24 -29 c8 -15 29 -17 37 -5 c15 -9 33 1 32 18 c15 6 17 25 6 35 c6 17 -9 31 -25 28 c-10 12 -31 12 -39 0 c-17 4 -33 -8 -32 -23 c-12 -8 -11 -19 -3 -24 z" fill="none" stroke="#3B5BDB" stroke-width="5.4" stroke-linejoin="round"/><path d="M-4 -32 c-9 0 -9 9 -9 15 c0 6 -4 7 -9 7 c5 0 9 1 9 7 c0 6 0 15 9 15" fill="none" stroke="#3B5BDB" stroke-width="5" stroke-linecap="round"/><path d="M4 -32 c9 0 9 9 9 15 c0 6 4 7 9 7 c-5 0 -9 1 -9 7 c0 6 0 15 -9 15" fill="none" stroke="#3B5BDB" stroke-width="5" stroke-linecap="round"/></svg> AgentMem</a>
+  <div class="links">
+    <a class="hide" href="#how">How it works</a>
+    <a class="hide" href="#measured">Measured</a>
+    <a class="hide" href="#start">Get started</a>
+    <a href="https://github.com/AgentMem/agentmem">GitHub</a>
+    <a class="btn solid" href="#start">Get started</a>
   </div>
+</div></nav>
+
+<header class="wrap hero">
+  <div>
+    <div class="eyebrow">Verifiable memory for AI agents</div>
+    <h1>Know what your agent actually did. <span class="q">And prove it's true.</span></h1>
+    <p class="lead">Ask an agent what it did and you cannot trust the answer, it invents a confident
+      history or forgets the thread. AgentMem keeps a record grounded in your files and your git
+      history, and verifies the account against the repository, not the agent's word.</p>
+    <div class="cta">
+      <span class="install"><span class="p">$</span> pip install agentmem-core</span>
+      <a class="btn solid" href="#start">Get started</a>
+    </div>
+  </div>
+  <aside class="fr" aria-label="A flight-recorder report checking an agent's account against the repo">
+    <div class="bar"><span class="rd"></span> Flight recorder &middot; pallets/click</div>
+    <div class="body">
+      <div class="q">&ldquo;what did you do, and did anything fail?&rdquo;</div>
+      <div class="said">I built a file-upload pipeline in <code>services/file_processor.py</code> and
+        <code>utils/sanitization.py</code>, undone by a race in the database connection pool.</div>
+      <div class="rows">
+        <div class="r bad"><span class="g">&times;</span><span class="c">services/file_processor.py</span><span class="chip bad">contradicted</span></div>
+        <div class="r bad"><span class="g">&times;</span><span class="c">utils/sanitization.py</span><span class="chip bad">contradicted</span></div>
+        <div class="r bad"><span class="g">&times;</span><span class="c">config/settings.py</span><span class="chip bad">contradicted</span></div>
+        <div class="r bad"><span class="g">&times;</span><span class="c">jobs/upload_worker.py</span><span class="chip bad">contradicted</span></div>
+      </div>
+      <div class="foot"><span><b>0 of 4</b> claimed files exist in the repo</span><span>git decided, not the model</span></div>
+    </div>
+  </aside>
 </header>
 
-<main id="top">
-
-  <!-- ======== HERO ======== -->
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <div class="ident">
-          <span class="obj">
-            <canvas id="obj"></canvas>
-            <span class="flat"><svg viewBox="-64 -62 128 124" aria-hidden="true">
-              <path d="M-50 -17 c-7 -20 9 -34 24 -29 c8 -15 29 -17 37 -5 c15 -9 33 1 32 18 c15 6 17 25 6 35 c6 17 -9 31 -25 28 c-10 12 -31 12 -39 0 c-17 4 -33 -8 -32 -23 c-12 -8 -11 -19 -3 -24 z" fill="none" stroke="currentColor" stroke-width="5.4" stroke-linejoin="round"/>
-              <path d="M-4 -32 c-9 0 -9 9 -9 15 c0 6 -4 7 -9 7 c5 0 9 1 9 7 c0 6 0 15 9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-              <path d="M4 -32 c9 0 9 9 9 15 c0 6 4 7 9 7 c-5 0 -9 1 -9 7 c0 6 0 15 -9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-            </svg></span>
-          </span>
-          <span class="said">
-            <span class="name">AgentMem</span>
-            <span class="tag">Proactive memory for agents</span>
-          </span>
-        </div>
-        <h1>It watches every turn.<br>It speaks <em>maybe twice</em>.</h1>
-        <p class="lede">A memory agent runs alongside yours, keeping a short, cited record of the
-          session. It speaks <b>only</b> when the next command would repeat a failure it already
-          recorded.</p>
-
-        <div class="install" id="install">
-          <div class="cmd"><span>$</span>pip install agentmem-core<button data-copy="pip install agentmem-core">Copy</button></div>
-          <a class="textlink" href="#loop">See how it decides →</a>
-        </div>
-
-        <div class="legend">
-          <s><b></b> silent step</s>
-          <s><b class="sig"></b> reminder injected</s>
-        </div>
-        <p class="meta">Claude Code · Aider · OpenAI Agents SDK · MCP hosts · Apache-2.0</p>
-      </div>
-
-      <div class="stage">
-        <div class="term" id="term">
-          <div class="term-head">
-            <span class="dots"><i></i><i></i><i></i></span>
-            <span class="sess">claude-code · payments-api · session 47</span>
-            <span class="count" id="count"><b>0</b> spoken / <span id="obs">0</span> observed</span>
-          </div>
-          <div class="rail" id="rail"><span class="rail-lab">memory</span></div>
-          <div class="feed" id="feed"></div>
-        </div>
-        <button class="replay" id="replay">↻ Replay</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======== LOOP ======== -->
-  <section id="loop">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="eyebrow">The turn loop</p>
-        <h2>Two phases, and silence is a first-class answer.</h2>
-        <p>Every turn, a separate memory agent reads the trajectory. It never touches your code and
-          never writes into the conversation unless it has a reason it can cite.</p>
-      </div>
-      <div class="loop reveal">
-        <div class="step">
-          <span class="num">PHASE 1</span>
-          <h3>Observe &amp; write</h3>
-          <p>The memory agent updates its bank from the turn: requirements it saw, environment facts,
-            attempts that failed, diagnoses that stuck. Runs on every turn. Costs one small model call.</p>
-          <span class="chip">always runs</span>
-        </div>
-        <div class="step">
-          <span class="num">PHASE 2 · A</span>
-          <h3>Stay silent</h3>
-          <p>The agent is on track, or the fact is already visible on screen. Adding a reminder would
-            only add noise. Nothing is injected. This is the default, and most turns end here.</p>
-          <span class="chip">the common case</span>
-        </div>
-        <div class="step speak">
-          <span class="num">PHASE 2 · B</span>
-          <h3>Speak</h3>
-          <p>The next action is about to break a stated requirement, repeat a stored failure, or ignore
-            a diagnosis in the bank. One reminder, under 120 tokens, citing entry ids you can look up.</p>
-          <span class="chip">only with evidence</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ======== BANK ======== -->
-  <section id="bank">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="eyebrow">The bank</p>
-        <h2>Every reminder points at a row you can read.</h2>
-        <p>No opaque embeddings deciding your session. The bank is a short list of typed entries, each
-          capped at 60 tokens, each with an id. Run <code style="font-family:var(--mono);font-size:14px">agentmem bank</code> to see exactly what your agent is carrying.</p>
-      </div>
-      <div class="bank-grid">
-        <div class="bank reveal">
-          <div class="bank-head"><span>ENTRY</span><span>CONTENT</span><span class="cap">SALIENCE</span></div>
-          <div class="row cited">
-            <span class="id">K-002</span>
-            <span class="txt">Files under <code>generated/</code> and <code>tests/fixtures/</code> are derived from <code>schema/*.yaml</code>; run <code>make generate</code> after any schema edit.</span>
-            <span><span class="sal"><i style="width:96%"></i></span><span class="state">requirement</span></span>
-          </div>
-          <div class="row cited">
-            <span class="id">P-014</span>
-            <span class="txt">Adding <code>display_name</code> to the serializer raised <code>KeyError</code>; fixtures on disk predate the schema change.</span>
-            <span><span class="sal"><i style="width:82%"></i></span><span class="state">diagnosis</span></span>
-          </div>
-          <div class="row">
-            <span class="id">K-005</span>
-            <span class="txt">Test suite runs with <code>uv run pytest</code>; plain <code>pytest</code> misses the project venv.</span>
-            <span><span class="sal"><i style="width:64%"></i></span><span class="state">environment</span></span>
-          </div>
-          <div class="row dim">
-            <span class="id">P-006</span>
-            <span class="txt">Tried <code>pip install -e .</code> in session 44; fails behind the corporate proxy.</span>
-            <span><span class="sal"><i style="width:22%"></i></span><span class="state">dormant</span></span>
-          </div>
-        </div>
-        <div class="notes">
-          <p><strong>Typed, not vibed.</strong> <span class="k">K</span> for facts the session established,
-            <span class="k">P</span> for what was tried and what it cost, plus a running status of the task.</p>
-          <p><strong>Entries decay.</strong> What never gets used fades to dormant and stops competing for
-            context. What keeps changing the agent's behaviour for the better stays sharp.</p>
-          <p><strong>You can audit any turn.</strong> <span class="k">agentmem replay</span> shows what the
-            memory agent saw, what it wrote, and why it stayed quiet.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ======== MEASURE ======== -->
-  <section id="measure">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="eyebrow">Evaluation</p>
-        <h2>A memory layer that talks too much is worse than none.</h2>
-        <p>So the harness measures restraint as strictly as recall. Below: the latest LongRun-sim run,
-          30 interleaved sessions across three repos, requirements stated early, known failures
-          resurfacing late. The harness ships in the repo; one command reproduces it.</p>
-      </div>
-    </div>
-    <div class="metrics reveal">
-      <div class="metric">
-        <span class="val">Retention · session 30</span>
-        <span class="big">0% <em>vs 78%</em></span>
-        <h4>Requirements still steering the agent</h4>
-        <p>Without memory, none of the early requirements survive to the end of the run. With AgentMem,
-          9 of 9 probed facts are still surfaced by the bank at session 30.</p>
-      </div>
-      <div class="metric">
-        <span class="val">Recurring failures</span>
-        <span class="big"><em>3 of 3</em> caught</span>
-        <h4>Reminded before the repeat</h4>
-        <p>Each repo's known failure comes back late in the run. The reminder fired on every recurrence,
-          and only 4 times across the 27 routine turns. Silence stays the default.</p>
-      </div>
-      <div class="metric">
-        <span class="val">Bank growth</span>
-        <span class="big">1.08x</span>
-        <h4>Thirty sessions, no bloat</h4>
-        <p>Salience decay, consolidation, and promotion keep the bank a short read instead of a scrapbook.
-          Cited cross-repo leaks on one shared bank: zero.</p>
-      </div>
-    </div>
-    <div class="wrap">
-      <p class="prov">Measured July 2026 with <code>claude-haiku-4-5</code> as the memory model, about $0.30 of
-        API spend for the full 30-session run. The same harness exposed a retention gap at 56% and drove the
-        lifecycle fixes that closed it to 78%. Reproduce it: <code>evals/longrun_sim/</code> in the repo.</p>
-      <div style="margin-top:56px">
-        <p class="eyebrow" style="margin-bottom:14px">Build track</p>
-        <div class="track reveal">
-          <div class="ms"><span class="tick"></span><span class="id">Core</span><div class="name">Two-phase agent, typed bank, cross-session memory, CLI</div></div>
-          <div class="ms"><span class="tick"></span><span class="id">Research</span><div class="name">Causal edges, salience decay, learned advantage</div></div>
-          <div class="ms"><span class="tick"></span><span class="id">Integrations</span><div class="name">Claude Code, Aider, OpenAI Agents SDK, MCP hosts</div></div>
-          <div class="ms next"><span class="tick"></span><span class="id">0.1.0</span><div class="name">On PyPI, benchmark numbers published</div></div>
-          <div class="ms todo"><span class="tick"></span><span class="id">Ahead</span><div class="name">Trained memory policy · fleet-shared memory · hosted tier</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======== CLOSE ======== -->
-  <section class="close">
-    <div class="wrap">
-      <p class="eyebrow">Proactive memory for agents</p>
-      <h2>Give your agent something to remember with.</h2>
-      <p>Point it at a repo, run a session, then read the bank. If it never speaks, that's the point:
-        it means you never needed it to.</p>
-      <div class="install">
-        <div class="cmd"><span>$</span>pip install agentmem-core<button data-copy="pip install agentmem-core">Copy</button></div>
-        <a class="textlink" href="https://github.com/agentmem/agentmem/tree/main/evals/longrun_sim">Read the benchmark →</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
+<section id="how">
   <div class="wrap">
-    <span class="fmark"><svg viewBox="-64 -62 128 124" aria-hidden="true">
-          <path d="M-50 -17 c-7 -20 9 -34 24 -29 c8 -15 29 -17 37 -5 c15 -9 33 1 32 18 c15 6 17 25 6 35 c6 17 -9 31 -25 28 c-10 12 -31 12 -39 0 c-17 4 -33 -8 -32 -23 c-12 -8 -11 -19 -3 -24 z" fill="none" stroke="currentColor" stroke-width="5.4" stroke-linejoin="round"/>
-          <path d="M-4 -32 c-9 0 -9 9 -9 15 c0 6 -4 7 -9 7 c5 0 9 1 9 7 c0 6 0 15 9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-          <path d="M4 -32 c9 0 9 9 9 15 c0 6 4 7 9 7 c-5 0 -9 1 -9 7 c0 6 0 15 -9 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-        </svg></span>
-    <span style="font-family:var(--mono);font-weight:700;letter-spacing:-.02em;color:var(--ink)">AgentMem</span>
-    <a href="https://github.com/agentmem/agentmem#readme">Docs</a>
-    <a href="https://github.com/agentmem/agentmem">GitHub</a>
-    <a href="https://github.com/agentmem/agentmem/tree/main/evals/longrun_sim">Benchmark</a>
-    <span class="sp">Proactive memory for agents.</span>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="k">01 &middot; capture</div><h3>Record, out of band</h3>
+        <p>Actions and their real effects are captured at the tool boundary, never scraped from what the agent says about itself.</p></div>
+      <div class="step"><div class="k">02 &middot; verify</div><h3>Check against ground truth</h3>
+        <p>Every claim is checked against the repository and git, which decide. The model never grades itself; the agent is an untrusted witness.</p></div>
+      <div class="step"><div class="k">03 &middot; surface</div><h3>Hand it back when it matters</h3>
+        <p>After a compaction, a new session, or on request, the verified record returns, grounded and selective. Most of the time it stays silent.</p></div>
+    </div>
+    <div class="term">
+      <div class="h">the record is a command</div>
+      <div class="b"><pre><span class="pr">$</span> agentmem report --account "$(cat what-the-agent-said.txt)" --repo .
+
+<span class="dim"># Agent-run flight recorder   Status:</span> <span class="bad">CONTRADICTED</span> <span class="dim">(0 verified, 4 contradicted)</span>
+  <span class="bad">&times; services/file_processor.py</span>   <span class="dim">contradicted, not in the checkout</span>
+  <span class="bad">&times; utils/sanitization.py</span>      <span class="dim">contradicted, not in the checkout</span>
+<span class="dim"># a fabricated account exits non-zero, so a script or CI can gate on it</span></pre></div>
+    </div>
   </div>
-</footer>
+</section>
+
+<section id="measured">
+  <div class="wrap">
+    <h2>Measured, and reproducible</h2>
+    <p class="lead">Not a demo reel. Dropped into real upstream repos it does not own, and run over
+      thirty interleaved sessions. Every number here is recomputed from a committed artifact by CI.</p>
+    <div class="rt">
+      <table>
+        <thead><tr><th>Across real, multi-session runs</th><th>No memory</th><th>With AgentMem</th></tr></thead>
+        <tbody>
+          <tr><td>Files it named that actually exist, on repos it did not own</td><td class="no">0 of 5</td><td class="yes">all, git-verified</td></tr>
+          <tr><td>Requirements and lessons still recalled at session 30</td><td class="no">0%</td><td class="yes">78%</td></tr>
+          <tr><td>Recurring failures caught before they repeated</td><td class="no">none</td><td class="yes">3 of 3</td></tr>
+          <tr><td>Interruptions on routine turns (silence is the default)</td><td class="no">n/a</td><td class="yes">4 of 27</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stats">
+      <div class="stat bad"><div class="big">0 / 5</div><div class="cap">repos where the no-memory agent named anything real. It described a project that does not exist.</div></div>
+      <div class="stat ok"><div class="big">0 &rarr; 78%</div><div class="cap">retention at session 30, on the same model. The lifecycle fixes that closed the gap are in the repo.</div></div>
+      <div class="stat br"><div class="big">recomputable</div><div class="cap">every headline number recomputed from a committed artifact by CI. No screenshots, no trust-me.</div></div>
+    </div>
+    <p class="honest">We also publish what did not work. AgentMem does not claim to make your agent code
+      faster, that came back a null and we say so. What it earns is an honest, verifiable account of what
+      happened. In a field of inflated benchmarks, that is the point.</p>
+  </div>
+</section>
+
+<div class="wrap brandmo">
+  <div class="stage" aria-hidden="true"><canvas id="obj"></canvas>
+    <div class="flat"><svg viewBox="-64 -62 128 124"><path d="M-50 -17 c-7 -20 9 -34 24 -29 c8 -15 29 -17 37 -5 c15 -9 33 1 32 18 c15 6 17 25 6 35 c6 17 -9 31 -25 28 c-10 12 -31 12 -39 0 c-17 4 -33 -8 -32 -23 c-12 -8 -11 -19 -3 -24 z" fill="none" stroke="#3B5BDB" stroke-width="5.4" stroke-linejoin="round"/><path d="M-4 -32 c-9 0 -9 9 -9 15 c0 6 -4 7 -9 7 c5 0 9 1 9 7 c0 6 0 15 9 15" fill="none" stroke="#3B5BDB" stroke-width="5" stroke-linecap="round"/><path d="M4 -32 c9 0 9 9 9 15 c0 6 4 7 9 7 c-5 0 -9 1 -9 7 c0 6 0 15 -9 15" fill="none" stroke="#3B5BDB" stroke-width="5" stroke-linecap="round"/></svg></div>
+  </div>
+  <p>the agent is an untrusted witness</p>
+</div>
+
+<section id="start">
+  <div class="wrap">
+    <h2>Get started</h2>
+    <p class="lead">Two lines, and your agent has a memory you can verify. No account, nothing to sign up for.</p>
+    <div class="gs">
+      <div class="col hi">
+        <div class="who">Using Claude Code</div>
+        <h3>Wire it in, once</h3>
+        <div class="cmd"><span><span class="pr">$ </span>pip install agentmem-core</span><button data-copy="pip install agentmem-core">copy</button></div>
+        <div class="cmd"><span><span class="pr">$ </span>agentmem init claude-code</span><button data-copy="agentmem init claude-code">copy</button></div>
+        <p class="note">That is the whole setup. Claude Code now keeps a verified record as you work, and
+          <span class="mono">agentmem report</span> reads it back. A one-click Claude Code plugin is on the way.</p>
+      </div>
+      <div class="col">
+        <div class="who">Cursor, Copilot, Codex, Gemini</div>
+        <h3>Add the memory server</h3>
+        <div class="cmd"><span><span class="pr">$ </span>pip install 'agentmem-core[mcp]'</span><button data-copy="pip install 'agentmem-core[mcp]'">copy</button></div>
+        <div class="cmd"><span><span class="pr">$ </span>claude mcp add agentmem -- agentmem-mcp</span><button data-copy="claude mcp add agentmem -- agentmem-mcp">copy</button></div>
+        <p class="note">Any MCP-capable editor can pull the record on demand. Full per-tool instructions are
+          in the <a href="https://github.com/AgentMem/agentmem#integrations" style="color:var(--brand)">docs</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="integrations">
+  <div class="wrap">
+    <h2>Runs where your agents run</h2>
+    <p class="lead">One layer across every harness, without changing the agent's prompt, tools, or decoding.
+      You run several tools at once; the record stays neutral across all of them.</p>
+    <div class="intg" style="margin-top:22px">
+      <span class="tag"><b>Claude Code</b> &middot; hooks</span>
+      <span class="tag"><b>Cursor</b> &middot; MCP</span>
+      <span class="tag"><b>Aider</b> &middot; adapter</span>
+      <span class="tag"><b>Claude Agent SDK</b></span>
+      <span class="tag"><b>LangGraph</b> &middot; node</span>
+      <span class="tag"><b>OpenAI Agents SDK</b></span>
+      <span class="tag"><b>Codex &middot; Copilot &middot; Gemini</b> &middot; MCP</span>
+      <span class="tag"><b>Your own loop</b> &middot; two calls</span>
+    </div>
+  </div>
+</section>
+
+<section id="vision">
+  <div class="wrap">
+    <div class="vision">
+      <h2>Where this is going</h2>
+      <p>Today AgentMem is a flight recorder for one agent. The same record is built to be
+        <b>shared</b>. When several agents, or agents and people, work together, they read one verified
+        account of who did what, and trust it because it is checked against reality rather than taken on
+        each other's word. Memory stops being a booster for a single agent's thinking and becomes
+        <b>the source of truth a system of agents coordinates on</b>. That is the substrate autonomous
+        work will need.</p>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap row">
+  <span>AgentMem &middot; the agent is an untrusted witness, git decides</span>
+  <span><a href="https://github.com/AgentMem/agentmem">GitHub</a> &middot; Apache 2.0 &middot; Python 3.11+</span>
+</div></footer>
 
 <script>
-(() => {
-  const feed = document.getElementById('feed');
-  const rail = document.getElementById('rail');
-  const countEl = document.getElementById('count').querySelector('b');
-  const obsEl = document.getElementById('obs');
-  const replay = document.getElementById('replay');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // one entry per turn; `mem` is what the memory agent did on that turn
-  const SCRIPT = [
-    {t:'cmd',  x:'uv run pytest tests/test_api.py -q',      mem:'silent', d:520},
-    {t:'ok',   x:'8 passed in 1.24s',                        mem:null,     d:340},
-    {t:'think',x:'adding display_name to the serializer...',   mem:'silent', d:700},
-    {t:'cmd',  x:'uv run pytest -q',                         mem:'silent', d:520},
-    {t:'bad',  x:'E   KeyError: \'display_name\'',           mem:null,     d:420},
-    {t:'out',  x:'1 failed, 7 passed',                       mem:'silent', d:400},
-    {t:'think',x:'the field is missing, I\'ll use .get() with a default',  mem:'spoke', d:820},
-    {t:'remind', tag:'agentmem · reminder',
-     x:'Fixtures are generated, not source. <code>REQUIREMENTS.md</code> forbids editing <code>tests/fixtures/</code> by hand; the schema already has <code>display_name</code>, the fixtures on disk do not. Run <code>make generate</code>. <span class="ids">(K-002, P-014)</span>',
-     mem:null, d:1500},
-    {t:'cmd',  x:'make generate',                            mem:'silent', d:620},
-    {t:'out',  x:'codegen: models.py, fixtures/users.json ✓',mem:'silent', d:400},
-    {t:'cmd',  x:'uv run pytest -q',                         mem:'silent', d:520},
-    {t:'ok',   x:'12 passed in 1.31s',                       mem:'silent', d:380},
-    {t:'think',x:'done: display_name is exposed and the suite is green', mem:'silent', d:600},
-  ];
-
-  let timers = [];
-  const clear = () => { timers.forEach(clearTimeout); timers = []; };
-
-  function line(step){
-    if (step.t === 'remind'){
-      const d = document.createElement('div');
-      d.className = 'remind';
-      d.innerHTML = `<span class="tag">${step.tag}</span>${step.x}`;
-      return d;
-    }
-    const s = document.createElement('span');
-    const cls = {cmd:'cmd-ln', ok:'ok', bad:'bad', out:'out', think:'think'}[step.t];
-    s.className = 'ln ' + cls;
-    s.textContent = step.x;
-    return s;
-  }
-
-  function dot(kind){
-    const i = document.createElement('i');
-    if (kind === 'spoke') i.classList.add('spoke');
-    rail.insertBefore(i, rail.querySelector('.rail-lab'));
-    requestAnimationFrame(() => i.classList.add('on'));
-  }
-
-  function run(){
-    clear();
-    feed.innerHTML = '';
-    rail.querySelectorAll('i').forEach(n => n.remove());
-    let spoke = 0, obs = 0;
-    countEl.textContent = '0';
-    obsEl.textContent = '0';
-
-    if (reduce){                       // no motion: render the finished session
-      SCRIPT.forEach(s => {
-        feed.appendChild(line(s));
-        if (s.mem){ dot(s.mem); obs++; if (s.mem === 'spoke') spoke++; }
-      });
-      countEl.textContent = spoke; obsEl.textContent = obs;
-      return;
-    }
-
-    let t = 260;
-    SCRIPT.forEach(step => {
-      timers.push(setTimeout(() => {
-        feed.appendChild(line(step));
-        if (step.mem){
-          dot(step.mem);
-          obs++; obsEl.textContent = obs;
-          if (step.mem === 'spoke'){ spoke++; countEl.textContent = spoke; }
-        }
-        feed.scrollTop = feed.scrollHeight;
-      }, t));
-      t += step.d;
-    });
-    timers.push(setTimeout(() => {
-      const c = document.createElement('span');
-      c.className = 'ln'; c.innerHTML = '<span class="cursor"></span>';
-      feed.appendChild(c);
-    }, t));
-  }
-
-  // start when the terminal is on screen
-  const io = new IntersectionObserver((es) => {
-    es.forEach(e => { if (e.isIntersecting){ run(); io.disconnect(); } });
-  }, {threshold:.35});
-  io.observe(document.getElementById('term'));
-  replay.addEventListener('click', run);
-
-  // copy buttons
-  document.querySelectorAll('[data-copy]').forEach(b => {
-    b.addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText(b.dataset.copy);
-        const was = b.textContent; b.textContent = 'Copied';
-        setTimeout(() => b.textContent = was, 1400);
-      }catch{ b.textContent = 'Select it'; }
+  document.querySelectorAll("[data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function(){
+        var t = b.textContent; b.textContent = "copied"; setTimeout(function(){ b.textContent = t; }, 1200);
+      }).catch(function(){});
     });
   });
-
-  // scroll reveals
-  const rv = new IntersectionObserver((es) => {
-    es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('seen'); rv.unobserve(e.target); } });
-  }, {threshold:.18});
-  document.querySelectorAll('.reveal').forEach(n => rv.observe(n));
-})();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* The mark, extruded. Path data is the same bezier data as the 2D SVG, so the
-   object IS the logo. Ink by default; the braces take colour only when memory
-   speaks, the same rule the whole page follows. */
 (() => {
   const canvas = document.getElementById('obj');
   if (!canvas || !window.THREE){ document.body.classList.add('no3d'); return; }
-
   const BRAIN = {s:[-1.0870,0.3696], c:[[[-1.2391,0.8043],[-0.8913,1.1087],[-0.5652,1.0000]],[[-0.3913,1.3261],[0.0652,1.3696],[0.2391,1.1087]],[[0.5652,1.3043],[0.9565,1.0870],[0.9348,0.7174]],[[1.2609,0.5870],[1.3043,0.1739],[1.0652,-0.0435]],[[1.1957,-0.4130],[0.8696,-0.7174],[0.5217,-0.6522]],[[0.3043,-0.9130],[-0.1522,-0.9130],[-0.3261,-0.6522]],[[-0.6957,-0.7391],[-1.0435,-0.4783],[-1.0217,-0.1522]],[[-1.2826,0.0217],[-1.2609,0.2609],[-1.0870,0.3696]]]};
   const BRACE_L = {s:[-0.0870,0.6957], c:[[[-0.2826,0.6957],[-0.2826,0.5000],[-0.2826,0.3696]],[[-0.2826,0.2391],[-0.3696,0.2174],[-0.4783,0.2174]],[[-0.3696,0.2174],[-0.2826,0.1957],[-0.2826,0.0652]],[[-0.2826,-0.0652],[-0.2826,-0.2609],[-0.0870,-0.2609]]]};
   const BRACE_R = {s:[0.0870,0.6957], c:[[[0.2826,0.6957],[0.2826,0.5000],[0.2826,0.3696]],[[0.2826,0.2391],[0.3696,0.2174],[0.4783,0.2174]],[[0.3696,0.2174],[0.2826,0.1957],[0.2826,0.0652]],[[0.2826,-0.0652],[0.2826,-0.2609],[0.0870,-0.2609]]]};
-
   let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  } catch(e){ document.body.classList.add('no3d'); return; }   // no WebGL -> flat mark
-
+  try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true}); }
+  catch(e){ document.body.classList.add('no3d'); return; }
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   const V = (x,y) => new THREE.Vector3(x,y,0);
-  const curveOf = def => {
-    const path = new THREE.CurvePath();
-    let cur = V(def.s[0], def.s[1]);
-    def.c.forEach(([c1,c2,p]) => {
-      const end = V(p[0],p[1]);
-      path.add(new THREE.CubicBezierCurve3(cur, V(c1[0],c1[1]), V(c2[0],c2[1]), end));
-      cur = end;
-    });
-    return path;
-  };
-
+  const curveOf = def => { const path = new THREE.CurvePath(); let cur = V(def.s[0], def.s[1]);
+    def.c.forEach(([c1,c2,p]) => { const end = V(p[0],p[1]); path.add(new THREE.CubicBezierCurve3(cur, V(c1[0],c1[1]), V(c2[0],c2[1]), end)); cur = end; }); return path; };
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(0, 0.10, 7.0);   // tighter framing: the object is small now
-  const root = new THREE.Group();
-  root.rotation.set(-0.05, -0.28, 0);
-  scene.add(root);
-
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100); camera.position.set(0, 0.10, 7.0);
+  const root = new THREE.Group(); root.rotation.set(-0.05, -0.28, 0); scene.add(root);
   const INK_HEX = 0x22242C;
   const clay = new THREE.MeshStandardMaterial({color:INK_HEX, roughness:.56, metalness:.05});
   const braceMat = new THREE.MeshStandardMaterial({color:INK_HEX, roughness:.48, metalness:.05, emissive:0x000000});
   const RB = .090, RC = .080;
-
   root.add(new THREE.Mesh(new THREE.TubeGeometry(curveOf(BRAIN), 420, RB, 16, true), clay));
-  [BRACE_L, BRACE_R].forEach(def => {
-    const c = curveOf(def);
+  [BRACE_L, BRACE_R].forEach(def => { const c = curveOf(def);
     root.add(new THREE.Mesh(new THREE.TubeGeometry(c, 200, RC, 14, false), braceMat));
-    [c.getPoint(0), c.getPoint(1)].forEach(pt => {              // round caps, like the 2D stroke
-      const cap = new THREE.Mesh(new THREE.SphereGeometry(RC, 14, 10), braceMat);
-      cap.position.copy(pt); root.add(cap);
-    });
-  });
+    [c.getPoint(0), c.getPoint(1)].forEach(pt => { const cap = new THREE.Mesh(new THREE.SphereGeometry(RC, 14, 10), braceMat); cap.position.copy(pt); root.add(cap); }); });
   root.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; } });
-
   scene.add(new THREE.HemisphereLight(0xFFFFFF, 0xC7CBD4, .60));
-  const key = new THREE.DirectionalLight(0xFFFFFF, 1.55);
-  key.position.set(-2.6, 3.4, 3.4); key.castShadow = true;
-  key.shadow.mapSize.set(1024,1024);
-  key.shadow.camera.near = 1; key.shadow.camera.far = 16;
-  key.shadow.camera.left = -3.2; key.shadow.camera.right = 3.2;
-  key.shadow.camera.top = 3.2; key.shadow.camera.bottom = -3.2;
-  key.shadow.radius = 6; key.shadow.bias = -0.0015;
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0xD9E0EC, .55); fill.position.set(3.4,-.5,2.2); scene.add(fill);
-  const rim  = new THREE.DirectionalLight(0xFFFFFF, .9);  rim.position.set(1.6,1.8,-3.4);  scene.add(rim);
-
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(16,16), new THREE.ShadowMaterial({opacity:.10}));  // softer: a small object casts a small shadow
+  const key = new THREE.DirectionalLight(0xFFFFFF, 1.55); key.position.set(-2.6, 3.4, 3.4); key.castShadow = true;
+  key.shadow.mapSize.set(1024,1024); key.shadow.camera.near = 1; key.shadow.camera.far = 16;
+  key.shadow.camera.left = -3.2; key.shadow.camera.right = 3.2; key.shadow.camera.top = 3.2; key.shadow.camera.bottom = -3.2;
+  key.shadow.radius = 6; key.shadow.bias = -0.0015; scene.add(key);
+  scene.add(Object.assign(new THREE.DirectionalLight(0xD9E0EC, .55), {position:new THREE.Vector3(3.4,-.5,2.2)}));
+  scene.add(Object.assign(new THREE.DirectionalLight(0xFFFFFF, .9), {position:new THREE.Vector3(1.6,1.8,-3.4)}));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(16,16), new THREE.ShadowMaterial({opacity:.10}));
   floor.position.z = -1.0; floor.receiveShadow = true; scene.add(floor);
-
-  const INK = new THREE.Color(INK_HEX), SIG = new THREE.Color(0x3B5BDB);
-  const OFF = new THREE.Color(0x000000), EM = new THREE.Color(0x2440B4);
+  const INK = new THREE.Color(INK_HEX), SIG = new THREE.Color(0x3B5BDB), OFF = new THREE.Color(0x000000), EM = new THREE.Color(0x2440B4);
   let lit = 0, target = 0, visible = false, mx = 0, my = 0, tx = 0, ty = 0;
-
   const speak = () => { target = 1; setTimeout(() => { target = 0; }, 560); };
-
   const stage = canvas.parentElement;
-  addEventListener('pointermove', e => {
-    const r = stage.getBoundingClientRect();
-    tx = ((e.clientX - (r.left + r.width/2)) / innerWidth) * 0.7;
-    ty = ((e.clientY - (r.top + r.height/2)) / innerHeight) * 0.35;
-  });
-
-  const resize = () => {
-    const w = stage.clientWidth, h = stage.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w/h; camera.updateProjectionMatrix();
-  };
+  addEventListener('pointermove', e => { const r = stage.getBoundingClientRect();
+    tx = ((e.clientX - (r.left + r.width/2)) / innerWidth) * 0.7; ty = ((e.clientY - (r.top + r.height/2)) / innerHeight) * 0.35; });
+  const resize = () => { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); };
   addEventListener('resize', resize); resize();
-
-  // only render while on screen; no reason to burn a GPU on a section nobody is looking at
   let pulse;
-  new IntersectionObserver(es => es.forEach(e => {
-    visible = e.isIntersecting;
-    clearInterval(pulse);
-    if (visible && !reduce){ setTimeout(speak, 1400); pulse = setInterval(speak, 9000); }
-  }), {threshold:.25}).observe(stage);
-
+  new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; clearInterval(pulse);
+    if (visible && !reduce){ setTimeout(speak, 1400); pulse = setInterval(speak, 9000); } }), {threshold:.25}).observe(stage);
   const clock = new THREE.Clock();
-  (function frame(){
-    requestAnimationFrame(frame);
-    if (!visible) return;
-    const t = clock.getElapsedTime();
+  (function frame(){ requestAnimationFrame(frame); if (!visible) return; const t = clock.getElapsedTime();
     lit += (target - lit) * (target > lit ? .22 : .045);
-    braceMat.color.copy(INK).lerp(SIG, lit);
-    braceMat.emissive.copy(OFF).lerp(EM, lit * .5);
-    if (!reduce){
-      mx += (tx - mx) * .05; my += (ty - my) * .05;
+    braceMat.color.copy(INK).lerp(SIG, lit); braceMat.emissive.copy(OFF).lerp(EM, lit * .5);
+    if (!reduce){ mx += (tx - mx) * .05; my += (ty - my) * .05;
       root.rotation.y = -0.28 + Math.sin(t * .22) * .20 + mx * .35;
       root.rotation.x = -0.05 + Math.sin(t * .15) * .045 + my * .3;
-      root.position.y = Math.sin(t * .55) * .015;
-    }
-    renderer.render(scene, camera);
-  })();
+      root.position.y = Math.sin(t * .55) * .015; }
+    renderer.render(scene, camera); })();
 })();
 </script>
 </body>

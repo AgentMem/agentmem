@@ -5,9 +5,9 @@
   <img alt="AgentMem" src="assets/brand/lockup-ink.svg" width="380">
 </picture>
 
-**The proactive memory layer for long-horizon coding agents.**
+**Verifiable memory for AI agents.**
 
-*It doesn't just store. It knows when to remind.*
+*Know what your agent actually did, and prove it's true.*
 
 Runs alongside Claude Code, Cursor, Aider, the Claude Agent SDK, LangGraph, the OpenAI
 Agents SDK, or your own loop, without changing how they work.
@@ -22,35 +22,57 @@ Agents SDK, or your own loop, without changing how they work.
 
 ## The problem
 
-Give an agent a task that spans hours or several sessions and it starts to *forget how to behave*.
-The requirement it was told at turn 2 is still in the transcript at turn 80, but it no longer
-influences what the agent does. It re-runs the command that already failed twice. It re-breaks the
-public API it was told not to touch. The paper this project is based on calls this
-**behavioral state decay**: the information is technically present, but it has stopped steering
-decisions.
+Ask an agent what it just did, and you cannot trust the answer. A weaker model invents a
+confident, detailed account of work it never performed, naming files that do not exist. A
+stronger one, once its context is compacted or the session resets, just says it does not
+remember. The two are told in the same steady, competent register, so nothing in the tone
+tells you which is real, and neither is something you can hand off, build on, or audit.
 
-The usual answer (vector-store memory like Mem0 or Letta) treats memory as *storage*: write
-everything, retrieve on similarity. That helps recall, but it doesn't answer the harder question:
-**at this exact step, should the agent be reminded of anything, and if so, what?**
+Storage-style memory, the write-everything-and-retrieve-on-similarity kind, does not fix
+this. It recalls what the agent *said*, not what actually *happened*. A record you can
+trust has to be checked against reality, not taken on the agent's word.
 
-## The idea
+## What AgentMem does
 
-AgentMem is a second, small agent that watches the trajectory and maintains a structured
-**memory bank** in two phases on a fixed cadence (plus a few useful event triggers):
+AgentMem keeps a record of what the agent did that is grounded in what actually changed,
+your files and your git history, and it treats the agent as an untrusted witness.
 
-1. **Manage the bank:** save stable facts (*Knowledge*), record attempts and outcomes
-   (*Procedural*), keep private working notes (*Status*). All edits happen through tool calls, so
-   the bank is auditable, not a free-form rewrite.
-2. **Decide whether to intervene:** read the freshly-updated bank and either inject a short,
-   grounded reminder into the agent's *next* turn, or stay silent. **Silence is the default and the
-   common case.**
+1. **Record, out of band.** As the agent works, its actions and their real effects are
+   captured at the tool boundary, never scraped from what the agent says about itself.
+2. **Verify against ground truth.** Every claim is checked against the repository and
+   git, which decide. The model never grades itself; anything the record cannot confirm
+   is flagged, not quietly accepted.
+3. **Surface it when it matters.** After a compaction, on a new session, or when you ask,
+   the verified record is handed back, grounded and selective, so the thread survives and
+   the account is true. Most of the time it stays silent.
 
-That second phase is the whole point. The paper's ablations show that *selectively* intervening
-beats dumping the whole bank, beats always-injecting, and beats plain semantic retrieval. Knowing
-when to stay quiet is a feature, not an omission.
+## See what it caught
+
+The record is a command. Give `agentmem report` what an agent said it did and a checkout,
+and it verifies the account against the repository, treating the agent as an untrusted
+witness: a file it claims to have touched is confirmed only if the file actually exists.
+
+```bash
+agentmem report --account "$(cat what-the-agent-said.txt)" --repo .
+```
+
+On a real run from this project's own evals ([pallets/click](evals/realworld/RESULTS.md)),
+the agent without memory named four files that do not exist in the library; with memory it
+named five that do, every one confirmed against git. A fully fabricated account exits
+non-zero, so a script or a CI step can gate on the agent not inventing its own past.
 
 > AgentMem never edits the action agent's system prompt, tools, or decoding. Reminders are
 > **transient**: injected once, consumed once, never baked into base instructions.
+
+## Where this is going
+
+Today AgentMem is a flight recorder for one agent: an honest, verifiable memory of what it
+did across long and multi-session work. The same record is built to be shared. When several
+agents, or agents and people, work together, they read one verified account of who did
+what, and trust it because it is checked against reality rather than taken on each other's
+word. Memory stops being a booster for a single agent's thinking and becomes the source of
+truth a system of agents coordinates on. That is the substrate autonomous work will need,
+and where AgentMem is headed.
 
 ## Quickstart
 
