@@ -134,9 +134,12 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "claude-agent-sdk" },
     { name = "fastapi", version = "0.128.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-aider'" },
     { name = "fastapi", version = "0.139.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-openai-agents' or extra != 'extra-13-agentmem-core-aider'" },
     { name = "httpx" },
+    { name = "litellm" },
+    { name = "mcp" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -154,8 +157,11 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "claude-agent-sdk", specifier = ">=0.2" },
     { name = "fastapi", specifier = ">=0.110" },
     { name = "httpx", specifier = ">=0.27" },
+    { name = "litellm", specifier = ">=1.40" },
+    { name = "mcp", specifier = ">=1.28,<2" },
     { name = "mypy", specifier = ">=1.10" },
     { name = "pytest", specifier = ">=8.2" },
     { name = "pytest-asyncio", specifier = ">=0.23" },

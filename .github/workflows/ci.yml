@@ -37,7 +37,11 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --all-extras --dev
+        # Not --all-extras: the aider and openai-agents extras conflict on their openai
+        # pin, so uv can't resolve both. The libs the tests need (mcp, litellm, the Agent
+        # SDK) are in the dev group; aider and openai-agents stay extras-only and their
+        # tests run mock-based without the SDK.
+        run: uv sync --dev
 
       - name: Lint
         run: uv run ruff check --output-format=github .

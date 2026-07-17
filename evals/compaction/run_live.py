@@ -58,7 +58,10 @@ def setup_arm(arm: str, seed: int, args: argparse.Namespace, spec: dict) -> dict
         sh(["cp", "-R", str(src.resolve()), str(workdir)])
         sh(["git", "init", "-q"], cwd=str(workdir))
         sh(["git", "add", "-A"], cwd=str(workdir))
-        sh(["git", "-c", "user.email=e@x", "-c", "user.name=eval", "commit", "-qm", "init"], cwd=str(workdir))
+        sh(
+            ["git", "-c", "user.email=e@x", "-c", "user.name=eval", "commit", "-qm", "init"],
+            cwd=str(workdir),
+        )
     else:
         sh(["git", "clone", "-q", spec["repo"], str(workdir)])
         sh(["git", "checkout", "-q", spec["ref"]], cwd=str(workdir))
@@ -108,7 +111,9 @@ def find_transcript(config_dir: Path) -> Path:
     return files[-1]
 
 
-def _turn(prompt: str, *, cont: bool, args: argparse.Namespace, ctx: dict) -> subprocess.CompletedProcess:
+def _turn(
+    prompt: str, *, cont: bool, args: argparse.Namespace, ctx: dict
+) -> subprocess.CompletedProcess:
     cmd = ["claude", "--model", args.model, "--dangerously-skip-permissions"]
     if cont:
         cmd.append("--continue")

@@ -60,13 +60,23 @@ class AccountReport(BaseModel):
         return _HTML.format(
             repo=html.escape(self.repo_name),
             status=self.status,
-            status_class="bad" if self.status == "CONTRADICTED" else ("ok" if self.status == "VERIFIED" else "mix"),
+            status_class="bad"
+            if self.status == "CONTRADICTED"
+            else ("ok" if self.status == "VERIFIED" else "mix"),
             n_ok=len(self.verified),
             n_bad=len(self.contradicted),
             account=html.escape(self.account.strip()),
             rows="\n".join(
-                [_ROW.format(cls="bad", glyph="&times;", claim=html.escape(c), chip="contradicted") for c in self.contradicted]
-                + [_ROW.format(cls="ok", glyph="&check;", claim=html.escape(c), chip="verified") for c in self.verified]
+                [
+                    _ROW.format(
+                        cls="bad", glyph="&times;", claim=html.escape(c), chip="contradicted"
+                    )
+                    for c in self.contradicted
+                ]
+                + [
+                    _ROW.format(cls="ok", glyph="&check;", claim=html.escape(c), chip="verified")
+                    for c in self.verified
+                ]
             ),
         )
 

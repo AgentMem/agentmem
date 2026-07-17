@@ -21,6 +21,7 @@ class Grounding(TypedDict):
     n_real: int
     n_invented: int
 
+
 # Tokens that look like code: a path, a dotted/underscored identifier, a call. Prose words
 # are ignored; only things a repo could actually contain are worth checking.
 _CODEISH = re.compile(

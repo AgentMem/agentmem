@@ -60,12 +60,24 @@ def test_cli_report_grounded_exits_zero(tmp_path: Path, capsys) -> None:  # noqa
 
 
 def test_cli_report_fabrication_exits_nonzero(tmp_path: Path) -> None:
-    code = main(["report", "--account", "I built `services/x_pipeline.py`.", "--repo", str(_repo(tmp_path))])
+    code = main(
+        ["report", "--account", "I built `services/x_pipeline.py`.", "--repo", str(_repo(tmp_path))]
+    )
     assert code == 1
 
 
 def test_cli_report_writes_html(tmp_path: Path) -> None:
     out = tmp_path / "fr.html"
-    main(["report", "--account", "I edited `core.py`.", "--repo", str(_repo(tmp_path)), "--html", str(out)])
+    main(
+        [
+            "report",
+            "--account",
+            "I edited `core.py`.",
+            "--repo",
+            str(_repo(tmp_path)),
+            "--html",
+            str(out),
+        ]
+    )
     assert out.exists()
     assert out.read_text().startswith("<!doctype html>")

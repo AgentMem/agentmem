@@ -54,7 +54,11 @@ def attach_memory(
     registry = getattr(options, "hooks", None)
     if not isinstance(registry, dict):
         registry = {}
-    registry.setdefault("PostToolUse", []).append(HookMatcher(hooks=[hooks.on_post_tool]))
+    # The SDK types HookMatcher's callback as a big input-union; our hook takes the raw
+    # dict payload, which is what the SDK actually passes at runtime.
+    registry.setdefault("PostToolUse", []).append(
+        HookMatcher(hooks=[hooks.on_post_tool])  # type: ignore[list-item]
+    )
 
     options.hooks = registry
     options.agentmem_session = session

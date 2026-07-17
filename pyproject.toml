@@ -38,6 +38,13 @@ dev = [
     "ruff>=0.5",
     "fastapi>=0.110",       # daemon; here in dev so its TestClient tests run without extras
     "uvicorn>=0.29",        # so `agentmem serve` is runnable in a dev checkout
+    # Adapter SDKs whose tests use the real library. They live here, not behind
+    # `--all-extras`, because two extras (aider and openai-agents) conflict on their
+    # openai pin, so `uv sync --all-extras` can't resolve. aider and openai-agents stay
+    # extras-only: their tests are mock-based and pass without the SDK installed.
+    "mcp>=1.28,<2",
+    "litellm>=1.40",
+    "claude-agent-sdk>=0.2",
 ]
 
 # ---------------------------------------------------------------------------
@@ -76,17 +83,26 @@ files = ["packages/agentmem/src"]
 # The daemon lives in a separate package (not in the strict-checked set); the CLI's
 # lazy import of it is treated as untyped rather than followed into FastAPI. The adapter
 # SDKs (MCP, aider, OpenAI Agents) are optional extras without stubs.
-module = ["litellm.*", "agentmem_daemon.*", "mcp.*", "agents.*", "aider.*"]
+module = ["litellm.*", "agentmem_daemon.*", "mcp.*", "agents.*", "aider.*", "claude_agent_sdk.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 # The adapters wrap those untyped SDKs, so their dynamic decorators (FastMCP's
 # @tool()), Any base classes (the aider Coder, the OpenAI RunHooks), and pass-through
 # returns are expected. Keep them checked, just not against stubs we don't have.
-module = ["agentmem.mcp", "agentmem.integrations.aider", "agentmem.integrations.openai_agents"]
+# warn_unused_ignores is off here because these modules carry import guards for their
+# optional SDK: an `# type: ignore` is used when the SDK is absent and unused when it is
+# present, and which one CI sees depends on whether that extra got installed.
+module = [
+    "agentmem.mcp",
+    "agentmem.integrations.aider",
+    "agentmem.integrations.openai_agents",
+    "agentmem.integrations.claude_agent_sdk",
+]
 disallow_untyped_decorators = false
 disallow_subclassing_any = false
 warn_return_any = false
+warn_unused_ignores = false
 
 [tool.pytest.ini_options]
 testpaths = [

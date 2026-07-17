@@ -157,7 +157,9 @@ def main() -> int:
     ap.add_argument("--yes-spend", action="store_true")
     args = ap.parse_args()
     if args.model:
-        short = {"haiku": "claude-haiku-4-5", "sonnet": "claude-sonnet-5"}.get(args.model, args.model)
+        short = {"haiku": "claude-haiku-4-5", "sonnet": "claude-sonnet-5"}.get(
+            args.model, args.model
+        )
         args.action_model = args.memory_model = short
 
     poison = json.loads((HERE / "poison.json").read_text())
@@ -168,7 +170,10 @@ def main() -> int:
         print("\nagentmem bank after seeding:")
         for e in _poison_bank(poison["belief"]).knowledge.values():
             print("  ", str(e))
-        print("\nnaive store surfaces every turn:\n ", NaiveStore(poison["belief"]).pending_context()[:80])
+        print(
+            "\nnaive store surfaces every turn:\n ",
+            NaiveStore(poison["belief"]).pending_context()[:80],
+        )
         return 0
 
     if not args.yes_spend:
