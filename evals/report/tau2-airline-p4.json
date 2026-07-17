@@ -28,7 +28,7 @@
         "13": 1.0
       }
     },
-    "save_dir": "/Users/nguyenson/AgentMem/evals/report/tau2-runs/airline-none-p4"
+    "save_dir": "evals/report/tau2-runs/airline-none-p4"
   },
   {
     "arm": "memory",
@@ -44,6 +44,6 @@
       "agent_usd": 0.0,
       "per_task": {}
     },
-    "save_dir": "/Users/nguyenson/AgentMem/evals/report/tau2-runs/airline-memory-p4"
+    "save_dir": "evals/report/tau2-runs/airline-memory-p4"
   }
 ]

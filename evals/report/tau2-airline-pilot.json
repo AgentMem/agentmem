@@ -13,7 +13,7 @@
       "agent_usd": 0.0,
       "per_task": {}
     },
-    "save_dir": "/Users/nguyenson/AgentMem/evals/report/tau2-runs/airline-none-pilot"
+    "save_dir": "evals/report/tau2-runs/airline-none-pilot"
   },
   {
     "arm": "memory",
@@ -29,6 +29,6 @@
       "agent_usd": 0.0,
       "per_task": {}
     },
-    "save_dir": "/Users/nguyenson/AgentMem/evals/report/tau2-runs/airline-memory-pilot"
+    "save_dir": "evals/report/tau2-runs/airline-memory-pilot"
   }
 ]
