@@ -156,3 +156,19 @@ def test_cli_push_round_trip(tmp_path: Path, monkeypatch) -> None:  # noqa: ANN0
     assert feed["summary"]["total"] == 1
     assert feed["entries"][0]["actor"] == "alice"
     assert feed["entries"][0]["contributor"] == "laptop"
+
+
+def test_export_endpoint(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    _push(client, _receipt(tmp_path, "alice edited `f.py`", "alice"), "alice-laptop")
+
+    data = client.get("/teams/acme/export", headers={"Authorization": "Bearer k1"}).json()
+    assert data["format"] == "agentmem-audit-log/1"
+    assert len(data["records"]) == 1
+    assert data["records"][0]["contributor"] == "alice-laptop"
+
+    csv = client.get("/teams/acme/export?format=csv", headers={"Authorization": "Bearer k1"})
+    assert csv.headers["content-type"].startswith("text/csv")
+    assert "alice" in csv.text
+
+    assert client.get("/teams/acme/export").status_code == 401

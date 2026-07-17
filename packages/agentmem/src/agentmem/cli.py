@@ -142,9 +142,9 @@ def main(argv: list[str] | None = None) -> int:
     p_ledger.add_argument(
         "action",
         nargs="?",
-        choices=["show", "push"],
+        choices=["show", "push", "export"],
         default="show",
-        help="show the local feed (default) or push it to a hosted team hub",
+        help="show the local feed (default), push it to a hub, or export an audit log",
     )
     p_ledger.add_argument("--repo", default=".", help="the working tree whose ledger to read")
     p_ledger.add_argument("--actor", help="only this actor's entries")
@@ -162,6 +162,24 @@ def main(argv: list[str] | None = None) -> int:
     p_ledger.add_argument(
         "--contributor", default="agent", help="who is pushing, shown in the team feed"
     )
+    p_ledger.add_argument(
+        "--format", choices=["json", "csv"], default="json", help="audit-log format (for export)"
+    )
+    p_ledger.add_argument("--since", help="only entries at or after this ISO timestamp (export)")
+    p_ledger.add_argument("--until", help="only entries at or before this ISO timestamp (export)")
+    p_ledger.add_argument("--out", help="write export or feed to this file instead of stdout")
+
+    p_attest = sub.add_parser(
+        "attest", help="sign a receipt so its integrity can be verified offline with a public key"
+    )
+    p_attest.add_argument("action", choices=["keygen", "sign", "verify"])
+    p_attest.add_argument("--repo", default=".", help="the working tree whose receipts to use")
+    p_attest.add_argument("--id", help="receipt id to sign (defaults to the latest)")
+    p_attest.add_argument("--private", help="issuer private key PEM path")
+    p_attest.add_argument(
+        "--public", help="public key PEM path (written by keygen, checked by verify)"
+    )
+    p_attest.add_argument("--att", help="attestation JSON path (written by sign, read by verify)")
 
     args = parser.parse_args(argv)
 
@@ -189,6 +207,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_audit(args)
     if args.command == "ledger":
         return _cmd_ledger(args)
+    if args.command == "attest":
+        return _cmd_attest(args)
 
     parser.print_help()
     return 0
@@ -341,6 +361,14 @@ def _cmd_ledger(args: argparse.Namespace) -> int:
         return _ledger_push(args)
 
     ledger = Ledger(Path(args.repo) / ".agentmem")
+    if args.action == "export":
+        text = ledger.export(fmt=args.format, since=args.since, until=args.until)
+        if args.out:
+            Path(args.out).write_text(text)
+            print(f"wrote {args.out}")
+        else:
+            print(text)
+        return 0
     if args.verify:
         problems = ledger.verify()
         if not problems:
@@ -354,6 +382,62 @@ def _cmd_ledger(args: argparse.Namespace) -> int:
     if args.html:
         Path(args.html).write_text(ledger.to_html(**filters))
         print(f"html: {args.html}")
+    return 0
+
+
+def _cmd_attest(args: argparse.Namespace) -> int:
+    import contextlib
+    import os
+    from pathlib import Path
+
+    try:
+        from .verify.attest import Attestation, generate_keypair, sign_receipt, verify_attestation
+    except ImportError:
+        print("attest needs cryptography: pip install 'agentmem-core[attest]'", file=sys.stderr)
+        return 2
+
+    if args.action == "keygen":
+        private_pem, public_pem = generate_keypair()
+        priv = Path(args.private or "issuer.key")
+        pub = Path(args.public or "issuer.pub")
+        priv.write_text(private_pem)
+        pub.write_text(public_pem)
+        with contextlib.suppress(OSError):
+            os.chmod(priv, 0o600)
+        print(f"wrote {priv} (keep it secret) and {pub}")
+        return 0
+
+    from .verify.receipt import ReceiptStore
+
+    store = ReceiptStore(Path(args.repo) / ".agentmem")
+
+    if args.action == "sign":
+        if not args.private:
+            print("sign needs --private <key.pem>", file=sys.stderr)
+            return 2
+        receipt_id = args.id or store.latest_id()
+        if not receipt_id:
+            print("no receipt id, and none in progress", file=sys.stderr)
+            return 2
+        attestation = sign_receipt(store.load(receipt_id), Path(args.private).read_text())
+        out = Path(args.att or f"attestation-{receipt_id}.json")
+        out.write_text(attestation.model_dump_json(indent=2))
+        print(f"signed receipt {receipt_id} -> {out}")
+        return 0
+
+    if args.action == "verify":
+        if not args.att:
+            print("verify needs --att <attestation.json>", file=sys.stderr)
+            return 2
+        attestation = Attestation.model_validate_json(Path(args.att).read_text())
+        receipt = None
+        with contextlib.suppress(OSError, ValueError):
+            receipt = store.load(attestation.receipt_id)
+        expected = Path(args.public).read_text() if args.public else None
+        ok = verify_attestation(attestation, receipt, expected_public_key=expected)
+        print("VALID: the signature checks out" if ok else "INVALID: the signature does not verify")
+        return 0 if ok else 1
+
     return 0
 
 

@@ -56,6 +56,9 @@ agent-sdk = [
 aider = [
     { name = "aider-chat" },
 ]
+attest = [
+    { name = "cryptography" },
+]
 daemon = [
     { name = "agentmem-daemon" },
 ]
@@ -75,13 +78,14 @@ requires-dist = [
     { name = "aider-chat", marker = "extra == 'aider'", specifier = ">=0.86,<0.87" },
     { name = "anthropic", specifier = ">=0.40" },
     { name = "claude-agent-sdk", marker = "extra == 'agent-sdk'", specifier = ">=0.2" },
+    { name = "cryptography", marker = "extra == 'attest'", specifier = ">=42" },
     { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.40" },
     { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.28,<2" },
     { name = "openai-agents", marker = "extra == 'openai-agents'", specifier = ">=0.18,<0.19" },
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pydantic-settings", specifier = ">=2.3" },
 ]
-provides-extras = ["agent-sdk", "aider", "daemon", "litellm", "mcp", "openai-agents"]
+provides-extras = ["agent-sdk", "aider", "attest", "daemon", "litellm", "mcp", "openai-agents"]
 
 [[package]]
 name = "agentmem-daemon"
@@ -155,6 +159,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "claude-agent-sdk" },
+    { name = "cryptography" },
     { name = "fastapi", version = "0.128.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-aider'" },
     { name = "fastapi", version = "0.139.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-openai-agents' or extra != 'extra-13-agentmem-core-aider'" },
     { name = "httpx" },
@@ -179,6 +184,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "claude-agent-sdk", specifier = ">=0.2" },
+    { name = "cryptography", specifier = ">=42" },
     { name = "fastapi", specifier = ">=0.110" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "litellm", specifier = ">=1.40" },

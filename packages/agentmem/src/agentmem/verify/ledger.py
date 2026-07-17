@@ -91,6 +91,61 @@ class Ledger:
     def verify(self) -> list[str]:
         return self.store.verify_chain()
 
+    def records(
+        self, *, since: str | None = None, until: str | None = None
+    ) -> list[dict[str, object]]:
+        """An audit-log row per receipt, oldest first, in the spirit of EU AI Act Article 12:
+        when, who, action, outcome, artifacts, and the seal for integrity."""
+        out: list[dict[str, object]] = []
+        for row in self._rows():
+            try:
+                r = self.store.load(str(row["id"]))
+            except (OSError, ValueError):
+                continue
+            if since and r.created_at < since:
+                continue
+            if until and r.created_at > until:
+                continue
+            artifacts = [*r.added, *r.modified, *r.deleted, *(c.label for c in r.changes)]
+            out.append(
+                {
+                    "timestamp": r.created_at,
+                    "actor": r.actor,
+                    "action": r.claim,
+                    "outcome": r.verdict,
+                    "issues": ";".join(r.issues),
+                    "artifacts": "; ".join(artifacts),
+                    "receipt_id": r.receipt_id,
+                    "receipt_hash": r.hash,
+                }
+            )
+        return out
+
+    def export(
+        self, *, fmt: str = "json", since: str | None = None, until: str | None = None
+    ) -> str:
+        records = self.records(since=since, until=until)
+        if fmt == "csv":
+            import csv
+            import io
+
+            fields = [
+                "timestamp",
+                "actor",
+                "action",
+                "outcome",
+                "issues",
+                "artifacts",
+                "receipt_id",
+                "receipt_hash",
+            ]
+            buffer = io.StringIO()
+            writer = csv.DictWriter(buffer, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(records)
+            return buffer.getvalue()
+        return json.dumps({"format": "agentmem-audit-log/1", "records": records}, indent=2)
+
     @staticmethod
     def _one_line(r: ActionReceipt) -> str:
         bits = []

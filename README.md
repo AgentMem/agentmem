@@ -153,6 +153,21 @@ seal, and the team chain means the server itself cannot silently reorder or drop
 is the surface a team pays for, an independent, verifiable record of what every agent and
 teammate actually did.
 
+### Signed and exportable
+
+Attest a receipt with an Ed25519 key and anyone can verify its integrity offline, with only
+your public key, no trust in AgentMem or the hub required:
+
+```bash
+agentmem attest keygen                          # issuer.key (secret) and issuer.pub
+agentmem attest sign --private issuer.key       # signs the latest receipt
+agentmem attest verify --att attestation-*.json --public issuer.pub
+```
+
+For compliance, `agentmem ledger export` writes the record as an audit log (JSON or CSV) in
+the spirit of EU AI Act Article 12: when, who, what action, what outcome, over what artifacts,
+each with its seal.
+
 ## Quickstart
 
 ```bash

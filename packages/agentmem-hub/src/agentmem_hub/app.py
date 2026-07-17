@@ -9,7 +9,7 @@ from pathlib import Path
 from agentmem.verify import ActionReceipt
 from agentmem.verify.ledger import Ledger
 from fastapi import Depends, FastAPI, Header, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel
 
 from . import __version__
@@ -81,6 +81,37 @@ def create_app(base: Path | str | None = None, keys: dict[str, set[str]] | None 
     def verify(team: str) -> dict:
         problems = ledger.verify(team)
         return {"intact": not problems, "problems": problems}
+
+    @app.get("/teams/{team}/export", dependencies=[Depends(require_key)])
+    def export(team: str, format: str = "json") -> object:
+        records = [
+            {
+                "timestamp": e.receipt.created_at,
+                "actor": e.receipt.actor,
+                "contributor": e.contributor,
+                "action": e.receipt.claim,
+                "outcome": e.receipt.verdict,
+                "issues": ";".join(e.receipt.issues),
+                "artifacts": "; ".join(
+                    [*e.receipt.added, *e.receipt.modified, *e.receipt.deleted]
+                    + [c.label for c in e.receipt.changes]
+                ),
+                "receipt_id": e.receipt.receipt_id,
+                "receipt_hash": e.receipt.hash,
+            }
+            for e in reversed(ledger.entries(team))  # oldest first, an audit log reads forward
+        ]
+        if format == "csv":
+            import csv
+            import io
+
+            fields = list(records[0].keys()) if records else ["timestamp", "actor", "action"]
+            buffer = io.StringIO()
+            writer = csv.DictWriter(buffer, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(records)
+            return Response(buffer.getvalue(), media_type="text/csv")
+        return {"format": "agentmem-audit-log/1", "records": records}
 
     @app.get("/teams/{team}", response_class=HTMLResponse)
     def feed_page(team: str) -> HTMLResponse:

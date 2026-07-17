@@ -55,6 +55,8 @@ openai-agents = ["openai-agents>=0.18,<0.19"]
 # Route the memory agent through any backend litellm supports (Gemini, OpenAI, vLLM,
 # Ollama) by setting model="litellm/<backend>", e.g. litellm/gemini/gemini-2.5-flash.
 litellm = ["litellm>=1.40"]
+# Sign receipts so their integrity can be checked offline with only a public key.
+attest = ["cryptography>=42"]
 
 [tool.uv]
 # aider-chat pins openai==2.20 while openai-agents needs openai>=2.45, so a single

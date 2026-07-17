@@ -11,6 +11,11 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- Sign a receipt with an Ed25519 key (`agentmem attest keygen | sign | verify`) and its
+  integrity verifies offline with only the public key, no trust in AgentMem or the hub. And
+  `agentmem ledger export` writes the record as an audit log (JSON or CSV) in the spirit of EU
+  AI Act Article 12, which the hub also serves at `/teams/{team}/export`. New in
+  `agentmem.verify.attest`; the signing needs the `attest` extra (cryptography).
 - `agentmem-hub`, a hosted, multi-tenant team feed (a new package). Contributors run
   `agentmem ledger push --to <hub> --team <t> --key <k>` to send their local receipts; the
   hub chains each into one tamper-evident team timeline (a second hash-chain over the
