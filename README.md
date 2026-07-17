@@ -64,6 +64,38 @@ non-zero, so a script or a CI step can gate on the agent not inventing its own p
 > AgentMem never edits the action agent's system prompt, tools, or decoding. Reminders are
 > **transient**: injected once, consumed once, never baked into base instructions.
 
+## Audit what it did, and undo it
+
+`report` checks an account against the repo as it stands. `agentmem audit` goes further: it
+captures the real before and after around a span of work, so the agent's summary is checked
+against what measurably changed, not just against what exists now. That catches three things
+a text check misses, and every receipt is hash-chained to the last, so the record is an
+append-only audit trail.
+
+```bash
+agentmem audit begin                                  # freeze the ground truth
+#  ... the agent works ...
+agentmem audit end --claim "$(cat summary.txt)" --check "pytest -q"
+agentmem audit undo                                   # put the tree back, byte for byte
+```
+
+- **fabrication**: the agent claims a file it never touched
+- **overreach**: the agent changed files it never mentioned
+- **silent failure**: a check it said passed did not
+
+`end` exits non-zero on a trust break, so it drops straight into CI as a gate on *what the
+agent actually did*:
+
+```yaml
+- run: agentmem audit begin
+- run: ./run-the-agent.sh
+- run: agentmem audit end --claim "$(cat agent-summary.txt)" --check "pytest -q"
+```
+
+On twelve labeled scenarios the verifier catches every injected issue with no false alarm
+(`evals/action_audit/`). Undo is exact where the before-bytes were captured, and honest
+about the files too large to store.
+
 ## Where this is going
 
 Today AgentMem is a flight recorder for one agent: an honest, verifiable memory of what it

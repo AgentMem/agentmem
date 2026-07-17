@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+from typing import TYPE_CHECKING
 
 from . import __version__
+
+if TYPE_CHECKING:
+    from .verify.receipt import ActionReceipt
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -89,6 +93,33 @@ def main(argv: list[str] | None = None) -> int:
     p_report.add_argument("--repo", default=".", help="repository checkout to verify against")
     p_report.add_argument("--html", help="also write a self-contained HTML report to this path")
 
+    p_audit = sub.add_parser(
+        "audit",
+        help="record and verify what an agent actually did against the real diff, and undo it",
+    )
+    p_audit.add_argument(
+        "action",
+        choices=["begin", "end", "undo", "show", "verify-chain"],
+        help="begin a span, end+verify it, undo it, show a receipt, or check the chain",
+    )
+    p_audit.add_argument("--repo", default=".", help="the working tree to audit")
+    p_audit.add_argument("--id", help="receipt id (defaults to the span in progress)")
+    p_audit.add_argument("--claim", help="the agent's account of what it did (for end)")
+    p_audit.add_argument("--claim-file", help="read the claim from a file (for end)")
+    p_audit.add_argument(
+        "--check",
+        action="append",
+        default=[],
+        metavar="CMD",
+        help="a command that must pass, e.g. 'pytest -q'; repeatable (for end)",
+    )
+    p_audit.add_argument(
+        "--fail-on",
+        choices=["trust", "any", "none"],
+        default="trust",
+        help="what makes end exit non-zero: trust breaks (default), any issue, or never",
+    )
+
     args = parser.parse_args(argv)
 
     if args.command == "demo":
@@ -111,6 +142,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_step(args)
     if args.command == "report":
         return _cmd_report(args)
+    if args.command == "audit":
+        return _cmd_audit(args)
 
     parser.print_help()
     return 0
@@ -130,6 +163,82 @@ def _cmd_report(args: argparse.Namespace) -> int:
     # a clear fabrication (nothing verified, something contradicted) exits non-zero, so
     # `agentmem report` can gate a script or CI on the agent not inventing its own past.
     return 1 if report.status == "CONTRADICTED" else 0
+
+
+def _cmd_audit(args: argparse.Namespace) -> int:
+    import subprocess
+    from pathlib import Path
+
+    from .verify.receipt import Check, ReceiptStore
+
+    repo = Path(args.repo)
+    store = ReceiptStore(repo / ".agentmem")
+
+    if args.action == "begin":
+        new_id = store.begin(repo)
+        print(f"recording started, receipt {new_id}")
+        print('do the work, then:  agentmem audit end --claim "..."')
+        return 0
+
+    receipt_id = args.id or store.latest_id()
+    if not receipt_id:
+        print("no receipt id, and no span in progress (run: agentmem audit begin)", file=sys.stderr)
+        return 2
+
+    if args.action == "end":
+        if args.claim is not None:
+            claim = args.claim
+        elif args.claim_file:
+            claim = Path(args.claim_file).read_text()
+        else:
+            print("end needs --claim or --claim-file", file=sys.stderr)
+            return 2
+        checks = []
+        for cmd in args.check:
+            proc = subprocess.run(cmd, shell=True, cwd=repo, capture_output=True, text=True)  # noqa: S602
+            out = (proc.stdout + proc.stderr).strip()
+            checks.append(
+                Check(name=cmd, ok=proc.returncode == 0, detail=out.splitlines()[-1] if out else "")
+            )
+        receipt = store.end(receipt_id, claim, repo, checks=checks)
+        print(receipt.to_markdown())
+        return _audit_exit(receipt, args.fail_on)
+
+    if args.action == "show":
+        print(store.load(receipt_id).to_markdown())
+        return 0
+
+    if args.action == "undo":
+        result = store.undo(receipt_id, repo)
+        print(
+            f"undo {receipt_id}: restored {len(result.restored)}, "
+            f"removed {len(result.removed)}, skipped {len(result.skipped)}"
+        )
+        for rel in result.skipped:
+            print(f"  could not restore (bytes not stored): {rel}")
+        return 0
+
+    if args.action == "verify-chain":
+        problems = store.verify_chain()
+        if not problems:
+            print("chain intact: every receipt hashes to its seal and links to the last")
+            return 0
+        for p in problems:
+            print(f"BROKEN: {p}", file=sys.stderr)
+        return 1
+
+    return 0
+
+
+def _audit_exit(receipt: ActionReceipt, fail_on: str) -> int:
+    """Turn a receipt into an exit code so `end` can gate CI. 'trust' fails only on the
+    clear-cut trust breaks (fabrication, silent failure); 'any' fails on overreach too."""
+    if fail_on == "none":
+        return 0
+    issues = set(receipt.issues)
+    if fail_on == "any":
+        return 1 if issues else 0
+    return 1 if issues & {"fabrication", "silent-failure"} else 0
 
 
 def _cmd_demo(args: argparse.Namespace) -> int:

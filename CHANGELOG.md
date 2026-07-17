@@ -11,6 +11,15 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- `agentmem audit` verifies what an agent actually *did*, not just what it said. It captures
+  the real before and after around a span of work and checks the agent's account against the
+  diff, catching fabrication (a file claimed but never touched), overreach (a file changed
+  but never mentioned), and silent failure (a check claimed to pass that did not). Receipts
+  are hash-chained into an append-only, tamper-evident record, the before-state is stored so
+  `audit undo` can put the tree back byte for byte, and `audit end` exits non-zero on a trust
+  break so it gates CI. New in `agentmem.verify`: `Snapshot`, `Effect`, `ActionReceipt`,
+  `ReceiptStore`, `verify_run`, `undo`. Detection is scored in `evals/action_audit/`
+  (12 / 12 scenarios, no false alarms).
 - One-click Claude Code install from the plugin marketplace: `/plugin marketplace add
   AgentMem/agentmem` then `/plugin install agentmem@agentmem`, no terminal. The plugin
   bundles a `bin/agentmem-engine` bootstrap that runs the engine off an installed

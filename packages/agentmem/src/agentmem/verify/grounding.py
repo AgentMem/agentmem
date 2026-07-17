@@ -50,6 +50,12 @@ def candidates(account: str) -> list[str]:
     return sorted(set(out))
 
 
+def path_candidates(text: str) -> list[str]:
+    """The file-path-shaped claims in a text, e.g. `services/upload.py`, dropping the
+    bare identifiers. Used to check an account against a real diff, not just the repo."""
+    return [c for c in candidates(text) if _PATHISH.search(c.lower())]
+
+
 def repo_text(repo: Path) -> str:
     """Every file name and its contents in the checkout, lowercased. The ground truth."""
     parts: list[str] = []
