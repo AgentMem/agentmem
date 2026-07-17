@@ -35,6 +35,7 @@ members = [
     "agentmem-core",
     "agentmem-daemon",
     "agentmem-evals",
+    "agentmem-hub",
     "agentmem-workspace",
 ]
 
@@ -123,6 +124,24 @@ requires-dist = [
 provides-extras = ["plots"]
 
 [[package]]
+name = "agentmem-hub"
+version = "0.1.0"
+source = { editable = "packages/agentmem-hub" }
+dependencies = [
+    { name = "agentmem-core" },
+    { name = "fastapi", version = "0.128.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-aider'" },
+    { name = "fastapi", version = "0.139.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-13-agentmem-core-openai-agents' or extra != 'extra-13-agentmem-core-aider'" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "agentmem-core", editable = "packages/agentmem" },
+    { name = "fastapi", specifier = ">=0.110" },
+    { name = "uvicorn", specifier = ">=0.29" },
+]
+
+[[package]]
 name = "agentmem-workspace"
 version = "0.0.0"
 source = { virtual = "." }
@@ -130,6 +149,7 @@ dependencies = [
     { name = "agentmem-core" },
     { name = "agentmem-daemon" },
     { name = "agentmem-evals" },
+    { name = "agentmem-hub" },
 ]
 
 [package.dev-dependencies]
@@ -153,6 +173,7 @@ requires-dist = [
     { name = "agentmem-core", editable = "packages/agentmem" },
     { name = "agentmem-daemon", editable = "packages/agentmem-daemon" },
     { name = "agentmem-evals", editable = "evals" },
+    { name = "agentmem-hub", editable = "packages/agentmem-hub" },
 ]
 
 [package.metadata.requires-dev]

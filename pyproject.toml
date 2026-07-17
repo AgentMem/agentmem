@@ -16,7 +16,7 @@ description = "Dev workspace root for AgentMem (not published to PyPI)."
 requires-python = ">=3.11"
 # The root pulls in every workspace package so `uv sync` at the top level gives you a
 # working environment: the `agentmem` CLI, the daemon, and the eval harness.
-dependencies = ["agentmem-core", "agentmem-daemon", "agentmem-evals"]
+dependencies = ["agentmem-core", "agentmem-daemon", "agentmem-hub", "agentmem-evals"]
 
 [tool.uv.workspace]
 members = ["packages/*", "evals"]
@@ -24,6 +24,7 @@ members = ["packages/*", "evals"]
 [tool.uv.sources]
 agentmem-core = { workspace = true }
 agentmem-daemon = { workspace = true }
+agentmem-hub = { workspace = true }
 agentmem-evals = { workspace = true }
 
 # Dev-only tools. Kept here (not in the shipped package) so `pip install agentmem-core`
@@ -108,6 +109,7 @@ warn_unused_ignores = false
 testpaths = [
     "packages/agentmem/tests",
     "packages/agentmem-daemon/tests",
+    "packages/agentmem-hub/tests",
     "evals/tests",
 ]
 asyncio_mode = "auto"

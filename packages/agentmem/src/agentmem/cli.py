@@ -139,6 +139,13 @@ def main(argv: list[str] | None = None) -> int:
     p_ledger = sub.add_parser(
         "ledger", help="the shared, multi-actor feed of what agents did on this project"
     )
+    p_ledger.add_argument(
+        "action",
+        nargs="?",
+        choices=["show", "push"],
+        default="show",
+        help="show the local feed (default) or push it to a hosted team hub",
+    )
     p_ledger.add_argument("--repo", default=".", help="the working tree whose ledger to read")
     p_ledger.add_argument("--actor", help="only this actor's entries")
     p_ledger.add_argument("--verdict", help="only entries with this verdict (e.g. FABRICATED)")
@@ -148,6 +155,12 @@ def main(argv: list[str] | None = None) -> int:
         "--verify",
         action="store_true",
         help="check the chain's integrity and exit non-zero if broken",
+    )
+    p_ledger.add_argument("--to", help="hub base url to push to, e.g. https://hub.example.com")
+    p_ledger.add_argument("--team", help="team name on the hub (for push)")
+    p_ledger.add_argument("--key", help="team bearer key on the hub (for push)")
+    p_ledger.add_argument(
+        "--contributor", default="agent", help="who is pushing, shown in the team feed"
     )
 
     args = parser.parse_args(argv)
@@ -279,10 +292,53 @@ def _audit_exit(receipt: ActionReceipt, fail_on: str) -> int:
     return 1 if issues & {"fabrication", "silent-failure"} else 0
 
 
+def _ledger_push(args: argparse.Namespace) -> int:
+    import json
+    import urllib.request
+    from pathlib import Path
+
+    from .verify.ledger import Ledger
+
+    if not (args.to and args.team and args.key):
+        print("push needs --to, --team, and --key", file=sys.stderr)
+        return 2
+    ledger = Ledger(Path(args.repo) / ".agentmem")
+    base = args.to.rstrip("/")
+    stored = skipped = failed = 0
+    # Oldest first, so the team chain mirrors the order the work happened in.
+    for receipt in reversed(ledger.receipts()):
+        body = json.dumps(
+            {"receipt": receipt.model_dump(mode="json"), "contributor": args.contributor}
+        ).encode()
+        request = urllib.request.Request(
+            f"{base}/teams/{args.team}/receipts",
+            data=body,
+            headers={"Authorization": f"Bearer {args.key}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:  # noqa: S310 (operator url)
+                result = json.loads(response.read())
+            if result.get("stored"):
+                stored += 1
+            else:
+                skipped += 1
+        except Exception as exc:
+            failed += 1
+            print(f"  push failed for {receipt.receipt_id}: {exc}", file=sys.stderr)
+    print(
+        f"pushed to {base}/teams/{args.team}: {stored} new, {skipped} already there, {failed} failed"
+    )
+    return 1 if failed else 0
+
+
 def _cmd_ledger(args: argparse.Namespace) -> int:
     from pathlib import Path
 
     from .verify.ledger import Ledger
+
+    if args.action == "push":
+        return _ledger_push(args)
 
     ledger = Ledger(Path(args.repo) / ".agentmem")
     if args.verify:

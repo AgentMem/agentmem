@@ -11,6 +11,14 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- `agentmem-hub`, a hosted, multi-tenant team feed (a new package). Contributors run
+  `agentmem ledger push --to <hub> --team <t> --key <k>` to send their local receipts; the
+  hub chains each into one tamper-evident team timeline (a second hash-chain over the
+  sequence it receives, so the server itself cannot silently reorder or drop entries),
+  rejects a receipt whose own facts do not hash to its seal, and dedupes by id. It serves the
+  team feed as JSON and as a web page that asks for the team key in the browser and carries no
+  data or key in its URL. Every team is gated by a bearer key the operator configures via
+  `AGENTMEM_HUB_KEYS`. Run it with `agentmem-hub`.
 - A shared, multi-actor ledger and a human feed over it. Several actors audit their work on
   one project with `agentmem audit --actor <name>`, and their receipts interleave in one
   hash-chained, append-only record, each attributed and verified; concurrent writes are

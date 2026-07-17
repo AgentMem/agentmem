@@ -135,6 +135,24 @@ This is where memory stops being a booster for one agent's thinking and becomes 
 of truth a system of agents coordinates on, and the feed the person who has to trust them
 reads. That is the substrate autonomous work will need.
 
+### Hosted, for teams
+
+The same feed runs as a small multi-tenant service (`agentmem-hub`) so a whole team reads one
+shared record across machines. Contributors push their local ledgers to it; the hub chains
+every receipt into one tamper-evident team timeline and serves it back as JSON and as a web
+feed. Each team is gated by a key the operator configures, and the web page never puts data
+or a key in its URL.
+
+```bash
+agentmem-hub                                   # the operator runs the service
+agentmem ledger push --to https://hub --team acme --key KEY --contributor my-laptop
+```
+
+A receipt stays self-verifying end to end: the hub rejects one whose facts do not hash to its
+seal, and the team chain means the server itself cannot silently reorder or drop entries. This
+is the surface a team pays for, an independent, verifiable record of what every agent and
+teammate actually did.
+
 ## Quickstart
 
 ```bash

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentmem-hub"
+version = "0.1.0"
+description = "Hosted, multi-tenant team feed over AgentMem action receipts."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "The AgentMem Authors" }]
+# A FastAPI service served by uvicorn. The core package (agentmem-core) stays lean; you
+# only pull these in if you run the shared team feed.
+dependencies = ["agentmem-core>=0.1.0,<0.2", "fastapi>=0.110", "uvicorn>=0.29"]
+
+[project.scripts]
+agentmem-hub = "agentmem_hub.__main__:main"
+
+[project.urls]
+Homepage = "https://agentmem.xyz"
+Repository = "https://github.com/agentmem/agentmem"
+
+[tool.uv.sources]
+agentmem-core = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentmem_hub"]
