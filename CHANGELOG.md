@@ -11,6 +11,17 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- A shared, multi-actor ledger and a human feed over it. Several actors audit their work on
+  one project with `agentmem audit --actor <name>`, and their receipts interleave in one
+  hash-chained, append-only record, each attributed and verified; concurrent writes are
+  serialized under a file lock so the chain never forks. `agentmem ledger` reads it back as a
+  feed (markdown or a self-contained HTML page), filterable by actor or verdict, with
+  `--verify` for chain integrity. New in `agentmem.verify`: `Ledger`. The Claude Code
+  auto-audit attributes its receipts to `claude-code`.
+- `gmail_sent_recorder`, a real cloud/mail recorder on `ApiRecorder`: given an OAuth token it
+  lists the user's Gmail Sent folder over the REST API (stdlib only, no Google SDK, transport
+  injectable for tests), so "I emailed the customer" is checked against what was actually
+  sent. In `agentmem.integrations.gmail`.
 - Action audit reaches beyond files. A `Recorder` captures any ground truth an agent acts
   on and diffs it into the same receipt: `GitRecorder` records branches, commits, and tags
   (offline, no token), so a commit shows as evidence, an undisclosed branch is flagged, and

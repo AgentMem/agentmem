@@ -32,10 +32,11 @@ class Change(BaseModel):
     reversible: bool = False
 
 
-# Overreach (changed but never mentioned) only makes sense for artifacts an agent names.
-# A commit is a content-addressed work product, evidence that it did something, not a thing
-# it forgets to mention, so commits are never counted as overreach.
-OVERREACH_KINDS = {"file", "branch", "tag", "resource"}
+# Overreach (changed but never mentioned) applies to any artifact an agent names: files,
+# branches, tags, cloud resources, sent mail. A commit is the exception, a content-addressed
+# work product that is evidence it did something rather than a thing it forgets to mention,
+# so commits are never counted as overreach.
+EVIDENCE_KINDS = {"commit"}
 
 
 class Recorder(Protocol):

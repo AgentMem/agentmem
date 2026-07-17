@@ -132,6 +132,23 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="also record git branches, commits, and tags (on begin; end auto-detects)",
     )
+    p_audit.add_argument(
+        "--actor", default="agent", help="who did this work, for a shared multi-actor ledger"
+    )
+
+    p_ledger = sub.add_parser(
+        "ledger", help="the shared, multi-actor feed of what agents did on this project"
+    )
+    p_ledger.add_argument("--repo", default=".", help="the working tree whose ledger to read")
+    p_ledger.add_argument("--actor", help="only this actor's entries")
+    p_ledger.add_argument("--verdict", help="only entries with this verdict (e.g. FABRICATED)")
+    p_ledger.add_argument("--limit", type=int, help="show at most this many, newest first")
+    p_ledger.add_argument("--html", help="write the feed as a self-contained HTML page")
+    p_ledger.add_argument(
+        "--verify",
+        action="store_true",
+        help="check the chain's integrity and exit non-zero if broken",
+    )
 
     args = parser.parse_args(argv)
 
@@ -157,6 +174,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_report(args)
     if args.command == "audit":
         return _cmd_audit(args)
+    if args.command == "ledger":
+        return _cmd_ledger(args)
 
     parser.print_help()
     return 0
@@ -217,7 +236,9 @@ def _cmd_audit(args: argparse.Namespace) -> int:
                 Check(name=cmd, ok=proc.returncode == 0, detail=out.splitlines()[-1] if out else "")
             )
         recorders = [GitRecorder(repo)] if "git" in store.recorded_names(receipt_id) else []
-        receipt = store.end(receipt_id, claim, repo, recorders=recorders, checks=checks)
+        receipt = store.end(
+            receipt_id, claim, repo, recorders=recorders, checks=checks, actor=args.actor
+        )
         print(receipt.to_markdown())
         return _audit_exit(receipt, args.fail_on)
 
@@ -256,6 +277,28 @@ def _audit_exit(receipt: ActionReceipt, fail_on: str) -> int:
     if fail_on == "any":
         return 1 if issues else 0
     return 1 if issues & {"fabrication", "silent-failure"} else 0
+
+
+def _cmd_ledger(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .verify.ledger import Ledger
+
+    ledger = Ledger(Path(args.repo) / ".agentmem")
+    if args.verify:
+        problems = ledger.verify()
+        if not problems:
+            print("ledger intact: every receipt hashes to its seal and links to the last")
+            return 0
+        for problem in problems:
+            print(f"BROKEN: {problem}", file=sys.stderr)
+        return 1
+    filters = {"actor": args.actor, "verdict": args.verdict, "limit": args.limit}
+    print(ledger.to_markdown(**filters))
+    if args.html:
+        Path(args.html).write_text(ledger.to_html(**filters))
+        print(f"html: {args.html}")
+    return 0
 
 
 def _cmd_demo(args: argparse.Namespace) -> int:
@@ -589,7 +632,7 @@ def _handle_audit(event: str, cwd: str, payload: dict[str, object]) -> str:
         return "{}"
     recorders = [GitRecorder(root)] if "git" in store.recorded_names(slot) else []
     try:
-        receipt = store.end(slot, claim, root, recorders=recorders)
+        receipt = store.end(slot, claim, root, recorders=recorders, actor="claude-code")
     except (OSError, ValueError):
         return "{}"  # no matching begin this session, nothing to verify
     if receipt.verdict != "FAITHFUL":

@@ -7,6 +7,7 @@ so the account can be checked against what measurably changed, and undone.
 """
 
 from .grounding import candidates, path_candidates, score
+from .ledger import Ledger
 from .receipt import (
     ActionReceipt,
     Check,
@@ -29,6 +30,7 @@ __all__ = [
     "Check",
     "Effect",
     "GitRecorder",
+    "Ledger",
     "ReceiptStore",
     "Recorder",
     "Snapshot",

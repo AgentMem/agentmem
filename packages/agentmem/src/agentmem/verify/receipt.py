@@ -21,7 +21,8 @@ import hashlib
 import json
 import re
 import uuid
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -29,7 +30,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from . import grounding
-from .recorders import OVERREACH_KINDS, Change, Recorder
+from .recorders import EVIDENCE_KINDS, Change, Recorder
 
 # Directories that are never part of an agent's real work product, so we neither snapshot
 # nor diff them. Keeps the before-state small and the diff about code, not noise.
@@ -415,9 +416,13 @@ def build_receipt(
     for ch in changes:
         if ch.kind == "commit":
             continue
-        if ch.label.lower() in low_claim:
+        # A change is mentioned if the claim names its label or any part of it: an email's
+        # label is "subject -> recipient", and a claim usually names one, not the whole thing.
+        segments = [ch.label, *(s.strip() for s in re.split(r" -> | → ", ch.label))]
+        mentioned = any(seg and seg.lower() in low_claim for seg in segments)
+        if mentioned:
             verified.append(f"{ch.kind} {ch.label}")
-        elif ch.kind in OVERREACH_KINDS:
+        elif ch.kind not in EVIDENCE_KINDS:
             overreach.append(f"{ch.kind} {ch.label} ({ch.verb})")
 
     # A git action asserted in the claim that left no trace at all.
@@ -532,6 +537,23 @@ class ReceiptStore:
             return set()
         return set(json.loads(path.read_text()).keys())
 
+    @contextmanager
+    def _locked(self) -> Iterator[None]:
+        """Serialize appends so several actors writing to one ledger cannot fork the chain.
+        Uses an advisory file lock where the platform has one, and is a no-op otherwise."""
+        self.dir.mkdir(parents=True, exist_ok=True)
+        try:
+            import fcntl
+        except ImportError:
+            yield
+            return
+        with (self.dir / ".lock").open("w") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(handle, fcntl.LOCK_UN)
+
     def end(
         self,
         receipt_id: str,
@@ -539,6 +561,7 @@ class ReceiptStore:
         root: Path | None = None,
         recorders: Sequence[Recorder] = (),
         checks: list[Check] | None = None,
+        actor: str = "agent",
     ) -> ActionReceipt:
         slot = self._slot(receipt_id)
         before = Snapshot.load(slot / "before")
@@ -560,22 +583,28 @@ class ReceiptStore:
             recorded_kinds=recorded_kinds,
             checks=checks,
             receipt_id=receipt_id,
-            prev_hash=self.head_hash(),
+            actor=actor,
         )
-        (self._slot(receipt_id) / "receipt.json").write_text(receipt.model_dump_json(indent=2))
-        with (self.dir / "chain.jsonl").open("a") as fh:
-            fh.write(
-                json.dumps(
-                    {
-                        "id": receipt_id,
-                        "hash": receipt.hash,
-                        "prev_hash": receipt.prev_hash,
-                        "created_at": receipt.created_at,
-                        "verdict": receipt.verdict,
-                    }
+        # Read the head, seal against it, and append, all under the lock, so a second actor
+        # ending at the same moment chains after this one instead of forking beside it.
+        with self._locked():
+            receipt.prev_hash = self.head_hash()
+            receipt.hash = receipt.compute_hash()
+            (slot / "receipt.json").write_text(receipt.model_dump_json(indent=2))
+            with (self.dir / "chain.jsonl").open("a") as handle:
+                handle.write(
+                    json.dumps(
+                        {
+                            "id": receipt_id,
+                            "actor": receipt.actor,
+                            "hash": receipt.hash,
+                            "prev_hash": receipt.prev_hash,
+                            "created_at": receipt.created_at,
+                            "verdict": receipt.verdict,
+                        }
+                    )
+                    + "\n"
                 )
-                + "\n"
-            )
         return receipt
 
     def load(self, receipt_id: str) -> ActionReceipt:

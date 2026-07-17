@@ -101,7 +101,9 @@ git: a commit the agent made shows as evidence, a branch or tag it created but n
 mentioned is flagged, and a claim to have committed that left no commit at all is caught.
 The same shape extends to the cloud and the inbox with `ApiRecorder`: give it a function
 that lists the resources you care about (buckets, sent messages, rows) and any API action
-becomes recordable and verifiable, without bundling a vendor SDK.
+becomes recordable and verifiable, without bundling a vendor SDK. A `gmail_sent_recorder`
+ships as a worked example: point it at the user's Sent folder and "I emailed the customer"
+is checked against what Gmail actually shows was sent.
 
 ```bash
 agentmem audit begin --git      # record files and git
@@ -114,15 +116,24 @@ hook freezes the ground truth, and a `Stop` hook reads the agent's own wrap-up a
 against the session's real diff. When the summary does not match, you are told, with the
 receipt one command away. Silence-first: a faithful session says nothing.
 
-## Where this is going
+## The shared ledger
 
-Today AgentMem is a flight recorder for one agent: an honest, verifiable memory of what it
-did across long and multi-session work. The same record is built to be shared. When several
-agents, or agents and people, work together, they read one verified account of who did
-what, and trust it because it is checked against reality rather than taken on each other's
-word. Memory stops being a booster for a single agent's thinking and becomes the source of
-truth a system of agents coordinates on. That is the substrate autonomous work will need,
-and where AgentMem is headed.
+The record is built to be shared. Several actors, agents, or agents and people, audit their
+work on one project with `--actor`, and their receipts interleave in one hash-chained,
+append-only ledger, each entry attributed and verified against reality rather than taken on
+the actor's word. Concurrent writes are serialized so the chain never forks. `agentmem
+ledger` reads it back as a feed anyone can scan, one card per span, verdict up front:
+
+```bash
+agentmem audit end --claim "$(cat summary.txt)" --actor claude-code
+agentmem ledger                     # the shared feed of who did what, and whether it held up
+agentmem ledger --verdict FABRICATED   # just the ones that did not
+agentmem ledger --verify            # check the whole chain's integrity
+```
+
+This is where memory stops being a booster for one agent's thinking and becomes the source
+of truth a system of agents coordinates on, and the feed the person who has to trust them
+reads. That is the substrate autonomous work will need.
 
 ## Quickstart
 
