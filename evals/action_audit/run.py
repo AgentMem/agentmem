@@ -1,12 +1,5 @@
-"""Does the action-receipt engine catch what it claims to?
-
-Labeled scenarios with a known ground truth (fabrication, overreach, silent failure, or a
-faithful run), scored for detection. No model and no key: this is pure logic run against a
-real filesystem diff, so every number here is recomputable by CI.
-
-Run:  uv run python evals/action_audit/run.py            # prints the scorecard, exits 0 if perfect
-      uv run python evals/action_audit/run.py --report evals/report/action-audit.json
-"""
+"""Score the action-receipt engine's detection on labeled scenarios (no model, no key).
+Run: uv run python evals/action_audit/run.py [--report evals/report/action-audit.json]"""
 
 from __future__ import annotations
 

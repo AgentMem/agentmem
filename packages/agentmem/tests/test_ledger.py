@@ -1,6 +1,4 @@
-"""The multi-actor ledger: several actors' receipts interleave in one hash-chained record,
-and the feed reads it back. These pin that the chain links across actors, that filters and
-the summary work, that the feed renders, and that concurrent ends do not fork the chain."""
+"""The multi-actor ledger: cross-actor chaining, filters, feed render, and concurrent-safe appends."""
 
 from __future__ import annotations
 

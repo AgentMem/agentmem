@@ -1,16 +1,5 @@
-"""A real cloud/mail recorder: the user's Gmail Sent folder, as an `ApiRecorder`.
-
-Give it an OAuth access token with a read scope (`gmail.readonly` or `gmail.metadata`) and
-it lists the ids of sent messages as the resource state. Diffed before and after a span of
-work, a message the agent actually sent shows up, so a claim like "I emailed the customer"
-is checked against what Gmail really shows was sent, and a claim to have emailed that left
-nothing in Sent is caught.
-
-No Google SDK is bundled: it calls the Gmail REST API over stdlib `urllib`, and the HTTP
-transport is injectable, so this is unit-tested without the network or a real token. The
-token is yours to supply and never leaves your process; pass the same recorder to both
-`begin` and `end` of a `ReceiptStore` span.
-"""
+"""An `ApiRecorder` over the user's Gmail Sent folder: an OAuth token lists sent mail over
+the REST API (stdlib, no Google SDK, injectable transport), to check against what was sent."""
 
 from __future__ import annotations
 

@@ -1,11 +1,5 @@
-"""Check an agent's account of its work against the repository, not against its word.
-
-Given text the agent wrote about what it did, pull out the things a repo could actually
-contain (file names, dotted identifiers, calls) and split them into ones the checkout
-corroborates and ones it does not. An account that names nothing real, while asserting in
-confident detail what it did, is describing work that did not happen. The agent is treated
-as an untrusted witness; the repository decides.
-"""
+"""Split the code-shaped things an agent's account names into ones the repository
+corroborates and ones it cannot."""
 
 from __future__ import annotations
 

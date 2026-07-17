@@ -1,16 +1,5 @@
-"""Recorders: capture the ground-truth state of things an agent acts on, beyond files.
-
-The filesystem is one kind of ground truth (`receipt.py`). An agent also acts through APIs:
-it creates git branches, commits, opens pull requests, spins up cloud resources, sends mail.
-Each leaves a trace we can capture as a set of named artifacts and diff before and after a
-span of work, exactly like a file diff. A `Recorder` captures that state and turns a diff
-into `Change`s, which feed the same receipt as file changes, so one receipt covers
-everything the agent did, not just the files.
-
-`GitRecorder` is the concrete, offline, no-credentials instance. `ApiRecorder` is the
-extension point: give it a function that lists the resources you care about, and any
-cloud/mail/SaaS action becomes recordable and verifiable, without bundling a vendor SDK.
-"""
+"""Capture the ground truth an agent acts on beyond files (git refs, listable API
+resources) and diff it into `Change`s that feed the same receipt."""
 
 from __future__ import annotations
 
@@ -40,9 +29,7 @@ EVIDENCE_KINDS = {"commit"}
 
 
 class Recorder(Protocol):
-    """Captures the state of one kind of ground truth and diffs it into `Change`s. `name`
-    keys its stored before-state; `kinds` is what it can produce, so a claim that asserts a
-    recorded action leaving no trace can be told apart from one that was never watched."""
+    """Captures one kind of ground truth and diffs it into `Change`s; `name` keys its state, `kinds` is what it can produce."""
 
     name: str
     kinds: frozenset[str]
@@ -63,13 +50,7 @@ def diff_ids(
 
 
 class GitRecorder:
-    """Capture git refs (branches, tags, HEAD) so a receipt can check an agent's
-    'I made a branch / committed / tagged' against what the repository actually shows.
-
-    Purely local: it shells out to `git`, needs no remote, no token, no network. On a
-    directory that is not a git repo it captures nothing, so a receipt just shows no git
-    activity rather than failing.
-    """
+    """Capture git refs (branches, tags, HEAD) so a receipt can check 'I committed / branched / tagged'; purely local, no remote or token."""
 
     name = "git"
     kinds = frozenset({"branch", "tag", "commit"})
@@ -140,13 +121,7 @@ class GitRecorder:
 
 
 class ApiRecorder:
-    """Record any API resource you can list. Give it a name, a kind, and a callable that
-    returns `{id: fingerprint}` for the resources you care about (buckets you own, messages
-    in Sent, rows in a table); before/after diffing and verification come for free.
-
-    This is how cloud and mail actions become auditable without bundling boto3 or a Gmail
-    client: the concrete adapter is just your list function, run before and after the span.
-    """
+    """Record any API resource you can list: give it a name, a kind, and a `{id: fingerprint}` callable, and diffing comes free."""
 
     def __init__(
         self,

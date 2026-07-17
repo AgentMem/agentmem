@@ -1,10 +1,5 @@
-"""The team ledger: many contributors' receipts, chained into one tamper-evident timeline.
-
-A receipt is already self-verifying, its facts hash to its own seal. The hub adds a second
-chain over the sequence of receipts it receives, so the team's timeline cannot be silently
-reordered or trimmed by whoever runs the server either. Ingest is idempotent by receipt id
-and serialized under a lock, so many machines can push at once without forking the chain.
-"""
+"""Chain many contributors' receipts into one tamper-evident team timeline, idempotent by
+receipt id and serialized under a lock."""
 
 from __future__ import annotations
 

@@ -1,7 +1,4 @@
-"""Team API keys for the hub. The operator supplies them through the environment or a file;
-the hub never mints or stores a secret of its own, and a team with no configured key can be
-neither written to nor read.
-"""
+"""Team bearer keys for the hub, loaded from the environment or a file (fail-closed)."""
 
 from __future__ import annotations
 

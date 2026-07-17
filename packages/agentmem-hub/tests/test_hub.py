@@ -1,6 +1,4 @@
-"""The hosted team feed: contributors push receipts, the hub chains them into one
-tamper-evident timeline and gates every team by a key. These pin auth, idempotent ingest,
-rejection of a tampered receipt, the multi-contributor chain, and the feed the team reads."""
+"""The hosted team feed: auth, idempotent ingest, tamper rejection, the multi-contributor chain, and push."""
 
 from __future__ import annotations
 

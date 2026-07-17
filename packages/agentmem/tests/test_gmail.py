@@ -1,6 +1,4 @@
-"""The Gmail Sent adapter turns real sent mail into receipt changes: a message the agent
-sent that it never mentioned is overreach, one it names is verified. Tested against a fake
-transport, so no network and no token are involved."""
+"""The Gmail Sent adapter over a fake transport: an unmentioned sent email is overreach, a named one verified."""
 
 from __future__ import annotations
 

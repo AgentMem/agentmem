@@ -1,10 +1,5 @@
-"""The hosted team feed: a small multi-tenant service the whole team reads.
-
-Contributors push their local receipts here; the hub chains them into one tamper-evident
-team timeline and serves it back as JSON and as a web feed. Every team is gated by a bearer
-key the operator configures. The web page carries no data and no key in its URL: it asks for
-the key in the browser and fetches the JSON with it, so the key never lands in a server log.
-"""
+"""The multi-tenant team feed: ingest pushed receipts, gate each team by a bearer key, and
+serve the shared timeline as JSON and a web page that keeps the key out of the URL."""
 
 from __future__ import annotations
 

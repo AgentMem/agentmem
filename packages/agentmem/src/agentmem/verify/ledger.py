@@ -1,13 +1,5 @@
-"""A shared, multi-actor ledger over the receipts store, and the human feed that reads it.
-
-`ReceiptStore` is already a hash-chained, append-only record. When several actors (agents,
-or agents and people) audit their work on one project, their receipts interleave in that one
-chain, each attributed to whoever made the claim. `Ledger` reads it: it filters by actor or
-verdict, summarizes who did what, checks the chain's integrity, and renders a feed a
-non-technical person can scan, one card per span with the verdict up front and a plain line
-of what changed. This is the shared source of truth a system of agents coordinates on, and
-the prosumer surface for the person who has to trust them.
-"""
+"""Read the receipts store as a shared, multi-actor feed: filter by actor or verdict, check
+integrity, and render it for a person to scan."""
 
 from __future__ import annotations
 

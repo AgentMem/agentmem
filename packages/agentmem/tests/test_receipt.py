@@ -1,6 +1,4 @@
-"""The action receipt verifies what an agent DID against the real diff, and can undo it.
-These pin the three failure modes a text check misses (fabrication, overreach, silent
-failure), the undo round-trip, and the tamper-evident chain that makes the record an audit."""
+"""The action receipt: fabrication, overreach, and silent-failure detection, undo, and the tamper-evident chain."""
 
 from __future__ import annotations
 

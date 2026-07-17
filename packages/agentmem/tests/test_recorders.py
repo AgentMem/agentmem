@@ -1,7 +1,4 @@
-"""Recorders take the action receipt beyond files: git branches and commits, and any API
-resource you can list. These pin that git activity is captured and verified, that a branch
-that merely moved under a commit is not miscounted as overreach, that a claimed git action
-which left no trace is caught, and that non-file changes are sealed into the receipt hash."""
+"""Recorders beyond files: git branches and commits, and any listable API resource."""
 
 from __future__ import annotations
 

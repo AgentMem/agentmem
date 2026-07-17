@@ -1,7 +1,4 @@
-"""The Claude Code plugin is how a non-coder installs AgentMem: two commands in the
-/plugin UI, no terminal. These pin the manifests that make that work, and the one
-promise the bootstrap wrapper must never break, that a missing engine cannot take down
-the user's session."""
+"""The plugin manifests, and the wrapper's promise that a missing engine never breaks the session."""
 
 from __future__ import annotations
 

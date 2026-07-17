@@ -1,10 +1,5 @@
-"""Verify an agent's account of its work against ground truth.
-
-The agent is an untrusted witness. `verify_account` checks what an agent said it did
-against a repository checkout (a flight-recorder `AccountReport`). `verify_run` and the
-`ReceiptStore` go further: they capture the real before and after around a span of work,
-so the account can be checked against what measurably changed, and undone.
-"""
+"""Verify an agent's account of its work against ground truth: the repo, or the real diff of
+a span."""
 
 from .grounding import candidates, path_candidates, score
 from .ledger import Ledger

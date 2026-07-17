@@ -1,19 +1,5 @@
-"""An action receipt: what an agent actually DID, verified against the filesystem, and
-reversible.
-
-`report.py` checks an agent's words against a repo *snapshot*. This goes one step further:
-it captures the real before and after around a span of work, so the agent's self-report is
-checked against what measurably changed, not just against what happens to exist now. Three
-failure modes a text-only check misses become visible:
-
-  - fabrication     the agent claims a file it never touched
-  - overreach       the agent changed files it never mentioned
-  - silent failure  a check the agent said passed did not
-
-Every receipt is content-hashed and chained to the one before it, so the record is
-append-only and tamper-evident, and the before-state is stored so any captured change can
-be undone. The agent is an untrusted witness; the filesystem decides.
-"""
+"""Verify an agent's account of a span of work against the real diff, and hold a
+hash-chained, reversible receipt of it."""
 
 from __future__ import annotations
 
@@ -115,11 +101,7 @@ def _incidental(path: str) -> bool:
 
 @dataclass
 class Snapshot:
-    """A capture of the ground-truth file state under a root: path -> (sha256, size).
-
-    When `store` is set, the bytes of each file under the size cap are copied into a
-    content-addressed blob dir, which is what makes undo possible later.
-    """
+    """The file state under a root, path -> (sha256, size); with a `store`, the bytes too, so undo can restore them."""
 
     root: Path
     files: dict[str, tuple[str, int]]
@@ -201,12 +183,7 @@ class Check(BaseModel):
 
 
 class ActionReceipt(BaseModel):
-    """A verified, reversible account of one span of an agent's work.
-
-    The stored fields are raw facts (the claim, the real diff, the checks) plus the split
-    the verifier computed; `verdict` and `issues` are derived from them, and `hash` chains
-    the raw facts to the previous receipt so the record cannot be edited after the fact.
-    """
+    """A verified, reversible account of one span; `verdict`/`issues` derive from the stored facts, `hash` chains it to the last."""
 
     receipt_id: str
     created_at: str
@@ -378,12 +355,7 @@ def build_receipt(
     created_at: str | None = None,
     prev_hash: str = "",
 ) -> ActionReceipt:
-    """Split a claim against a real diff into verified / fabricated / overreach, and seal it.
-
-    `changes` are non-file artifacts a recorder saw (git branches, commits, API resources);
-    `recorded_kinds` is what was actually watched, so a git action the claim asserts but
-    that left no branch, commit, or tag can be flagged rather than silently missed.
-    """
+    """Split a claim against the real diff (files plus recorder `changes`) into verified / fabricated / overreach, and seal it."""
     changes = changes or []
     recorded_kinds = recorded_kinds or set()
     checks = checks or []
@@ -470,10 +442,7 @@ def verify_run(
     prev_hash: str = "",
     actor: str = "agent",
 ) -> ActionReceipt:
-    """Compare two snapshots, verify the claim against the real diff, and return a receipt.
-    `changes` are non-file artifacts a recorder observed (git, API). A change is reversible
-    only if the before-bytes of every modified or deleted file were stored; added files need
-    no stored bytes, undo just removes them."""
+    """Compare two snapshots, verify the claim against the diff (plus recorder `changes`), and return a receipt."""
     effect = Effect.between(before, after)
     reversible = all(
         before.blob(before.files[p][0]) is not None for p in effect.modified + effect.deleted
@@ -493,13 +462,7 @@ def verify_run(
 
 
 class ReceiptStore:
-    """The on-disk, append-only home for receipts: one before-snapshot per span, and a
-    hash chain that ties each receipt to the last so the record cannot be quietly edited.
-
-    Lifecycle is begin -> (agent works) -> end -> optional undo. `begin` freezes the
-    ground truth, `end` verifies the claim against what changed and seals a receipt, `undo`
-    puts the tree back.
-    """
+    """The on-disk, append-only, hash-chained home for receipts: begin freezes the ground truth, end verifies and seals, undo restores."""
 
     def __init__(self, base: Path) -> None:
         self.dir = Path(base) / "receipts"
@@ -645,11 +608,7 @@ class UndoResult:
 
 
 def undo(receipt: ActionReceipt, before: Snapshot, root: Path) -> UndoResult:
-    """Put the tree back the way it was before the span this receipt covers.
-
-    Modified and deleted files are rewritten from the stored before-bytes; added files are
-    removed. Files whose bytes were too big to store are skipped and reported, never guessed.
-    """
+    """Restore the tree to before the span: modified/deleted files from stored bytes, added ones removed, too-big ones skipped."""
     root = root.resolve()
     restored, removed, skipped = [], [], []
     for rel in receipt.modified + receipt.deleted:

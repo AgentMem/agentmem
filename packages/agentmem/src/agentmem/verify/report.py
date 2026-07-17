@@ -1,9 +1,5 @@
-"""A flight-recorder report: an agent's account, verified against the repository.
-
-The record treats the agent as an untrusted witness. Every artifact the account names is
-either present in the checkout (verified) or not (contradicted); the model never grades
-itself. Renders to markdown for a terminal and to a self-contained HTML page.
-"""
+"""An agent's account verified against the repository, rendered as a flight-recorder report
+in markdown or HTML."""
 
 from __future__ import annotations
 
