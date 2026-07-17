@@ -113,13 +113,27 @@ allows.
 
 | Host | Install | How memory arrives |
 |---|---|---|
-| **Claude Code** | `agentmem init claude-code` | Proactive, via hooks (no daemon) |
+| **Claude Code** | plugin marketplace, or `agentmem init claude-code` | Proactive, via hooks (no daemon) |
 | **Claude Agent SDK** | `pip install 'agentmem-core[agent-sdk]'` | Proactive, a PostToolUse hook |
 | **LangGraph** | built in | Proactive, a graph node |
 | **Aider** | `pip install 'agentmem-core[aider]'` | Proactive, drives the coder loop |
 | **OpenAI Agents SDK** | `pip install 'agentmem-core[openai-agents]'` | Proactive, run hooks + input filter |
 | **Your own loop** | built in | Proactive, `wrap()` or two calls |
 | **Cursor, Copilot, Codex, Gemini, and more** | `pip install 'agentmem-core[mcp]'` | On demand via MCP, plus a `checkpoint` nudge |
+
+The easiest path for Claude Code is the plugin, installed without a terminal, straight from the
+marketplace:
+
+```
+/plugin marketplace add AgentMem/agentmem
+/plugin install agentmem@agentmem
+/agentmem:setup
+```
+
+It wires the five hooks and fetches its own engine on first use (an installed `agentmem`, else
+`uvx` or `pipx`), and `/agentmem:setup` walks you through the API key. A missing engine can never
+break a session: the wrapper exits clean with a single hint. Prefer the terminal? `pip install
+agentmem-core && agentmem init claude-code` does the same wiring.
 
 **Proactive** hosts get the full two-phase behavior: AgentMem decides *when* to speak and pushes a
 transient, once-consumed reminder into the next turn. The OpenAI Agents SDK, for example, wires in

@@ -10,6 +10,14 @@ contract we version against. Breaking it means a note here.
 
 ## [Unreleased]
 
+### Added
+- One-click Claude Code install from the plugin marketplace: `/plugin marketplace add
+  AgentMem/agentmem` then `/plugin install agentmem@agentmem`, no terminal. The plugin
+  bundles a `bin/agentmem-engine` bootstrap that runs the engine off an installed
+  `agentmem`, else `uvx`, else `pipx`, and exits clean if none is present, so a missing
+  setup can never break a session. Adds an `/agentmem:setup` wizard for first-run and the
+  API key. `.claude-plugin/marketplace.json` makes the repo an installable marketplace.
+
 ### Changed
 - The core package publishes to PyPI as `agentmem-core`: the name `agentmem` was
   already registered by an unrelated project. Nothing else moves, `import agentmem`,

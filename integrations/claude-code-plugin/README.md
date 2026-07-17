@@ -1,17 +1,30 @@
 # AgentMem plugin for Claude Code
 
-Installs AgentMem's memory hooks into Claude Code as a plugin, so setup is one command
-and there's no daemon to run.
+Proactive memory for Claude Code, installed from the plugin marketplace. No daemon to run,
+and no manual Python setup: the hooks fetch the engine themselves the first time they fire.
 
 ## Install
 
-```bash
-pip install agentmem-core       # the engine the hooks call
-claude plugin install agentmem  # the hooks (this plugin)
-export ANTHROPIC_API_KEY=sk-ant-...
+Inside Claude Code, run two commands:
+
+```
+/plugin marketplace add AgentMem/agentmem
+/plugin install agentmem@agentmem
 ```
 
-That's it. Next session, Claude Code fires the plugin's hooks:
+Then, once, so the memory step can reach the model:
+
+```
+/agentmem:setup
+```
+
+That last one is a friendly wizard: it checks the engine, helps you set an Anthropic API
+key (needed for the memory step, separate from a Claude subscription), and confirms
+everything is ready. That's the whole setup, no terminal required.
+
+## What happens next
+
+From the next session on, Claude Code fires the plugin's hooks:
 
 - **SessionStart** recaps durable memory from earlier sessions on this project.
 - **PostToolUse** watches the run and, when something's worth remembering, computes a
@@ -20,16 +33,26 @@ That's it. Next session, Claude Code fires the plugin's hooks:
 - **PreCompact** saves execution state before the transcript is compacted.
 - **SessionEnd** consolidates and promotes what proved durable.
 
-Each hook runs `agentmem hook <event>`, which reads the event on stdin and returns fast;
-the memory-step's model call happens in a detached process, so nothing blocks the agent.
-Run `agentmem doctor` to check the setup.
+Each hook runs `bin/agentmem-engine hook <event>`, a small wrapper that finds the engine
+(an installed `agentmem`, else `uvx`, else `pipx`) and passes the event through on stdin.
+It returns fast; the memory-step's model call happens in a detached process, so nothing
+blocks the agent. If no engine and no installer are present, the wrapper exits cleanly and
+prints one hint, so a missing setup can never break your session.
+
+For the snappiest hooks, install the engine once so it stays on PATH:
+
+```bash
+uv tool install agentmem-core
+```
 
 ## What it bundles
 
 | Path | What it is |
 |---|---|
 | `.claude-plugin/plugin.json` | Plugin manifest. |
+| `bin/agentmem-engine` | Bootstrap wrapper: runs the engine without a manual pip. |
 | `hooks/hooks.json` | The five command hooks (no daemon). |
+| `skills/setup/` | `/agentmem:setup`, the first-time wizard. |
 | `skills/status/` | `/agentmem:status`, show what's remembered. |
 
 ## Prefer a long-running daemon?

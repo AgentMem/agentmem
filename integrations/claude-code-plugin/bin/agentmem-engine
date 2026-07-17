@@ -1,0 +1,28 @@
+#!/bin/sh
+# Run the AgentMem engine for the Claude Code plugin without a manual pip step.
+#
+# A non-coder installs the plugin from the marketplace and never opens a terminal, so
+# the hooks have to find (or fetch) the engine on their own. We try, in order:
+#   1. an already-installed `agentmem` on PATH  (fast path, no per-call overhead)
+#   2. `uvx`   -- fetches agentmem-core from PyPI on first use, then caches it
+#   3. `pipx`  -- same idea, different installer
+# A hook must never break the session. If none of those exist we say so once on stderr
+# and exit 0 with no stdout, so Claude Code injects nothing and carries on.
+set -u
+
+if command -v agentmem >/dev/null 2>&1; then
+  exec agentmem "$@"
+fi
+
+if command -v uvx >/dev/null 2>&1; then
+  exec uvx --quiet --from agentmem-core agentmem "$@"
+fi
+
+if command -v pipx >/dev/null 2>&1; then
+  exec pipx run --quiet --spec agentmem-core agentmem "$@"
+fi
+
+echo "AgentMem: could not find agentmem, uv, or pipx to run the memory engine." >&2
+echo "  Fastest fix: install uv (https://docs.astral.sh/uv), or run: pip install agentmem-core" >&2
+echo "  Then in Claude Code: /agentmem:setup" >&2
+exit 0

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "agentmem hook session-start"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine\" hook session-start"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "agentmem hook prompt"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine\" hook prompt"
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "agentmem hook post-tool"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine\" hook post-tool"
           }
         ]
       }
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "agentmem hook pre-compact"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine\" hook pre-compact"
           }
         ]
       }
@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "agentmem hook session-end"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine\" hook session-end"
           }
         ]
       }

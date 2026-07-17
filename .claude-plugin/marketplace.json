@@ -1,0 +1,22 @@
+{
+  "name": "agentmem",
+  "owner": {
+    "name": "AgentMem",
+    "url": "https://github.com/AgentMem"
+  },
+  "plugins": [
+    {
+      "name": "agentmem",
+      "source": "./integrations/claude-code-plugin",
+      "description": "Proactive, verifiable memory for Claude Code. Recalls when it matters, grounded in your repo. No daemon, no manual pip.",
+      "version": "0.1.0",
+      "author": {
+        "name": "AgentMem",
+        "url": "https://github.com/AgentMem"
+      },
+      "homepage": "https://agentmem.xyz",
+      "license": "Apache-2.0",
+      "keywords": ["memory", "proactive", "recall", "hooks", "verifiable"]
+    }
+  ]
+}

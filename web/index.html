@@ -236,15 +236,17 @@
 <section id="start">
   <div class="wrap">
     <h2>Get started</h2>
-    <p class="lead">Two lines, and your agent has a memory you can verify. No account, nothing to sign up for.</p>
+    <p class="lead">A few commands, and your agent has a memory you can verify. No account, nothing to sign up for.</p>
     <div class="gs">
       <div class="col hi">
         <div class="who">Using Claude Code</div>
-        <h3>Wire it in, once</h3>
-        <div class="cmd"><span><span class="pr">$ </span>pip install agentmem-core</span><button data-copy="pip install agentmem-core">copy</button></div>
-        <div class="cmd"><span><span class="pr">$ </span>agentmem init claude-code</span><button data-copy="agentmem init claude-code">copy</button></div>
-        <p class="note">That is the whole setup. Claude Code now keeps a verified record as you work, and
-          <span class="mono">agentmem report</span> reads it back. A one-click Claude Code plugin is on the way.</p>
+        <h3>Install from the marketplace</h3>
+        <div class="cmd"><span>/plugin marketplace add AgentMem/agentmem</span><button data-copy="/plugin marketplace add AgentMem/agentmem">copy</button></div>
+        <div class="cmd"><span>/plugin install agentmem@agentmem</span><button data-copy="/plugin install agentmem@agentmem">copy</button></div>
+        <div class="cmd"><span>/agentmem:setup</span><button data-copy="/agentmem:setup">copy</button></div>
+        <p class="note">Three commands, typed right in Claude Code, no terminal. The plugin fetches its own
+          engine on first use and the <span class="mono">/agentmem:setup</span> wizard handles your API key.
+          From then on Claude Code keeps a verified record as you work, and speaks up only when it matters.</p>
       </div>
       <div class="col">
         <div class="who">Cursor, Copilot, Codex, Gemini</div>

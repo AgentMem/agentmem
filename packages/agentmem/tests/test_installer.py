@@ -84,12 +84,37 @@ def test_has_our_hooks_detects_both_modes() -> None:
     assert not has_our_hooks({"hooks": {"PostToolUse": [{"hooks": [{"command": "echo hi"}]}]}})
 
 
+def _subcommands_only(hooks: dict) -> dict:
+    """The hooks structure with each command reduced to its `hook <subcommand>`. Lets the
+    plugin (which runs through its bundled wrapper) and the installer (which calls the bare
+    `agentmem`) be compared on everything but the command prefix."""
+    from copy import deepcopy
+
+    out = deepcopy(hooks)
+    for entries in out.values():
+        for entry in entries:
+            for h in entry["hooks"]:
+                h["command"] = "hook " + h["command"].split("hook ", 1)[1].strip()
+    return out
+
+
 def test_plugin_hooks_stay_in_sync_with_the_installer() -> None:
     import pytest
 
-    plugin = (
+    plugin_path = (
         Path(__file__).parents[3] / "integrations" / "claude-code-plugin" / "hooks" / "hooks.json"
     )
-    if not plugin.exists():
+    if not plugin_path.exists():
         pytest.skip("plugin not present (running outside the repo checkout)")
-    assert json.loads(plugin.read_text()) == {"hooks": daemonless_hooks()}
+    plugin = json.loads(plugin_path.read_text())["hooks"]
+    installer = daemonless_hooks()
+
+    # Same events, matchers, and hook subcommands, so the two install paths never drift.
+    assert _subcommands_only(plugin) == _subcommands_only(installer)
+
+    # They differ only in how they reach the engine: the plugin through its bundled
+    # bootstrap wrapper, the installer through an `agentmem` already on PATH.
+    plugin_cmds = [h["command"] for es in plugin.values() for e in es for h in e["hooks"]]
+    installer_cmds = [h["command"] for es in installer.values() for e in es for h in e["hooks"]]
+    assert all("${CLAUDE_PLUGIN_ROOT}/bin/agentmem-engine" in c for c in plugin_cmds)
+    assert all(c.startswith("agentmem hook ") for c in installer_cmds)

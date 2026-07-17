@@ -1,7 +1,7 @@
 {
   "name": "agentmem",
-  "description": "Proactive memory for Claude Code: remembers when it matters, not everything.",
+  "description": "Proactive, verifiable memory for Claude Code: recalls when it matters, grounded in your repo.",
   "version": "0.1.0",
-  "homepage": "https://github.com/AgentMem/agentmem",
+  "homepage": "https://agentmem.xyz",
   "license": "Apache-2.0"
 }
