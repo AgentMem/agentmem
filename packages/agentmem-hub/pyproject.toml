@@ -14,6 +14,10 @@ authors = [{ name = "The AgentMem Authors" }]
 # only pull these in if you run the shared team feed.
 dependencies = ["agentmem-core>=0.1.0,<0.2", "fastapi>=0.110", "uvicorn>=0.29"]
 
+[project.optional-dependencies]
+# Run the notary endpoints (countersign attestations with a timestamp).
+notary = ["cryptography>=42"]
+
 [project.scripts]
 agentmem-hub = "agentmem_hub.__main__:main"
 

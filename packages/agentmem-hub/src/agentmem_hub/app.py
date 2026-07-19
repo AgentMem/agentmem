@@ -3,18 +3,27 @@ serve the shared timeline as JSON and a web page that keeps the key out of the U
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
 from agentmem.verify import ActionReceipt
 from agentmem.verify.ledger import Ledger
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel
 
-from . import __version__
+from . import __version__, billing
 from .auth import key_ok, load_keys
+from .plans import PlanStore
 from .store import TeamEntry, TeamLedger
+
+try:  # the notary extra (cryptography) is optional
+    from agentmem.verify.attest import Attestation as _AttModel
+    from agentmem.verify.notary import Notary as _Notary
+except ImportError:
+    _AttModel = None  # type: ignore[assignment,misc]
+    _Notary = None  # type: ignore[assignment,misc]
 
 
 class Push(BaseModel):
@@ -42,6 +51,7 @@ def create_app(base: Path | str | None = None, keys: dict[str, set[str]] | None 
     base = Path(base or os.environ.get("AGENTMEM_HUB_DATA", ".agentmem-hub"))
     resolved_keys = keys if keys is not None else load_keys()
     ledger = TeamLedger(base)
+    plans = PlanStore(base)
     app = FastAPI(title="AgentMem hub", version=__version__)
 
     def require_key(team: str, authorization: str | None = Header(default=None)) -> None:
@@ -55,6 +65,16 @@ def create_app(base: Path | str | None = None, keys: dict[str, set[str]] | None 
 
     @app.post("/teams/{team}/receipts", dependencies=[Depends(require_key)])
     def ingest(team: str, push: Push) -> dict:
+        limit = plans.limit_for(team)
+        if (
+            limit is not None
+            and ledger.count(team) >= limit
+            and not ledger.has(team, push.receipt.receipt_id)
+        ):
+            raise HTTPException(
+                status_code=402,
+                detail=f"the {plans.plan_for(team)} plan stores up to {limit} receipts; upgrade to keep going",
+            )
         try:
             entry = ledger.append(team, push.receipt, push.contributor)
         except ValueError as exc:
@@ -63,6 +83,31 @@ def create_app(base: Path | str | None = None, keys: dict[str, set[str]] | None 
             "stored": entry is not None,  # False means it was already there (idempotent)
             "team_hash": entry.hash if entry else ledger.head_hash(team),
         }
+
+    @app.get("/teams/{team}/usage", dependencies=[Depends(require_key)])
+    def usage(team: str) -> dict:
+        limit = plans.limit_for(team)
+        used = ledger.count(team)
+        return {
+            "plan": plans.plan_for(team),
+            "used": used,
+            "limit": limit,
+            "remaining": None if limit is None else max(0, limit - used),
+        }
+
+    @app.post("/billing/webhook")
+    async def stripe_webhook(request: Request) -> dict:
+        secret = os.environ.get("AGENTMEM_HUB_WEBHOOK_SECRET", "")
+        payload = await request.body()
+        signature = request.headers.get("stripe-signature", "")
+        if not billing.verify_signature(payload, signature, secret):
+            raise HTTPException(status_code=400, detail="bad webhook signature")
+        change = billing.plan_change(json.loads(payload or b"{}"))
+        if change:
+            team, plan = change
+            plans.set_plan(team, plan)
+            return {"updated": team, "plan": plan}
+        return {"updated": None}
 
     @app.get("/teams/{team}/receipts", dependencies=[Depends(require_key)])
     def feed_json(
@@ -112,6 +157,24 @@ def create_app(base: Path | str | None = None, keys: dict[str, set[str]] | None 
             writer.writerows(records)
             return Response(buffer.getvalue(), media_type="text/csv")
         return {"format": "agentmem-audit-log/1", "records": records}
+
+    # A notary service, if the signing extra is installed: anyone can have an attestation
+    # countersigned with a trusted timestamp, verifiable offline with the notary's public key.
+    if _AttModel is not None:
+
+        def _notary() -> _Notary:
+            pem = os.environ.get("AGENTMEM_HUB_NOTARY_KEY")
+            if not pem:
+                raise HTTPException(status_code=501, detail="no notary key configured")
+            return _Notary(pem, log_path=base / "notary-log.jsonl")
+
+        @app.get("/notary/public")
+        def notary_public() -> dict:
+            return {"public_key": _notary().public_key}
+
+        @app.post("/notary/timestamp")
+        def notary_timestamp(attestation: _AttModel) -> dict:
+            return _notary().notarize(attestation).model_dump()
 
     @app.get("/teams/{team}", response_class=HTMLResponse)
     def feed_page(team: str) -> HTMLResponse:

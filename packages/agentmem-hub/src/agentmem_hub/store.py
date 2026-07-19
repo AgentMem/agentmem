@@ -76,6 +76,9 @@ class TeamLedger:
             return []
         return [json.loads(ln) for ln in path.read_text().splitlines() if ln.strip()]
 
+    def count(self, team: str) -> int:
+        return len(self._raw(team))
+
     def head_hash(self, team: str) -> str:
         rows = self._raw(team)
         return str(rows[-1]["hash"]) if rows else ""

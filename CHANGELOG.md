@@ -11,6 +11,11 @@ contract we version against. Breaking it means a note here.
 ## [Unreleased]
 
 ### Added
+- Make the hub deployable and chargeable: a Dockerfile and a fly.toml, per-team plans that
+  meter stored receipts (402 over the cap) with a Stripe webhook driving upgrades (verified
+  with stdlib HMAC, no Stripe SDK), a `/teams/{team}/usage` endpoint, and an optional notary
+  (`agentmem-hub[notary]`) that countersigns attestations with a timestamp. And `agentmem
+  attest certify` signs a certificate over a whole period, verifiable offline.
 - Sign a receipt with an Ed25519 key (`agentmem attest keygen | sign | verify`) and its
   integrity verifies offline with only the public key, no trust in AgentMem or the hub. And
   `agentmem ledger export` writes the record as an audit log (JSON or CSV) in the spirit of EU

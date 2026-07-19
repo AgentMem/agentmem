@@ -2,15 +2,22 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import UTC, datetime
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from pydantic import BaseModel
 
+from .ledger import Ledger
 from .receipt import ActionReceipt
 
 _ALGO = "ed25519"
+
+
+def _canonical(obj: dict[str, object]) -> bytes:
+    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode()
 
 
 class Attestation(BaseModel):
@@ -89,6 +96,95 @@ def verify_attestation(
         if not isinstance(public_key, Ed25519PublicKey):
             return False
         public_key.verify(bytes.fromhex(attestation.signature), attestation.message())
+    except Exception:
+        return False
+    return True
+
+
+class Certificate(BaseModel):
+    """A signed statement about a team's ledger over a period: the counts, whether the chain
+    held, and a digest of the receipt seals, so a filing can be verified without the ledger."""
+
+    team: str
+    since: str | None
+    until: str | None
+    total: int
+    faithful: int
+    flagged: int
+    by_verdict: dict[str, int]
+    chain_intact: bool
+    digest: str
+    generated_at: str
+    public_key: str
+    signature: str
+
+    def payload(self) -> bytes:
+        return _canonical(
+            {
+                "team": self.team,
+                "since": self.since,
+                "until": self.until,
+                "total": self.total,
+                "faithful": self.faithful,
+                "flagged": self.flagged,
+                "by_verdict": self.by_verdict,
+                "chain_intact": self.chain_intact,
+                "digest": self.digest,
+                "generated_at": self.generated_at,
+            }
+        )
+
+
+def certify_ledger(
+    ledger: Ledger,
+    private_pem: str,
+    *,
+    team: str = "local",
+    since: str | None = None,
+    until: str | None = None,
+    generated_at: str | None = None,
+) -> Certificate:
+    """Sign a period certificate over a ledger. `digest` is a sha256 of the period's receipt
+    seals in order, recomputable by anyone who has the ledger."""
+    private_key = serialization.load_pem_private_key(private_pem.encode(), password=None)
+    if not isinstance(private_key, Ed25519PrivateKey):
+        raise ValueError("certificate needs an Ed25519 private key")
+    records = ledger.records(since=since, until=until)
+    digest = hashlib.sha256("\n".join(str(r["receipt_hash"]) for r in records).encode()).hexdigest()
+    by_verdict: dict[str, int] = {}
+    for record in records:
+        outcome = str(record["outcome"])
+        by_verdict[outcome] = by_verdict.get(outcome, 0) + 1
+    faithful = by_verdict.get("FAITHFUL", 0)
+    cert = Certificate(
+        team=team,
+        since=since,
+        until=until,
+        total=len(records),
+        faithful=faithful,
+        flagged=len(records) - faithful,
+        by_verdict=by_verdict,
+        chain_intact=(ledger.verify() == []),
+        digest=digest,
+        generated_at=generated_at or datetime.now(UTC).isoformat(timespec="seconds"),
+        public_key=_public_pem(private_key),
+        signature="",
+    )
+    cert.signature = private_key.sign(cert.payload()).hex()
+    return cert
+
+
+def verify_certificate(certificate: Certificate, *, expected_public_key: str | None = None) -> bool:
+    if (
+        expected_public_key is not None
+        and certificate.public_key.strip() != expected_public_key.strip()
+    ):
+        return False
+    try:
+        public_key = serialization.load_pem_public_key(certificate.public_key.encode())
+        if not isinstance(public_key, Ed25519PublicKey):
+            return False
+        public_key.verify(bytes.fromhex(certificate.signature), certificate.payload())
     except Exception:
         return False
     return True

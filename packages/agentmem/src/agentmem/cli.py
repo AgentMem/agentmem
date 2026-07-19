@@ -172,7 +172,10 @@ def main(argv: list[str] | None = None) -> int:
     p_attest = sub.add_parser(
         "attest", help="sign a receipt so its integrity can be verified offline with a public key"
     )
-    p_attest.add_argument("action", choices=["keygen", "sign", "verify"])
+    p_attest.add_argument(
+        "action",
+        choices=["keygen", "sign", "verify", "certify", "verify-cert", "verify-timestamp"],
+    )
     p_attest.add_argument("--repo", default=".", help="the working tree whose receipts to use")
     p_attest.add_argument("--id", help="receipt id to sign (defaults to the latest)")
     p_attest.add_argument("--private", help="issuer private key PEM path")
@@ -180,6 +183,13 @@ def main(argv: list[str] | None = None) -> int:
         "--public", help="public key PEM path (written by keygen, checked by verify)"
     )
     p_attest.add_argument("--att", help="attestation JSON path (written by sign, read by verify)")
+    p_attest.add_argument(
+        "--cert", help="certificate JSON path (certify writes, verify-cert reads)"
+    )
+    p_attest.add_argument("--ts", help="timestamp JSON path (read by verify-timestamp)")
+    p_attest.add_argument("--team", default="local", help="team name on the certificate")
+    p_attest.add_argument("--since", help="certificate period start (ISO timestamp)")
+    p_attest.add_argument("--until", help="certificate period end (ISO timestamp)")
 
     args = parser.parse_args(argv)
 
@@ -436,6 +446,54 @@ def _cmd_attest(args: argparse.Namespace) -> int:
         expected = Path(args.public).read_text() if args.public else None
         ok = verify_attestation(attestation, receipt, expected_public_key=expected)
         print("VALID: the signature checks out" if ok else "INVALID: the signature does not verify")
+        return 0 if ok else 1
+
+    if args.action == "certify":
+        if not args.private:
+            print("certify needs --private <key.pem>", file=sys.stderr)
+            return 2
+        from .verify.attest import certify_ledger
+        from .verify.ledger import Ledger
+
+        cert = certify_ledger(
+            Ledger(Path(args.repo) / ".agentmem"),
+            Path(args.private).read_text(),
+            team=args.team,
+            since=args.since,
+            until=args.until,
+        )
+        out = Path(args.cert or "certificate.json")
+        out.write_text(cert.model_dump_json(indent=2))
+        print(f"certified {cert.total} receipts ({cert.faithful} faithful) -> {out}")
+        return 0
+
+    if args.action == "verify-cert":
+        from .verify.attest import Certificate, verify_certificate
+
+        if not args.cert:
+            print("verify-cert needs --cert <certificate.json>", file=sys.stderr)
+            return 2
+        certificate = Certificate.model_validate_json(Path(args.cert).read_text())
+        expected = Path(args.public).read_text() if args.public else None
+        ok = verify_certificate(certificate, expected_public_key=expected)
+        print(
+            "VALID: the certificate checks out"
+            if ok
+            else "INVALID: the certificate does not verify"
+        )
+        return 0 if ok else 1
+
+    if args.action == "verify-timestamp":
+        from .verify.notary import Timestamp, verify_timestamp
+
+        if not args.ts:
+            print("verify-timestamp needs --ts <timestamp.json>", file=sys.stderr)
+            return 2
+        timestamp = Timestamp.model_validate_json(Path(args.ts).read_text())
+        stamped = Attestation.model_validate_json(Path(args.att).read_text()) if args.att else None
+        expected = Path(args.public).read_text() if args.public else None
+        ok = verify_timestamp(timestamp, stamped, expected_notary_key=expected)
+        print("VALID: the timestamp checks out" if ok else "INVALID: the timestamp does not verify")
         return 0 if ok else 1
 
     return 0

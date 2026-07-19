@@ -1,0 +1,31 @@
+# Deploy from the repo root: `fly deploy --config packages/agentmem-hub/fly.toml`
+# Set secrets separately, never in this file:
+#   fly secrets set AGENTMEM_HUB_KEYS='{"acme":["a-long-key"]}' \
+#                   AGENTMEM_HUB_WEBHOOK_SECRET=whsec_... AGENTMEM_HUB_PRICES='{"price_x":"pro"}'
+app = "agentmem-hub"
+primary_region = "iad"
+
+[build]
+  dockerfile = "packages/agentmem-hub/Dockerfile"
+
+[env]
+  AGENTMEM_HUB_HOST = "0.0.0.0"
+  AGENTMEM_HUB_PORT = "8791"
+  AGENTMEM_HUB_DATA = "/data"
+
+[http_service]
+  internal_port = 8791
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[mounts]]
+  source = "agentmem_hub_data"
+  destination = "/data"
+
+[[http_service.checks]]
+  method = "get"
+  path = "/health"
+  interval = "15s"
+  timeout = "2s"

@@ -166,7 +166,9 @@ agentmem attest verify --att attestation-*.json --public issuer.pub
 
 For compliance, `agentmem ledger export` writes the record as an audit log (JSON or CSV) in
 the spirit of EU AI Act Article 12: when, who, what action, what outcome, over what artifacts,
-each with its seal.
+each with its seal. `agentmem attest certify` signs a certificate over a whole period (the
+counts, whether the chain held, a digest of the seals), and the hub can run a notary that
+countersigns each attestation with a timestamp.
 
 ## Quickstart
 

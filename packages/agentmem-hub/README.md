@@ -34,10 +34,39 @@ agentmem ledger push --to https://hub.example.com --team acme --key a-long-rando
 | Method & path | What it does |
 |---|---|
 | `GET /health` | liveness, open |
-| `POST /teams/{team}/receipts` | ingest a receipt (bearer key); idempotent by id |
+| `POST /teams/{team}/receipts` | ingest a receipt (bearer key); idempotent by id; 402 over the plan limit |
 | `GET /teams/{team}/receipts` | the feed as JSON (bearer key); `?actor=&verdict=&contributor=&limit=` |
 | `GET /teams/{team}/verify` | chain integrity (bearer key) |
+| `GET /teams/{team}/export` | audit log, JSON or `?format=csv` (bearer key) |
+| `GET /teams/{team}/usage` | plan, used, and remaining (bearer key) |
 | `GET /teams/{team}` | the web feed (asks for the key in the browser) |
+| `POST /billing/webhook` | Stripe webhook; upgrades a team's plan on subscription |
+| `POST /notary/timestamp` | countersign an attestation (needs the notary extra + key) |
 
 Keys are supplied by whoever runs the hub, through `AGENTMEM_HUB_KEYS` (JSON) or the file at
 `AGENTMEM_HUB_KEYS_FILE`. A team with no configured key can be neither written nor read.
+
+## Deploy
+
+A Dockerfile and a `fly.toml` ship with the package. Build from the repo root:
+
+```bash
+docker build -f packages/agentmem-hub/Dockerfile -t agentmem-hub .
+# or, on fly.io:
+fly deploy --config packages/agentmem-hub/fly.toml
+fly secrets set AGENTMEM_HUB_KEYS='{"acme":["a-long-key"]}'
+```
+
+## Billing
+
+Each team is on a plan (`free` caps stored receipts, `pro` and `enterprise` are unlimited);
+over the cap, ingest returns 402. A Stripe webhook drives upgrades: point Stripe at
+`/billing/webhook`, set `AGENTMEM_HUB_WEBHOOK_SECRET`, and map price ids to plans with
+`AGENTMEM_HUB_PRICES='{"price_x":"pro"}'`. The signature is checked with stdlib HMAC, no
+Stripe SDK.
+
+## Notary
+
+With `pip install agentmem-hub[notary]` and `AGENTMEM_HUB_NOTARY_KEY` set, the hub
+countersigns attestations with a timestamp: `POST /notary/timestamp` returns a signature
+anyone can check offline against `GET /notary/public`.

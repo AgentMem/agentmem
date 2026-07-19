@@ -172,3 +172,19 @@ def test_export_endpoint(tmp_path: Path) -> None:
     assert "alice" in csv.text
 
     assert client.get("/teams/acme/export").status_code == 401
+
+
+def test_notary_endpoint(tmp_path: Path, monkeypatch) -> None:  # noqa: ANN001
+    from agentmem.verify.attest import generate_keypair, sign_receipt
+    from agentmem.verify.notary import Timestamp, verify_timestamp
+
+    notary_private, notary_public = generate_keypair()
+    monkeypatch.setenv("AGENTMEM_HUB_NOTARY_KEY", notary_private)
+    client = _client(tmp_path)
+
+    issuer_private, _ = generate_keypair()
+    att = sign_receipt(_receipt(tmp_path), issuer_private)
+    resp = client.post("/notary/timestamp", json=att.model_dump(mode="json"))
+    timestamp = Timestamp.model_validate(resp.json())
+    assert verify_timestamp(timestamp, att, expected_notary_key=notary_public)
+    assert client.get("/notary/public").json()["public_key"] == notary_public
